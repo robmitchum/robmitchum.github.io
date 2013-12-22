@@ -1,65 +1,190 @@
-<!doctype html>
+<!DO<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Robmitchum.github.io by robmitchum</title>
+<head>
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>Robmitchum.github.io</h1>
-        <p>My website</p>
+<!-- your webpage info goes here -->
+
+    <title>Rob Mitchum</title>
+	
+	<meta name="author" content="Rob Mitchum" />
+	<meta name="description" content="Nameplate Site" />
+
+<!-- you should always add your stylesheet (css) in the head tag so that it starts loading before the page html is being displayed -->	
+	<style>
+	
+	/*
+* multi-line comment
+*/
+/*p{ line-height: 1em; }*/
+h1, h2, h3, h4{
+    color: white;
+	font-weight: strong;
+	line-height: 1.1em;
+	margin: 0 0 .5em 0;
+}
+h1{ font-size: 1.7em; }
+h2{ font-size: 1.5em; }
+a{
+	color: black;
+	text-decoration: none;
+}
+	a:hover,
+	a:active{ text-decoration: underline; }
+
+/* you can structure your code's white space so that it is as readable for when you come back in the future or for other people to read and edit quickly */
+
+body{
+    font-family: arial; 
+    font-size: 80%; 
+    line-height: 1.2em; 
+    width: 100%; 
+    margin: 0; 
+    background: #D2B48C;
+    font-weight: normal;
+}
+/* you can but your code all in one line like above */
+#page{ margin: 20px; }
+
+/* or on different lines like below */
+#logo{
+	width: 35%;
+	font-family: Gill Sans;
+	display: inline-block;
+}
+/* but try and be as consist possible */
+#nav{
+	width: 60%;
+	display: inline-block;
+	text-align: right;
+	float: right;
+}
+	#nav ul{}
+		#nav ul li{
+			display: inline-block;
+			height: 62px;
+		}
+			#nav ul li a{
+				padding: 20px;
+				background: orange;
+				color: white;
+			}
+			#nav ul li a:hover{
+				background-color: #ffb424;
+				box-shadow: 0px 1px 1px #666;
+			}
+			#nav ul li a:active{ background-color: #ff8f00; }
+				#nav ul li.red a{
+					background-color: #483D8B;
+				}
+				#nav ul li.orange a{
+					background-color: #556B2F;
+				}
+				#nav ul li.green a{
+					background-color: #8B0000;
+				}
+		
+#content{
+	clear:both;
+}
+
+#content a {
+	text-decoration:underline;
+	color:brown;
+}
+
+#box {
+	background: white;
+	padding: 5px 20px 5px 20px;
+	border-radius:10px;
+	border:5px solid grey;
+	width:27%;
+	float:left;
+	margin:10px 3px 30px 3px;
+}
 
 
-        <p class="view"><a href="https://github.com/robmitchum">View My GitHub Profile</a></p>
 
-      </header>
-      <section>
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+img {
+	height:auto;
+	width:200px;
+	float:center;
+	/*border:2px solid black;*/
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:8px;
+    margin-bottom:8px;
+}
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+.header {
+	font-family: Gill Sans;
+	font-weight: strong;
+	text-align:center;
+	font-size: 2em;
+	text-decoration:underline;
+}
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+#footer{
+	border-bottom: 1px #ccc solid;
+	margin-bottom: 10px;
+	clear:both;
+}
+	#footer p{
+		text-align: right;
+		text-transform: uppercase;
+		font-size: 80%;
+		color: black;
+	}
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+</style>
+	
+</head>
+<body>
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+<!-- webpage content goes here in the body -->
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+	<div id="page">
+		<div id="logo">
+			<h1><a href="/">Rob Mitchum</a><br>
+			Science & Music Writer</h1>
+		</div>
+		<div id="nav">
+			<ul>
+				<li class="red"><a href="https://twitter.com/robmitchum">Twitter</a></li>
+				<li class="orange"><a href="http://robmitchum.tumblr.com/">Tumblr</a></li>
+				<li class="green"><a href="mailto:rdmitchum@gmail.com">Contact</a></li>
+			</ul>	
+		</div>
+		<div id="content">
+			<div id="box" class="music">
+			<p class="header">Music</p>
+				<a href="http://pitchfork.com/search/?query=rob+mitchum"><img src="images/pitchfork.png"></a>
+				<a href="http://www.mtvhive.com/author/rob-mitchum/"><img src="images/mtvhive.jpg"></a>
+				<a href="http://www.pastemagazine.com/writers/rob-mitchum.html"><img src="images/paste.png"></a>
+				<a href="http://www.relix.com/search/user/Rob+Mitchum/"><img src="images/relix.jpg"></a>
+			</div>
+			<div id="box" class="science">
+			<p class="header">Science</p>
+				<a href="http://compinst.org/author/robmitchum/"><img src="images/ci.png"></a>
+				<a href="http://sciencelife.uchospitals.edu/author/robmitchumuc/"><img src="images/uchicagomed.jpg"></a>
+				<a href="http://seedmagazine.com/content/article/adapting_to_a_new_economy/"><img src="images/seed.png"></a>
+				<a href="http://tonotopia.tumblr.com/"><img src="images/tonotopia.png"></a>				
+				<a href="http://web.archive.org/web/20100726203627/http://www.litmusmag.net/"><img src="images/litmus.gif"></a>
+			</div>
+			<div id="box" class="other">
+			<p class="header">Other</p>
+				<a href="http://theclassical.org/author/rob-mitchum"><img src="images/classical.png"></a>
+				<a href="http://pqasb.pqarchiver.com/chicagotribune/results.html?st=advanced&QryTxt=&type=current&sortby=RELEVANCE&datetype=0&frommonth=01&fromday=01&fromyear=1985&tomonth=01&today=28&toyear=2013&By=%22robert+mitchum%22&Title=&Sect=ALL"><img src="images/tribune.png"></a>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-      <footer>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
-  </body>
+			</div>
+		</div>
+		<div id="footer">
+			<p>
+				Webpage made by <a href="/" target="_blank">Rob Mitchum (with a lot of help from <a href="http://www.codecademy.com">Codecademy</a>)</a>
+			</p>
+		</div>
+	</div>
+</body>
 </html>
