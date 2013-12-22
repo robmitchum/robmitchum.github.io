@@ -1,0 +1,190 @@
+<!DO<!DOCTYPE html>
+<html>
+<head>
+
+<!-- your webpage info goes here -->
+
+    <title>Rob Mitchum</title>
+	
+	<meta name="author" content="Rob Mitchum" />
+	<meta name="description" content="Nameplate Site" />
+
+<!-- you should always add your stylesheet (css) in the head tag so that it starts loading before the page html is being displayed -->	
+	<style>
+	
+	/*
+* multi-line comment
+*/
+/*p{ line-height: 1em; }*/
+h1, h2, h3, h4{
+    color: white;
+	font-weight: strong;
+	line-height: 1.1em;
+	margin: 0 0 .5em 0;
+}
+h1{ font-size: 1.7em; }
+h2{ font-size: 1.5em; }
+a{
+	color: black;
+	text-decoration: none;
+}
+	a:hover,
+	a:active{ text-decoration: underline; }
+
+/* you can structure your code's white space so that it is as readable for when you come back in the future or for other people to read and edit quickly */
+
+body{
+    font-family: arial; 
+    font-size: 80%; 
+    line-height: 1.2em; 
+    width: 100%; 
+    margin: 0; 
+    background: #D2B48C;
+    font-weight: normal;
+}
+/* you can but your code all in one line like above */
+#page{ margin: 20px; }
+
+/* or on different lines like below */
+#logo{
+	width: 35%;
+	font-family: Gill Sans;
+	display: inline-block;
+}
+/* but try and be as consist possible */
+#nav{
+	width: 60%;
+	display: inline-block;
+	text-align: right;
+	float: right;
+}
+	#nav ul{}
+		#nav ul li{
+			display: inline-block;
+			height: 62px;
+		}
+			#nav ul li a{
+				padding: 20px;
+				background: orange;
+				color: white;
+			}
+			#nav ul li a:hover{
+				background-color: #ffb424;
+				box-shadow: 0px 1px 1px #666;
+			}
+			#nav ul li a:active{ background-color: #ff8f00; }
+				#nav ul li.red a{
+					background-color: #483D8B;
+				}
+				#nav ul li.orange a{
+					background-color: #556B2F;
+				}
+				#nav ul li.green a{
+					background-color: #8B0000;
+				}
+		
+#content{
+	clear:both;
+}
+
+#content a {
+	text-decoration:underline;
+	color:brown;
+}
+
+#box {
+	background: white;
+	padding: 5px 20px 5px 20px;
+	border-radius:10px;
+	border:5px solid grey;
+	width:27%;
+	float:left;
+	margin:10px 3px 30px 3px;
+}
+
+
+
+img {
+	height:auto;
+	width:200px;
+	float:center;
+	/*border:2px solid black;*/
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:8px;
+    margin-bottom:8px;
+}
+
+.header {
+	font-family: Gill Sans;
+	font-weight: strong;
+	text-align:center;
+	font-size: 2em;
+	text-decoration:underline;
+}
+
+#footer{
+	border-bottom: 1px #ccc solid;
+	margin-bottom: 10px;
+	clear:both;
+}
+	#footer p{
+		text-align: right;
+		text-transform: uppercase;
+		font-size: 80%;
+		color: black;
+	}
+
+
+
+</style>
+	
+</head>
+<body>
+
+<!-- webpage content goes here in the body -->
+
+	<div id="page">
+		<div id="logo">
+			<h1><a href="/">Rob Mitchum</a><br>
+			Science & Music Writer</h1>
+		</div>
+		<div id="nav">
+			<ul>
+				<li class="red"><a href="https://twitter.com/robmitchum">Twitter</a></li>
+				<li class="orange"><a href="http://robmitchum.tumblr.com/">Tumblr</a></li>
+				<li class="green"><a href="mailto:rdmitchum@gmail.com">Contact</a></li>
+			</ul>	
+		</div>
+		<div id="content">
+			<div id="box" class="music">
+			<p class="header">Music</p>
+				<a href="http://pitchfork.com/search/?query=rob+mitchum"><img src="images/pitchfork.png"></a>
+				<a href="http://www.mtvhive.com/author/rob-mitchum/"><img src="images/mtvhive.jpg"></a>
+				<a href="http://www.pastemagazine.com/writers/rob-mitchum.html"><img src="images/paste.png"></a>
+				<a href="http://www.relix.com/search/user/Rob+Mitchum/"><img src="images/relix.jpg"></a>
+			</div>
+			<div id="box" class="science">
+			<p class="header">Science</p>
+				<a href="http://compinst.org/author/robmitchum/"><img src="images/ci.png"></a>
+				<a href="http://sciencelife.uchospitals.edu/author/robmitchumuc/"><img src="images/uchicagomed.jpg"></a>
+				<a href="http://seedmagazine.com/content/article/adapting_to_a_new_economy/"><img src="images/seed.png"></a>
+				<a href="http://tonotopia.tumblr.com/"><img src="images/tonotopia.png"></a>				
+				<a href="http://web.archive.org/web/20100726203627/http://www.litmusmag.net/"><img src="images/litmus.gif"></a>
+			</div>
+			<div id="box" class="other">
+			<p class="header">Other</p>
+				<a href="http://theclassical.org/author/rob-mitchum"><img src="images/classical.png"></a>
+				<a href="http://pqasb.pqarchiver.com/chicagotribune/results.html?st=advanced&QryTxt=&type=current&sortby=RELEVANCE&datetype=0&frommonth=01&fromday=01&fromyear=1985&tomonth=01&today=28&toyear=2013&By=%22robert+mitchum%22&Title=&Sect=ALL"><img src="images/tribune.png"></a>
+
+			</div>
+		</div>
+		<div id="footer">
+			<p>
+				Webpage made by <a href="/" target="_blank">Rob Mitchum (with a lot of help from <a href="http://www.codecademy.com">Codecademy</a>)</a>
+			</p>
+		</div>
+	</div>
+</body>
+</html>
