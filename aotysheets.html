@@ -46,6 +46,107 @@
    
         </div>
 
+        <div class="featurette">
+
+            <h2 class="featurette-heading">Graphs!</h2>
+
+        </div>
+
+        <div id="chart" style="width:600px;height:300px;">
+        </div>
+        <script src="js/flotr2.min.js"></script>
+        <script>
+
+            var kanye = [
+                [0, 1],
+                [1, 1],
+                [2, 38],
+                [3, 2],
+                [4, 16],
+                [5, 6],
+                [6, 16],
+                [7, 2],
+                [8, 1],
+                [9, 1],
+                [10, 17],   
+            ];
+
+            var twigs = [
+                [0, 10],
+                [1, 7],
+                [2, 9],
+                [3, 21],
+                [4, 35],
+                [5, 8],
+                [6, 8],
+                [7, 16],
+                [8, 21],
+                [9, 9],
+                [10, 4],   
+            ];
+
+            var kendrick = [
+                [0, 1],
+                [1, 1],
+                [2, 2],
+                [3, 2],
+                [4, 2],
+                [5, 1],
+                [6, 9],
+                [7, 1],
+                [8, 1],
+                [9, 2],
+                [10, 2],   
+            ];
+
+            var pubs = [
+                [0, "Complex"],
+                [1, "CoS"],
+                [2, "Mojo"],
+                [3, "NME"],
+                [4, "Paste"],
+                [5, "Pop Matters"],
+                [6, "Q"],
+                [7, "Rolling Stone"],
+                [8, "Spin"],
+                [9, "Stereogum"],
+                [10, "Uncut"]
+            ];
+
+            Flotr.draw(
+                document.getElementById("chart"),
+                [ { 
+                    data: kanye, 
+                    label: "Kanye West - Yeezus",
+                    lines: {show:true},
+                    points: {show:true} 
+                },
+                { 
+                    data: twigs, 
+                    label: "FKA Twigs - LP1",
+                    lines: {show:true},
+                    points: {show:true}  
+                },
+                { 
+                    data: kendrick, 
+                    label: "Kendrick Lamar - To Pimp a Butterfly",
+                    lines: {show:true}, 
+                    points: {show:true} 
+                }
+                ],
+                {
+                    title: "Album of the Year Chart Dominance",
+                    grid: {horizontalLines:false, verticalLines:false},
+                    yaxis: {min: 50, max: 0, tickDecimals: 0},
+                    xaxis: {ticks: pubs, min: -0.5, max: 10.5},
+                    legend: {position: 'se'}
+                }
+            );
+
+
+
+        </script>
+
         <div class="featurette" id="about">
 
             <h2 class="featurette-heading">What is this project?
