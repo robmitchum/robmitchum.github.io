@@ -38,7 +38,8 @@
             </h2>
             <p class="lead">
                 
-                <a href="https://docs.google.com/spreadsheets/d/1FQO_gdYXCFARbyfE8La08bgv041nYZDLTL6jV3rtPKU/edit?usp=sharing">2015 Spreadsheet</a> (last updated: 12/22 [WIRE])<br>
+                <a href="https://docs.google.com/spreadsheets/d/1qoiuqi8DzKgT2KVUKJBR7Xdo2dFNF8WT7uO9gtvoyFI/edit?usp=sharing">2016 Spreadsheet</a><br>
+                <a href="https://docs.google.com/spreadsheets/d/1FQO_gdYXCFARbyfE8La08bgv041nYZDLTL6jV3rtPKU/edit?usp=sharing">2015 Spreadsheet</a><br>
                 <a href="https://docs.google.com/spreadsheets/d/1dLn6jBLBx_j8H9lug0hX4UZEhrckdsx9kDLEa_Ca8QE/edit?usp=sharing">2014 Spreadsheet</a> (and <a href="http://theconcourse.deadspin.com/the-rock-critic-hive-mind-dissecting-the-best-albums-1676075373?trending_test_two_c&utm_expid=66866090-68.hhyw_lmCRuCTCg0I2RHHtw.3&utm_referrer=https%3A%2F%2Fwww.google.com%2F">Deadspin article</a>)<br>
                 <a href="https://docs.google.com/spreadsheets/d/19LMb7DNa0Hi7XBa2rPr2vECe0RxFOffGsYLIc4wwwrs/edit?usp=sharing">2013 Spreadsheet</a><br>
                 
@@ -52,100 +53,7 @@
 
         </div>
 
-        <div id="chart" style="width:600px;height:300px;">
-        </div>
-        <script src="js/flotr2.min.js"></script>
-        <script>
-
-            var kanye = [
-                [0, 1],
-                [1, 1],
-                [2, 38],
-                [3, 2],
-                [4, 16],
-                [5, 6],
-                [6, 16],
-                [7, 2],
-                [8, 1],
-                [9, 1],
-                [10, 17],   
-            ];
-
-            var twigs = [
-                [0, 10],
-                [1, 7],
-                [2, 9],
-                [3, 21],
-                [4, 35],
-                [5, 8],
-                [6, 8],
-                [7, 16],
-                [8, 21],
-                [9, 9],
-                [10, 4],   
-            ];
-
-            var kendrick = [
-                [0, 1],
-                [1, 1],
-                [2, 2],
-                [3, 2],
-                [4, 2],
-                [5, 1],
-                [6, 9],
-                [7, 1],
-                [8, 1],
-                [9, 2],
-                [10, 2],   
-            ];
-
-            var pubs = [
-                [0, "Complex"],
-                [1, "CoS"],
-                [2, "Mojo"],
-                [3, "NME"],
-                [4, "Paste"],
-                [5, "Pop Matters"],
-                [6, "Q"],
-                [7, "Rolling Stone"],
-                [8, "Spin"],
-                [9, "Stereogum"],
-                [10, "Uncut"]
-            ];
-
-            Flotr.draw(
-                document.getElementById("chart"),
-                [ { 
-                    data: kanye, 
-                    label: "Kanye West - Yeezus",
-                    lines: {show:true},
-                    points: {show:true} 
-                },
-                { 
-                    data: twigs, 
-                    label: "FKA Twigs - LP1",
-                    lines: {show:true},
-                    points: {show:true}  
-                },
-                { 
-                    data: kendrick, 
-                    label: "Kendrick Lamar - To Pimp a Butterfly",
-                    lines: {show:true}, 
-                    points: {show:true} 
-                }
-                ],
-                {
-                    title: "Album of the Year Chart Dominance",
-                    grid: {horizontalLines:false, verticalLines:false},
-                    yaxis: {min: 50, max: 0, tickDecimals: 0},
-                    xaxis: {ticks: pubs, min: -0.5, max: 10.5},
-                    legend: {position: 'se'}
-                }
-            );
-
-
-
-        </script>
+        <img src="img/first-half.png">
 
         <div class="featurette" id="about">
 
