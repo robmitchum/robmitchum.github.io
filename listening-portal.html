@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listening Diary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: white;
+            padding: 30px 0;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 24px;
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #34495e;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #2c3e50;
+            box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #2c3e50;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: #1a252f;
+        }
+
+        .btn-primary:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background: #dfe6e9;
+        }
+
+        .settings-section {
+            background: #f9f9f9;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
+        .settings-section h3 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #34495e;
+        }
+
+        .toggle-button {
+            display: inline-block;
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toggle-button.active {
+            background: #2c3e50;
+            color: white;
+            border-color: #2c3e50;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .recent-entries {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .entry-item {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            background: #fafafa;
+        }
+
+        .entry-item strong {
+            color: #2c3e50;
+        }
+
+        .entry-item small {
+            color: #7f8c8d;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e0e0e0;
+            border-top-color: #2c3e50;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+        }
+
+        .spinner.show {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .api-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            padding: 8px 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #bdc3c7;
+        }
+
+        .status-dot.connected {
+            background: #27ae60;
+        }
+
+        .status-dot.error {
+            background: #e74c3c;
+        }
+
+        .helper-text {
+            color: #7f8c8d;
+            font-size: 12px;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .helper-text a {
+            color: #2c3e50;
+            text-decoration: none;
+            border-bottom: 1px solid #2c3e50;
+        }
+
+        .helper-text a:hover {
+            color: #1a252f;
+        }
+
+        .setup-steps {
+            background: #ecf0f1;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .setup-steps ol {
+            margin-left: 20px;
+        }
+
+        .setup-steps li {
+            margin-bottom: 6px;
+        }
+
+        .setup-steps strong {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🎵 Listening Diary</h1>
+            <p class="subtitle">Log your music and sync to Last.fm</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="content">
+            <!-- Entry Form -->
+            <div class="card">
+                <h2>📝 New Entry</h2>
+                
+                <div class="alert" id="successAlert"></div>
+                <div class="alert" id="errorAlert"></div>
+
+                <form id="entryForm">
+                    <div class="form-group">
+                        <label for="date">Date *</label>
+                        <input type="date" id="date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="artist">Artist *</label>
+                        <input type="text" id="artist" placeholder="e.g., The Beatles" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="album">Album *</label>
+                        <input type="text" id="album" placeholder="e.g., Abbey Road" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="releaseYear">Release Year</label>
+                            <input type="number" id="releaseYear" placeholder="1969" min="1900" max="2099">
+                        </div>
+                        <div class="form-group">
+                            <label for="type">Type</label>
+                            <select id="type">
+                                <option value="">Select...</option>
+                                <option value="Album">Album</option>
+                                <option value="EP">EP</option>
+                                <option value="Single">Single</option>
+                                <option value="Compilation">Compilation</option>
+                                <option value="Live">Live</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="format">Format</label>
+                            <select id="format">
+                                <option value="">Select...</option>
+                                <option value="Streaming">Streaming</option>
+                                <option value="Vinyl">Vinyl</option>
+                                <option value="CD">CD</option>
+                                <option value="Digital">Digital</option>
+                                <option value="Cassette">Cassette</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Location</label>
+                            <input type="text" id="location" placeholder="e.g., Home, Car">
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn-primary">
+                            <span class="spinner" id="submitSpinner"></span>
+                            Save & Sync
+                        </button>
+                        <button type="reset" class="btn-secondary">Clear</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Settings & Status -->
+            <div class="card">
+                <h2>⚙️ Settings</h2>
+
+                <!-- Google Sheets Section -->
+                <div class="settings-section">
+                    <h3>Google Sheets Setup</h3>
+                    
+                    <div class="setup-steps">
+                        <strong>Quick Setup:</strong>
+                        <ol>
+                            <li>Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a></li>
+                            <li>Click <strong>+ CREATE CREDENTIALS</strong> → <strong>API Key</strong></li>
+                            <li>Copy your API Key below</li>
+                            <li>Click <strong>RESTRICT KEY</strong> and select <strong>Google Sheets API</strong></li>
+                        </ol>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sheetId">Sheet ID *</label>
+                        <input type="text" id="sheetId" placeholder="Paste your Google Sheet ID">
+                        <span class="helper-text">
+                            Find in URL: <code>docs.google.com/spreadsheets/d/<strong>SHEET_ID</strong>/</code>
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sheetName">Sheet Name</label>
+                        <input type="text" id="sheetName" placeholder="e.g., Listens" value="Sheet1">
+                        <span class="helper-text">Tab name at the bottom of your sheet</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="apiKey">Google API Key *</label>
+                        <input type="text" id="apiKey" placeholder="Your Google API Key">
+                        <span class="helper-text">
+                            Get from <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a>
+                        </span>
+                    </div>
+
+                    <button class="toggle-button" id="testGoogleBtn">Test Connection</button>
+                    <div class="api-status" id="googleStatus" style="display: none;">
+                        <div class="status-dot"></div>
+                        <span id="googleStatusText"></span>
+                    </div>
+                </div>
+
+                <!-- Last.fm Section -->
+                <div class="settings-section">
+                    <h3>Last.fm Setup (Optional)</h3>
+
+                    <div class="form-group">
+                        <label for="lastfmKey">API Key</label>
+                        <input type="text" id="lastfmKey" placeholder="Your Last.fm API Key">
+                        <span class="helper-text">
+                            Get from <a href="https://www.last.fm/api/account/create" target="_blank">Last.fm API</a>
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastfmSecret">Shared Secret</label>
+                        <input type="text" id="lastfmSecret" placeholder="Your Last.fm Shared Secret">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastfmSession">Session Token</label>
+                        <input type="text" id="lastfmSession" placeholder="Your Last.fm Session Token">
+                    </div>
+
+                    <button class="toggle-button" id="testLastfmBtn">Test Connection</button>
+                    <div class="api-status" id="lastfmStatus" style="display: none;">
+                        <div class="status-dot"></div>
+                        <span id="lastfmStatusText"></span>
+                    </div>
+                </div>
+
+                <!-- Options Section -->
+                <div class="settings-section">
+                    <h3>Options</h3>
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="autoSync" checked>
+                        <span style="font-size: 13px;">Auto-sync to Last.fm (if configured)</span>
+                    </label>
+                </div>
+
+                <button class="toggle-button" id="saveSettingsBtn" style="width: 100%; margin-top: 16px;">💾 Save Settings</button>
+            </div>
+        </div>
+
+        <!-- Recent Entries -->
+        <div class="card" style="margin-top: 20px;">
+            <h2>📊 Recent Entries</h2>
+            <div class="recent-entries" id="recentEntries">
+                <p style="color: #7f8c8d; text-align: center; padding: 20px;">No entries yet. Add one to get started!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set today's date by default
+        document.getElementById('date').valueAsDate = new Date();
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('listeningDiarySettings') || '{}');
+            document.getElementById('sheetId').value = settings.sheetId || '';
+            document.getElementById('sheetName').value = settings.sheetName || 'Sheet1';
+            document.getElementById('apiKey').value = settings.apiKey || '';
+            document.getElementById('lastfmKey').value = settings.lastfmKey || '';
+            document.getElementById('lastfmSecret').value = settings.lastfmSecret || '';
+            document.getElementById('lastfmSession').value = settings.lastfmSession || '';
+            document.getElementById('autoSync').checked = settings.autoSync !== false;
+        }
+
+        // Save settings to localStorage
+        function saveSettings() {
+            const settings = {
+                sheetId: document.getElementById('sheetId').value,
+                sheetName: document.getElementById('sheetName').value,
+                apiKey: document.getElementById('apiKey').value,
+                lastfmKey: document.getElementById('lastfmKey').value,
+                lastfmSecret: document.getElementById('lastfmSecret').value,
+                lastfmSession: document.getElementById('lastfmSession').value,
+                autoSync: document.getElementById('autoSync').checked
+            };
+            localStorage.setItem('listeningDiarySettings', JSON.stringify(settings));
+            showAlert('✓ Settings saved!', 'success');
+        }
+
+        function showAlert(message, type) {
+            const alertEl = document.getElementById(type === 'success' ? 'successAlert' : 'errorAlert');
+            alertEl.textContent = message;
+            alertEl.classList.add('show');
+            setTimeout(() => alertEl.classList.remove('show'), 4000);
+        }
+
+        // Test Google Sheets connection
+        document.getElementById('testGoogleBtn').addEventListener('click', async () => {
+            const status = document.getElementById('googleStatus');
+            const dot = status.querySelector('.status-dot');
+            const text = document.getElementById('googleStatusText');
+            
+            status.style.display = 'flex';
+            dot.classList.remove('connected', 'error');
+            text.textContent = 'Testing...';
+
+            try {
+                const sheetId = document.getElementById('sheetId').value;
+                const apiKey = document.getElementById('apiKey').value;
+                
+                if (!sheetId || !apiKey) {
+                    throw new Error('Sheet ID and API Key required');
+                }
+                
+                // Test connection via backend
+                const response = await fetch('http://localhost:3001/api/test/google', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sheetId, apiKey })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Connection failed');
+                }
+
+                dot.classList.add('connected');
+                text.textContent = '✓ Connected!';
+            } catch (error) {
+                dot.classList.add('error');
+                text.textContent = `✗ ${error.message}`;
+            }
+        });
+
+        // Test Last.fm connection
+        document.getElementById('testLastfmBtn').addEventListener('click', async () => {
+            const status = document.getElementById('lastfmStatus');
+            const dot = status.querySelector('.status-dot');
+            const text = document.getElementById('lastfmStatusText');
+            
+            status.style.display = 'flex';
+            dot.classList.remove('connected', 'error');
+            text.textContent = 'Testing...';
+
+            try {
+                const apiKey = document.getElementById('lastfmKey').value;
+                const session = document.getElementById('lastfmSession').value;
+                
+                if (!apiKey || !session) {
+                    throw new Error('API Key and Session required');
+                }
+
+                const response = await fetch('http://localhost:3001/api/test/lastfm', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ apiKey, session })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Connection failed');
+                }
+
+                const data = await response.json();
+                dot.classList.add('connected');
+                text.textContent = `✓ Connected (${data.user})!`;
+            } catch (error) {
+                dot.classList.add('error');
+                text.textContent = `✗ ${error.message}`;
+            }
+        });
+
+        // Save settings button
+        document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
+
+        // Form submission
+        document.getElementById('entryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const spinner = document.getElementById('submitSpinner');
+            const btn = e.target.querySelector('.btn-primary');
+            btn.disabled = true;
+            spinner.classList.add('show');
+
+            const entry = {
+                date: document.getElementById('date').value,
+                artist: document.getElementById('artist').value,
+                album: document.getElementById('album').value,
+                releaseYear: document.getElementById('releaseYear').value,
+                type: document.getElementById('type').value,
+                format: document.getElementById('format').value,
+                location: document.getElementById('location').value
+            };
+
+            try {
+                const sheetId = document.getElementById('sheetId').value;
+                const apiKey = document.getElementById('apiKey').value;
+                
+                if (!sheetId || !apiKey) {
+                    throw new Error('Please configure Google Sheets in settings');
+                }
+
+                // Save to Google Sheets via backend
+                const googleConfig = {
+                    sheetId: document.getElementById('sheetId').value,
+                    sheetName: document.getElementById('sheetName').value,
+                    apiKey: document.getElementById('apiKey').value
+                };
+
+                const response = await fetch('http://localhost:3001/api/entry', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ entry, googleConfig })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to save entry');
+                }
+
+                addRecentEntry(entry);
+                showAlert('✓ Entry saved to Google Sheets!', 'success');
+                
+                // Optional: Sync to Last.fm
+                if (document.getElementById('autoSync').checked) {
+                    const lastfmKey = document.getElementById('lastfmKey').value;
+                    const lastfmSecret = document.getElementById('lastfmSecret').value;
+                    const lastfmSession = document.getElementById('lastfmSession').value;
+                    
+                    if (lastfmKey && lastfmSecret && lastfmSession) {
+                        const lastfmConfig = { 
+                            apiKey: lastfmKey, 
+                            secret: lastfmSecret, 
+                            session: lastfmSession 
+                        };
+
+                        const lfmResponse = await fetch('http://localhost:3001/api/lastfm/scrobble', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ artist: entry.artist, album: entry.album, date: entry.date, lastfmConfig })
+                        });
+
+                        if (lfmResponse.ok) {
+                            showAlert('✓ Also synced to Last.fm!', 'success');
+                        }
+                    }
+                }
+                
+                // Reset form
+                document.getElementById('entryForm').reset();
+                document.getElementById('date').valueAsDate = new Date();
+
+            } catch (error) {
+                showAlert('✗ ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                spinner.classList.remove('show');
+            }
+        });
+
+        function addRecentEntry(entry) {
+            const container = document.getElementById('recentEntries');
+            if (container.querySelector('p')) {
+                container.innerHTML = '';
+            }
+            
+            const item = document.createElement('div');
+            item.className = 'entry-item';
+            item.innerHTML = `
+                <strong>${entry.artist}</strong> — ${entry.album}
+                <small>${new Date(entry.date).toLocaleDateString()} • ${entry.format || 'Format'} • ${entry.location || 'Location'}</small>
+            `;
+            container.insertBefore(item, container.firstChild);
+        }
+
+        // Load settings on page load
+        loadSettings();
+    </script>
+</body>
+</html>
