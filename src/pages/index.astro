@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { phishcritPosts, blogPosts, fmtDate } from '../lib/content';
+import { getCollection } from 'astro:content';
+
+const pc = (await phishcritPosts()).map((p) => ({ date: p.data.published, kind: 'PhishCrit', cls: 'pc', title: p.data.title, dek: p.data.summary ?? p.data.subtitle, href: `/phishcrit/${p.id}/` }));
+const bl = (await blogPosts()).map((p) => ({ date: p.data.published, kind: 'Blog', cls: 'blog', title: p.data.title, dek: p.data.summary, href: `/blog/${p.id}/` }));
+const latest = [...pc, ...bl].sort((a, b) => +b.date - +a.date).slice(0, 3);
+const bylines = (await getCollection('bylines')).sort((a, b) => +b.data.date - +a.data.date).slice(0, 3);
+---
+<BaseLayout section="var(--phishcrit)">
+  <section class="wrap hero">
+    <h1><span>Music writing,</span> <span>science writing,</span> <span>and side projects</span></h1>
+    <svg viewBox="0 0 560 460" aria-hidden="true" class="lanes">
+      <g fill="none" stroke-width="30" stroke-linecap="round">
+        <path d="M40 520V310A210 210 0 0 1 250 100H520" stroke="#E5007E" />
+        <path d="M70 520V310A180 180 0 0 1 250 130H470" stroke="#E2231A" />
+        <path d="M100 520V310A150 150 0 0 1 250 160H500" stroke="#F58220" />
+        <path d="M130 520V310A120 120 0 0 1 250 190H430" stroke="#FFC20E" />
+        <path d="M160 520V310A90 90 0 0 1 250 220H470" stroke="#00A651" />
+        <path d="M190 520V310A60 60 0 0 1 250 250H390" stroke="#0072BC" />
+        <path d="M220 520V310A30 30 0 0 1 250 280H430" stroke="#6B3FA0" />
+      </g>
+    </svg>
+  </section>
+  <hr class="rule" />
+
+  <section class="wrap latest">
+    <h2 class="big">Latest</h2>
+    <div class="cols">
+      <div>
+        <h3 class="col-head">
+          <svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-width="7"><path d="M10 18H54" stroke="#F58220" /><path d="M10 25H46" stroke="#FBC08A" /><path d="M10 39H54" stroke="#F58220" /><path d="M10 46H38" stroke="#FBC08A" /></g></svg>
+          From the blogs
+        </h3>
+        {latest.length ? latest.map((p) => (
+          <a class="entry" href={p.href}>
+            <span class="meta"><span>{fmtDate(p.date)}</span><span class={`pod pod-${p.cls}`}>{p.kind}</span></span>
+            <span class="body"><span class="title">{p.title}</span>{p.dek && <span>{p.dek}</span>}</span>
+          </a>
+        )) : <p class="stub">Posts appear here once PhishCrit (Phase 6) and the blog (Phase 7) have content.</p>}
+      </div>
+      <div>
+        <h3 class="col-head">
+          <svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-width="7"><path d="M10 58V24A16 16 0 0 1 26 8H56" stroke="#0072BC" /><path d="M17 58V24A9 9 0 0 1 26 15H56" stroke="#8CC4E8" /><path d="M24 58V24A2 2 0 0 1 26 22H56" stroke="#0072BC" /></g></svg>
+          Recent bylines
+        </h3>
+        {bylines.length ? bylines.map((b) => (
+          <a class="entry" href={b.data.url}>
+            <span class="meta"><span>{fmtDate(b.data.date)}</span><span class={`pod pod-${b.data.section}`}>{b.data.section[0].toUpperCase() + b.data.section.slice(1)}</span></span>
+            <span class="body"><span class="title">{b.data.title}</span><span>{b.data.outlet}</span></span>
+          </a>
+        )) : <p class="stub">Bylines appear here after Phase 4.</p>}
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" style="--section: var(--projects)">
+    <h2 class="section-head">Projects</h2>
+    <div class="cards">
+      <a class="card" href="/projects/aoty/">
+        <span class="card-top">
+          <svg width="56" height="56" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-width="9"><path d="M14 56V34" stroke="#E0A800" /><path d="M23 56V20" stroke="#FFD54F" /><path d="M32 56V28" stroke="#E0A800" /><path d="M41 56V10" stroke="#FFD54F" /><path d="M50 56V24" stroke="#E0A800" /></g></svg>
+          <span class="pod pod--dark-text">Data</span>
+        </span>
+        <span class="card-title">Albums of the Year</span>
+        <span>Year-end album data, 2013–2025.</span>
+        <span class="viz-slot">Data viz preview, designed in Phase 5</span>
+      </a>
+      <a class="card" href="/projects/listening-diary/">
+        <span class="card-top">
+          <svg width="56" height="56" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-width="9"><path d="M14 56V34" stroke="#E0A800" /><path d="M23 56V20" stroke="#FFD54F" /><path d="M32 56V28" stroke="#E0A800" /><path d="M41 56V10" stroke="#FFD54F" /><path d="M50 56V24" stroke="#E0A800" /></g></svg>
+          <span class="pod pod--dark-text">Diary</span>
+        </span>
+        <span class="card-title">Listening Diary 2026</span>
+        <span>A daily album pick, logged all year.</span>
+        <span class="viz-slot">Data viz preview, designed in Phase 5</span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-end; padding-top: 72px; padding-bottom: 56px; }
+  .hero h1 { flex: 999 1 620px; min-width: 0; margin: 0; font-size: clamp(34px, 7vw, 76px); line-height: 0.98; letter-spacing: -0.02em; }
+  .hero h1 span { white-space: nowrap; }
+  .lanes { flex: 1 1 360px; max-width: 460px; height: auto; margin-left: auto; }
+  .latest { padding-top: 56px; padding-bottom: 64px; }
+  .big { margin: 0 0 40px; font-size: 48px; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr)); gap: 48px; }
+  .col-head { margin: 0 0 12px; font-size: 14px; display: flex; align-items: center; gap: 10px; letter-spacing: 0; }
+  .entry { display: grid; grid-template-columns: 116px minmax(0, 1fr); gap: 20px; padding: 18px 0; border-top: 2px solid var(--ink); }
+  .meta { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; font-size: 13px; }
+  .body { display: flex; flex-direction: column; gap: 6px; }
+  .title { font-size: 24px; font-weight: 800; line-height: 1.15; }
+  .pod-pc { background: var(--phishcrit); }
+  .pod-blog { background: var(--blog); color: var(--ink); }
+  .pod-music { background: var(--music); }
+  .pod-science { background: var(--science); color: var(--ink); }
+  .pod-other { background: var(--other); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr)); gap: 32px; }
+  .card { display: flex; flex-direction: column; gap: 20px; background: #fff; border-radius: 28px; padding: 32px; border: 2px solid var(--ink); }
+  .card:hover { color: var(--ink); border-color: var(--projects-dark); }
+  .card-top { display: flex; justify-content: space-between; align-items: center; }
+  .card-title { font-size: 32px; font-weight: 800; line-height: 1.05; }
+  .viz-slot { display: flex; align-items: center; justify-content: center; height: 120px; border-radius: 20px; border: 2px dashed var(--about); font-size: 13px; color: var(--muted); }
+</style>

@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { fmtDate } from '../../lib/content';
+const all = (await getCollection('bylines')).sort((a, b) => +b.data.date - +a.data.date);
+const sections = [
+  { id: 'music', label: 'Music', color: 'var(--music)' },
+  { id: 'science', label: 'Science', color: 'var(--science)' },
+  { id: 'other', label: 'Other', color: 'var(--other)' },
+] as const;
+---
+<BaseLayout title="Bylines" section="var(--bylines)" description="Rob Mitchum's writing and podcast work.">
+  <div class="wrap">
+    <h1 class="page-title">Bylines</h1>
+    {sections.map((s) => {
+      const items = all.filter((b) => b.data.section === s.id);
+      return (
+        <section id={s.id} style={`--section:${s.color}`}>
+          <h2 class="section-head">{s.label}</h2>
+          {items.length ? (
+            <ul class="list">{items.map((b) => (
+              <li><a href={b.data.url}><span class="date">{fmtDate(b.data.date)}</span><span class="t">{b.data.title}</span><span class="o">{b.data.outlet}</span></a></li>
+            ))}</ul>
+          ) : <p class="stub"><strong>{s.label} bylines</strong> go here in Phase 4.</p>}
+        </section>
+      );
+    })}
+  </div>
+</BaseLayout>
+<style>
+  .page-title { font-size: clamp(40px, 7vw, 76px); margin: 72px 0 24px; }
+  section { margin-bottom: 56px; }
+  .list { list-style: none; padding: 0; margin: 0; }
+  .list a { display: grid; grid-template-columns: 116px minmax(0, 1fr); gap: 4px 20px; padding: 18px 0; border-top: 2px solid var(--ink); }
+  .t { font-size: 22px; font-weight: 800; }
+  .o { grid-column: 2; }
+  .date { grid-row: span 2; font-size: 13px; }
+</style>

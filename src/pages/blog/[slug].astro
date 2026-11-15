@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { render } from 'astro:content';
+import { blogPosts, fmtDate } from '../../lib/content';
+export async function getStaticPaths() {
+  return (await blogPosts()).map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+<BaseLayout title={post.data.title} description={post.data.summary} section="var(--blog)">
+  <article class="wrap post">
+    <p class="date">{fmtDate(post.data.published)}</p>
+    <h1>{post.data.title}</h1>
+    <div class="prose"><Content /></div>
+  </article>
+</BaseLayout>
+<style>
+  .post { padding-top: 56px; }
+  h1 { font-size: clamp(36px, 6vw, 64px); margin: 0 0 32px; }
+  .prose { max-width: 68ch; font-size: 19px; line-height: 1.6; }
+  .prose :global(a) { text-decoration: underline; }
+</style>

@@ -1,0 +1,56 @@
+/* PhishCrit look, after the '95–'97 Doniac Schvice issues ("Color panels").
+   Decisions log, 2026-11-14. */
+@import '@fontsource/unifrakturmaguntia/400.css';
+@import '@fontsource-variable/fraunces/full.css';
+@import '@fontsource-variable/source-serif-4/index.css';
+@import '@fontsource-variable/source-serif-4/wght-italic.css';
+@import '@fontsource/courier-prime/400.css';
+@import '@fontsource/courier-prime/700.css';
+@import '@fontsource/schibsted-grotesk/400.css';
+@import '@fontsource/schibsted-grotesk/800.css';
+
+:root {
+  --pc-paper: #FBF6E8;
+  --pc-ink: #1B1B19;
+  --pc-purple: #4B2367;
+  --pc-yellow: #F6D54A;
+  --pc-mint: #CFE7D3;
+  --pc-salmon: #F3B38A;
+  --pc-teal: #1F7F99;
+  --pc-red: #C8242B;
+
+  --pc-display: 'Fraunces Variable', 'Fraunces', Georgia, serif;
+  --pc-body: 'Source Serif 4 Variable', 'Source Serif 4', Georgia, serif;
+  --pc-type: 'Courier Prime', 'Courier New', monospace;
+  --pc-black: 'UnifrakturMaguntia', serif;
+  --pc-wrap: 1180px;
+  --pc-gutter: clamp(20px, 4vw, 32px);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--pc-paper); color: var(--pc-ink); font-family: var(--pc-body); font-size: 20px; line-height: 1.6; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--pc-purple); outline-offset: 3px; border-radius: 4px; }
+
+.pc-wrap { max-width: var(--pc-wrap); margin: 0 auto; padding: 0 var(--pc-gutter); }
+
+/* Soft heavy serif headlines (Cooper Black feel) */
+.pc-display { font-family: var(--pc-display); font-weight: 900; font-variation-settings: 'SOFT' 100, 'WONK' 1; line-height: 1.05; }
+.pc-title { color: var(--pc-red); }
+.pc-section-head { color: var(--pc-teal); font-family: var(--pc-display); font-weight: 900; font-variation-settings: 'SOFT' 100; font-size: 38px; margin: 0 0 8px; }
+.pc-kicker { font-family: var(--pc-type); font-size: 15px; }
+
+/* Rounded pastel panels */
+.panel { border-radius: 28px; padding: clamp(24px, 4vw, 40px); }
+.panel--yellow { background: var(--pc-yellow); }
+.panel--mint { background: var(--pc-mint); }
+.panel--salmon { background: var(--pc-salmon); }
+.panel--teal { background: var(--pc-teal); color: #fff; }
+.panel--purple { background: var(--pc-purple); color: #fff; }
+
+.pill { display: inline-block; border-radius: 999px; padding: 10px 20px; font-family: var(--pc-display); font-weight: 900; font-variation-settings: 'SOFT' 100; font-size: 17px; text-decoration: none; border: 0; cursor: pointer; }
+.pill--yellow { background: var(--pc-yellow); color: var(--pc-ink); }
+.pill--purple { background: var(--pc-purple); color: #fff; }
+.tour-pill { display: inline-block; background: var(--pc-mint); border-radius: 999px; padding: 3px 12px; font-size: 13px; font-weight: 700; text-decoration: none; }
+
+.pc-stub { border: 2px dashed var(--pc-purple); border-radius: 28px; padding: 32px; font-size: 17px; }

@@ -1,0 +1,12 @@
+---
+// "D6 big bend" monogram: black rm, one track lane bending up the right side.
+// The track takes the current section's color.
+interface Props { track?: string; letters?: string; width?: number; label?: string }
+const { track = 'var(--section, #E2231A)', letters = '#1B1B19', width = 76, label = 'rm monogram' } = Astro.props;
+const height = Math.round(width * 56.5 / 76.5);
+---
+<svg width={width} height={height} viewBox="0 0 76.5 56.5" role="img" aria-label={label}>
+  <path d="M6 36V20a10 10 0 0 1 10-10" fill="none" stroke={letters} stroke-width="7" stroke-linecap="round" />
+  <path d="M24 36V20a8 8 0 0 1 16 0v16M40 20a8 8 0 0 1 16 0v16" fill="none" stroke={letters} stroke-width="7" stroke-linecap="round" />
+  <path d="M4 52 H54 A18 18 0 0 0 72 34 V10" fill="none" stroke={track} stroke-width="5" stroke-linecap="round" />
+</svg>

@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Not found" section="var(--about)">
+  <div class="wrap">
+    <h1 class="page-title">Page not found</h1>
+    <p>That page isn't here. Try the <a href="/" style="text-decoration:underline">homepage</a> or the <a href="/phishcrit/archive/" style="text-decoration:underline">PhishCrit archive</a>.</p>
+  </div>
+</BaseLayout>
+<style>.page-title { font-size: clamp(40px, 7vw, 76px); margin: 72px 0 24px; }</style>

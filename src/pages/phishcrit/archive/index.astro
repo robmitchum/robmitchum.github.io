@@ -1,0 +1,20 @@
+---
+import PhishCritLayout from '../../../layouts/PhishCritLayout.astro';
+import { phishcritPosts, showDate, slugify } from '../../../lib/content';
+const posts = await phishcritPosts();
+---
+<PhishCritLayout title="Archive">
+  <h1 class="pc-display pc-title">Archive</h1>
+  <p class="pc-stub">Phase 6: search by title and song, Month / Day / Year pickers, tour pills under each year, results in show order.</p>
+  {posts.length > 0 && (
+    <ul class="list">{posts.map((p) => (
+      <li><a href={`/phishcrit/${p.id}/`}><span class="pc-kicker">{p.data.showDate && showDate(p.data.showDate)}</span> {p.data.title}</a>
+      {p.data.tour && <a class="tour-pill" href={`/phishcrit/tours/${slugify(p.data.tour)}/`}>{p.data.tour}</a>}</li>
+    ))}</ul>
+  )}
+</PhishCritLayout>
+<style>
+  h1 { font-size: clamp(40px, 6vw, 72px); margin: 0 0 24px; }
+  .list { list-style: none; padding: 0; }
+  .list li { padding: 12px 0; border-top: 2px solid var(--pc-ink); display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+</style>
