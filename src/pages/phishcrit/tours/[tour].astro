@@ -1,0 +1,24 @@
+---
+import PhishCritLayout from '../../../layouts/PhishCritLayout.astro';
+import { phishcritPosts, showDate, slugify } from '../../../lib/content';
+export async function getStaticPaths() {
+  const posts = await phishcritPosts();
+  const tours = [...new Set(posts.map((p) => p.data.tour).filter(Boolean))] as string[];
+  return tours.map((tour) => ({
+    params: { tour: slugify(tour) },
+    props: { tour, posts: posts.filter((p) => p.data.tour === tour) },
+  }));
+}
+const { tour, posts } = Astro.props;
+---
+<PhishCritLayout title={tour}>
+  <h1 class="pc-display pc-title">{tour}</h1>
+  <ul class="list">{posts.map((p) => (
+    <li><a href={`/phishcrit/${p.id}/`}><span class="pc-kicker">{p.data.showDate && showDate(p.data.showDate)} · {p.data.city}</span><br />{p.data.title}</a></li>
+  ))}</ul>
+</PhishCritLayout>
+<style>
+  h1 { font-size: clamp(40px, 6vw, 72px); margin: 0 0 24px; }
+  .list { list-style: none; padding: 0; }
+  .list li { padding: 16px 0; border-top: 2px solid var(--pc-ink); }
+</style>

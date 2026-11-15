@@ -1,0 +1,45 @@
+---
+// Post template. The full approved layout (side column with Relisten player,
+// setlist, sidenotes, sticky mini player) is built in Phase 6.
+import PhishCritLayout from '../../layouts/PhishCritLayout.astro';
+import { render } from 'astro:content';
+import { phishcritPosts, showDate, fmtDate } from '../../lib/content';
+export async function getStaticPaths() {
+  return (await phishcritPosts()).map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+const { post } = Astro.props;
+const { Content } = await render(post);
+const d = post.data.showDate;
+const relisten = d ? `https://relisten.net/phish/${d.getUTCFullYear()}/${String(d.getUTCMonth() + 1).padStart(2, '0')}/${String(d.getUTCDate()).padStart(2, '0')}` : null;
+---
+<PhishCritLayout title={post.data.title} description={post.data.summary ?? post.data.subtitle}>
+  <article>
+    <header class="panel panel--yellow">
+      {d && <p class="pc-kicker">{showDate(d)}{post.data.venue && ` · ${post.data.venue}`}{post.data.city && `, ${post.data.city}`}</p>}
+      <h1 class="pc-display pc-title">{post.data.title}</h1>
+      {post.data.subtitle && <p class="sub">{post.data.subtitle}</p>}
+      <p class="pc-kicker">Rob Mitchum · {fmtDate(post.data.published)}</p>
+    </header>
+    <div class="cols">
+      <div class="essay"><Content /></div>
+      <aside class="side">
+        {relisten && <a class="panel panel--purple listen" href={relisten}>Open this show on Relisten</a>}
+        {post.data.setlist && (
+          <div class="panel panel--mint">
+            {post.data.setlist.map((s) => <p><strong>{s.set}:</strong> {s.songs.join(', ')}</p>)}
+          </div>
+        )}
+      </aside>
+    </div>
+  </article>
+</PhishCritLayout>
+<style>
+  h1 { font-size: clamp(40px, 6vw, 68px); margin: 8px 0; }
+  .sub { font-size: 22px; margin: 0 0 12px; }
+  .cols { display: grid; grid-template-columns: minmax(0, 680px) 320px; gap: 40px; margin-top: 40px; align-items: start; }
+  .side { display: flex; flex-direction: column; gap: 20px; }
+  /* On phones the side column stacks above the essay */
+  @media (max-width: 900px) { .cols { grid-template-columns: minmax(0, 1fr); } .side { order: -1; } }
+  .listen { display: block; font-weight: 700; text-decoration: none; }
+  .side p { font-size: 16px; }
+</style>
