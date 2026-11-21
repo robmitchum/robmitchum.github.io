@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { phishcritPosts, blogPosts, fmtDate } from '../lib/content';
-import { getCollection } from 'astro:content';
+import { allBylines, sectionInfo, fmtIso } from '../lib/bylines';
 
 const pc = (await phishcritPosts()).map((p) => ({ date: p.data.published, kind: 'PhishCrit', cls: 'pc', title: p.data.title, dek: p.data.summary ?? p.data.subtitle, href: `/phishcrit/${p.id}/` }));
 const bl = (await blogPosts()).map((p) => ({ date: p.data.published, kind: 'Blog', cls: 'blog', title: p.data.title, dek: p.data.summary, href: `/blog/${p.id}/` }));
 const latest = [...pc, ...bl].sort((a, b) => +b.date - +a.date).slice(0, 3);
-const bylines = (await getCollection('bylines')).sort((a, b) => +b.data.date - +a.data.date).slice(0, 3);
+const bylines = allBylines().slice(0, 3);
 ---
 <BaseLayout section="var(--phishcrit)">
   <section class="wrap hero">
@@ -45,12 +45,13 @@ const bylines = (await getCollection('bylines')).sort((a, b) => +b.data.date - +
           <svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-width="7"><path d="M10 58V24A16 16 0 0 1 26 8H56" stroke="#0072BC" /><path d="M17 58V24A9 9 0 0 1 26 15H56" stroke="#8CC4E8" /><path d="M24 58V24A2 2 0 0 1 26 22H56" stroke="#0072BC" /></g></svg>
           Recent bylines
         </h3>
-        {bylines.length ? bylines.map((b) => (
-          <a class="entry" href={b.data.url}>
-            <span class="meta"><span>{fmtDate(b.data.date)}</span><span class={`pod pod-${b.data.section}`}>{b.data.section[0].toUpperCase() + b.data.section.slice(1)}</span></span>
-            <span class="body"><span class="title">{b.data.title}</span><span>{b.data.outlet}</span></span>
+        {bylines.map((b) => (
+          <a class="entry" href={b.url ?? `/bylines/${b.section}/`}>
+            <span class="meta"><span>{fmtIso(b.date)}</span><span class={`pod pod-${b.section}`}>{sectionInfo(b.section).label}</span></span>
+            <span class="body"><span class="title">{b.title}</span><span>{b.outlet}</span></span>
           </a>
-        )) : <p class="stub">Bylines appear here after Phase 4.</p>}
+        ))}
+        <a class="more" href="/bylines/">All bylines →</a>
       </div>
     </div>
   </section>
@@ -97,7 +98,9 @@ const bylines = (await getCollection('bylines')).sort((a, b) => +b.data.date - +
   .pod-blog { background: var(--blog); color: var(--ink); }
   .pod-music { background: var(--music); }
   .pod-science { background: var(--science); color: var(--ink); }
-  .pod-other { background: var(--other); }
+  .pod-news { background: var(--news); }
+  .pod-podcasts { background: var(--podcasts); color: var(--ink); }
+  .more { display: inline-block; margin-top: 16px; font-weight: 800; color: var(--bylines-text); }
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr)); gap: 32px; }
   .card { display: flex; flex-direction: column; gap: 20px; background: #fff; border-radius: 28px; padding: 32px; border: 2px solid var(--ink); }
   .card:hover { color: var(--ink); border-color: var(--projects-dark); }

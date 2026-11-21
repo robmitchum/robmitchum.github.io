@@ -1,0 +1,128 @@
+---
+// Podcasts, organized by show (Rob, 2026-11-21): co-hosted shows first, then the
+// shows he edits, then guest appearances grouped by show. Each of his own shows
+// comes from a show-header row in the Sheet (link + intro) and lists its
+// episodes oldest first, in series order.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import BylinesHeader from '../../../components/BylinesHeader.astro';
+import FeaturedStrip from '../../../components/FeaturedStrip.astro';
+import BylineRow from '../../../components/BylineRow.astro';
+import { slugify as slug } from '../../../lib/content';
+import { bylines, ownShows, sectionInfo, yearSpan, type Byline } from '../../../lib/bylines';
+
+const s = sectionInfo('podcasts');
+const episodes = bylines.podcasts;
+const own = ownShows().map((h) => {
+    const eps = episodes.filter((e) => e.show === h.show).sort((a, b) => a.date.localeCompare(b.date));
+    return { ...h, eps, span: yearSpan(eps) };
+  });
+
+const ownNames = new Set(own.map((h) => h.show));
+const guestMap = new Map<string, Byline[]>();
+for (const e of episodes.filter((e) => !ownNames.has(e.show!))) {
+  guestMap.set(e.show!, [...(guestMap.get(e.show!) ?? []), e]);
+}
+const guests = [...guestMap.entries()]
+  .map(([show, eps]) => ({ show, eps, outlet: eps[0].outlet, latest: eps[0].date }))
+  .sort((a, b) => b.latest.localeCompare(a.latest));
+const guestCount = guests.reduce((n, g) => n + g.eps.length, 0);
+const featured = episodes.filter((b) => b.featured);
+---
+<BaseLayout title="Podcasts · Bylines" section={s.color} description={`Rob Mitchum's podcast work: ${own.map((h) => h.show).join(', ')}, and guest appearances.`}>
+  <div class="wrap" style={`--section:${s.color};--section-text:${s.text};--pod-text:${s.podText}`}>
+    <BylinesHeader current="podcasts" title="Podcasts" meta={`${episodes.length} episodes, ${yearSpan(episodes)}`} color={s.text}>
+      <div slot="intro" class="intro-block">
+        <p class="intro placeholder">[A line introducing your podcast work.]</p>
+        <nav class="jump" aria-label="Shows">
+          {own.map((h) => <a href={`#${slug(h.show)}`}>{h.show}</a>)}
+          <a href="#guest">Guest appearances</a>
+        </nav>
+      </div>
+    </BylinesHeader>
+
+    <FeaturedStrip items={featured} />
+
+    {own.map((h) => (
+      <section class="show" id={slug(h.show)} aria-labelledby={`${slug(h.show)}-h`}>
+        <div class="show-head">
+          <div class="show-meta">
+            <span class="pod">{h.role}</span>
+            <span>{h.outlet}</span>
+            <span>{h.span}</span>
+          </div>
+          <div class="show-body">
+            <h2 id={`${slug(h.show)}-h`}>{h.show}</h2>
+            {h.title !== h.show && <p class="sub">{h.title.replace(`${h.show}, `, '')}</p>}
+            {h.intro ? <p class="show-intro">{h.intro}</p> : <p class="show-intro placeholder">[A short intro to {h.show}.]</p>}
+            {h.url && <a class="visit" href={h.url}>Visit the show <span aria-hidden="true">→</span></a>}
+          </div>
+        </div>
+        <details>
+          <summary><span class="sum-label">{h.eps.length} episodes</span><span class="chev" aria-hidden="true"></span></summary>
+          <ul class="rows">{h.eps.map((e) => <BylineRow b={e} mode="episode" />)}</ul>
+          <div class="end-rule"></div>
+        </details>
+      </section>
+    ))}
+
+    <section class="guest" id="guest" aria-labelledby="guest-h">
+      <h2 id="guest-h" class="section-head">Guest appearances <span class="gcount">{guestCount}</span></h2>
+      {guests.map((g) => (
+        <div class="gshow">
+          <h3>{g.show}{g.outlet !== g.show && <span class="gout">{g.outlet}</span>}</h3>
+          <ul class="rows">{g.eps.map((e) => <BylineRow b={e} mode="episode" />)}</ul>
+        </div>
+      ))}
+      <div class="end-rule"></div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  // Opening a show from the jump links (or a #link) expands its episode list.
+  function openFromHash() {
+    const el = location.hash && document.getElementById(location.hash.slice(1));
+    const d = el && el.querySelector('details');
+    if (d) d.open = true;
+  }
+  addEventListener('hashchange', openFromHash);
+  openFromHash();
+</script>
+
+<style>
+  .intro-block { display: flex; flex-direction: column; gap: 18px; }
+  .placeholder { color: var(--muted); }
+  .jump { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 15px; font-weight: 800; }
+  .jump a { color: var(--section-text); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  .show { margin: 0 0 56px; scroll-margin-top: 24px; }
+  .show-head { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 24px; padding-top: 32px; border-top: 8px solid var(--section); margin-bottom: 24px; }
+  .show-meta { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; font-size: 13px; }
+  .pod { color: var(--pod-text); }
+  .show-body { display: flex; flex-direction: column; gap: 12px; }
+  .show-body h2 { margin: 0; font-size: 48px; }
+  .sub { margin: 0; font-size: 18px; font-weight: 800; color: var(--section-text); }
+  .show-intro { margin: 0; font-size: 18px; line-height: 1.5; max-width: 60ch; }
+  .visit { align-self: flex-start; font-weight: 800; font-size: 15px; padding: 10px 20px; border-radius: 999px; background: var(--section); color: var(--pod-text); }
+  .visit:hover { background: var(--ink); color: #fff; }
+  details { margin-left: 164px; }
+  summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 12px; font-weight: 800; font-size: 15px; padding: 10px 20px; min-height: 44px; border-radius: 999px; border: 2px solid var(--ink); margin-bottom: 16px; }
+  summary::-webkit-details-marker { display: none; }
+  summary:hover { background: #fff; }
+  .chev { width: 10px; height: 10px; border-right: 2.5px solid var(--ink); border-bottom: 2.5px solid var(--ink); transform: rotate(45deg) translateY(-3px); transition: transform 0.15s; }
+  details[open] .chev { transform: rotate(-135deg) translate(-2px, -2px); }
+  details[open] summary .sum-label::before { content: 'Hide '; }
+  details:not([open]) summary .sum-label::before { content: 'Show all '; }
+  .rows { padding: 0; margin: 0; }
+  .end-rule { border-top: 2px solid var(--ink); }
+  .guest { margin-top: 80px; }
+  .gcount { font-weight: 400; font-size: 0.5em; vertical-align: 0.4em; }
+  .gshow { margin-bottom: 32px; }
+  .gshow h3 { margin: 0 0 12px; font-size: 24px; display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; }
+  .gout { font-size: 13px; font-weight: 400; letter-spacing: 0; }
+  @media (max-width: 720px) {
+    .show-head { grid-template-columns: 1fr; gap: 12px; }
+    .show-meta { flex-direction: row; flex-wrap: wrap; align-items: center; }
+    .show-body h2 { font-size: 36px; }
+    details { margin-left: 0; }
+  }
+</style>

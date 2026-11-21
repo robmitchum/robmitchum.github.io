@@ -1,38 +1,56 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
-import { fmtDate } from '../../lib/content';
-const all = (await getCollection('bylines')).sort((a, b) => +b.data.date - +a.data.date);
-const sections = [
-  { id: 'music', label: 'Music', color: 'var(--music)' },
-  { id: 'science', label: 'Science', color: 'var(--science)' },
-  { id: 'other', label: 'Other', color: 'var(--other)' },
-] as const;
+import BylinesHeader from '../../components/BylinesHeader.astro';
+import BylineRow from '../../components/BylineRow.astro';
+import SectionIcon from '../../components/SectionIcon.astro';
+import { SECTIONS, bylines, allBylines, countBy, yearSpan, ownShows } from '../../lib/bylines';
+const recent = allBylines().slice(0, 10);
+const cards = SECTIONS.map((s) => {
+  const items = bylines[s.id];
+  const top = s.id === 'podcasts'
+    ? ownShows().map((h) => h.show)
+    : countBy(items, (b) => b.outlet).slice(0, 3).map(([o]) => o);
+  return { ...s, n: items.length, span: yearSpan(items), top };
+});
 ---
-<BaseLayout title="Bylines" section="var(--bylines)" description="Rob Mitchum's writing and podcast work.">
+<BaseLayout title="Bylines" section="var(--bylines)" description="Rob Mitchum's published writing and podcast work: music, science, news and podcasts.">
   <div class="wrap">
-    <h1 class="page-title">Bylines</h1>
-    {sections.map((s) => {
-      const items = all.filter((b) => b.data.section === s.id);
-      return (
-        <section id={s.id} style={`--section:${s.color}`}>
-          <h2 class="section-head">{s.label}</h2>
-          {items.length ? (
-            <ul class="list">{items.map((b) => (
-              <li><a href={b.data.url}><span class="date">{fmtDate(b.data.date)}</span><span class="t">{b.data.title}</span><span class="o">{b.data.outlet}</span></a></li>
-            ))}</ul>
-          ) : <p class="stub"><strong>{s.label} bylines</strong> go here in Phase 4.</p>}
-        </section>
-      );
-    })}
+    <BylinesHeader title="Bylines" meta="Writing and podcasts" color="var(--bylines-text)">
+      <p slot="intro" class="intro placeholder">[A line introducing your published writing and podcast work.]</p>
+    </BylinesHeader>
+
+    <ul class="sections">
+      {cards.map((c) => (
+        <li>
+          <a class="card" href={`/bylines/${c.id}/`} style={`--section:${c.color};--section-text:${c.text}`}>
+            <span class="top"><SectionIcon name={c.id} size={56} /><span class="count">{c.n.toLocaleString('en-US')}</span></span>
+            <span class="name">{c.label}</span>
+            <span class="facts"><span>{c.span}</span><span>{c.top.join(' · ')}</span></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <section class="recent" style="--section: var(--bylines)">
+      <h2 class="section-head">Recent</h2>
+      <ul class="rows">{recent.map((b) => <BylineRow b={b} mode="hub" />)}</ul>
+      <div class="end-rule"></div>
+    </section>
   </div>
 </BaseLayout>
+
 <style>
-  .page-title { font-size: clamp(40px, 7vw, 76px); margin: 72px 0 24px; }
-  section { margin-bottom: 56px; }
-  .list { list-style: none; padding: 0; margin: 0; }
-  .list a { display: grid; grid-template-columns: 116px minmax(0, 1fr); gap: 4px 20px; padding: 18px 0; border-top: 2px solid var(--ink); }
-  .t { font-size: 22px; font-weight: 800; }
-  .o { grid-column: 2; }
-  .date { grid-row: span 2; font-size: 13px; }
+  .placeholder { color: var(--muted); }
+  .sections { list-style: none; padding: 0; margin: 0 0 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 24px; }
+  .sections li { display: flex; }
+  .card { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 28px; border-radius: 28px; border: 2px solid var(--ink); background: #fff; border-top: 12px solid var(--section); }
+  .card:hover { color: var(--ink); }
+  .card:hover .name { color: var(--section-text); }
+  .top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .count { font-size: 40px; font-weight: 800; line-height: 1; }
+  .name { font-size: 32px; font-weight: 800; line-height: 1; }
+  .facts { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+  .facts span:first-child { font-weight: 800; }
+  .rows { padding: 0; margin: 0; }
+  .end-rule { border-top: 2px solid var(--ink); }
 </style>

@@ -1,0 +1,10 @@
+{
+  "_about": "Headlines that start with a quotation mark lose it in the Sheet (a leading ' means 'keep as text'). Key = headline as the Sheet holds it; value = the real headline. Retyping the headline in the Sheet with two apostrophes ('') fixes it there too, and the entry here then matches nothing.",
+  "headlines": {
+    "My team' gets a new meaning: 107,000 fans couldn't be wrong now -- could they?": "'My team' gets a new meaning: 107,000 fans couldn't be wrong now -- could they?",
+    "Marquette 10' reference key, FBI special agent says": "'Marquette 10' reference key, FBI special agent says",
+    "Vivacious' teen is fatally shot: Another slain, 4 hurt in holiday violence": "'Vivacious' teen is fatally shot: Another slain, 4 hurt in holiday violence",
+    "Chicago 10' illustrates tumult of 1968 convention clashes: Film, set to open nationwide on Friday, uses animation to recreate high-profile trial": "'Chicago 10' illustrates tumult of 1968 convention clashes: Film, set to open nationwide on Friday, uses animation to recreate high-profile trial",
+    "I was prepared for that to be my last moment': Attacker fired wordlessly into a mass of students": "'I was prepared for that to be my last moment': Attacker fired wordlessly into a mass of students"
+  }
+}

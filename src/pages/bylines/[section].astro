@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BylinesHeader from '../../components/BylinesHeader.astro';
+import FeaturedStrip from '../../components/FeaturedStrip.astro';
+import BylineList from '../../components/BylineList.astro';
+import { SECTIONS, bylines, countBy, yearSpan, type SectionId } from '../../lib/bylines';
+
+export function getStaticPaths() {
+  // Podcasts has its own page, organized by show (bylines/podcasts/index.astro).
+  return SECTIONS.filter((s) => s.id !== 'podcasts').map((s) => ({ params: { section: s.id } }));
+}
+const id = Astro.params.section as SectionId;
+const s = SECTIONS.find((x) => x.id === id)!;
+const items = bylines[id];
+const featured = items.filter((b) => b.featured);
+const outlets = countBy(items, (b) => b.outlet);
+---
+<BaseLayout title={`${s.label} · Bylines`} section={s.color} description={`Rob Mitchum's ${s.label.toLowerCase()} bylines: ${items.length} pieces, ${yearSpan(items)}.`}>
+  <div class="wrap" style={`--section:${s.color};--section-text:${s.text};--pod-text:${s.podText}`}>
+    <BylinesHeader current={id} title={s.label} meta={`${items.length.toLocaleString('en-US')} pieces, ${yearSpan(items)}`} color={s.text}>
+      <div slot="intro" class="intro-block">
+        <p class="intro placeholder">[A line introducing your {s.label.toLowerCase()} writing.]</p>
+        <p class="outlets">{outlets.map(([o, n], i) => <span>{o} <span class="n">{n}</span>{i < outlets.length - 1 ? ' · ' : ''}</span>)}</p>
+      </div>
+    </BylinesHeader>
+    <FeaturedStrip items={featured} />
+    <BylineList items={items} label={s.label} />
+  </div>
+</BaseLayout>
+
+<style>
+  .intro-block { display: flex; flex-direction: column; gap: 14px; }
+  .placeholder { color: var(--muted); }
+  .outlets { margin: 0; font-size: 14px; max-width: 80ch; }
+  .outlets .n { font-weight: 800; }
+</style>

@@ -33,17 +33,7 @@ const blog = defineCollection({
   }),
 });
 
-// Bylines: one entry per published piece elsewhere (Phase 4).
-const bylines = defineCollection({
-  loader: glob({ pattern: '**/*.{yaml,yml,json}', base: './src/content/bylines' }),
-  schema: z.object({
-    title: z.string(),
-    outlet: z.string(),
-    url: z.string().url(),
-    date: z.coerce.date(),
-    section: z.enum(['music', 'science', 'other']),
-    format: z.enum(['article', 'podcast', 'video', 'other']).default('article'),
-  }),
-});
+// Bylines are not a content collection: they live in src/data/bylines/*.json,
+// written from the clips Sheet by `npm run bylines` (see src/lib/bylines.ts).
 
-export const collections = { phishcrit, blog, bylines };
+export const collections = { phishcrit, blog };

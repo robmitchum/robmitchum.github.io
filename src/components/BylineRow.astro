@@ -1,0 +1,48 @@
+---
+import SectionIcon from './SectionIcon.astro';
+import { type Byline, sectionInfo, fmtIso, year, episodeTitle } from '../lib/bylines';
+interface Props { b: Byline; mode?: 'hub' | 'section' | 'episode' }
+const { b, mode = 'section' } = Astro.props;
+const s = sectionInfo(b.section);
+const Tag = b.url ? 'a' : 'div';
+const title = mode === 'episode' ? episodeTitle(b) : b.title;
+---
+<li class="byline" data-outlet={b.outlet} data-year={year(b.date)} data-format={b.format} data-q={`${b.title} ${b.outlet} ${b.artist ?? ''} ${b.show ?? ''}`.toLowerCase()}>
+  <Tag class="row" href={b.url ?? undefined} style={mode === 'hub' ? `--section:${s.color};--section-text:${s.text};--pod-text:${s.podText}` : undefined}>
+    <span class="meta">
+      <span>{fmtIso(b.date)}</span>
+      {mode !== 'episode' && <span class="outlet">{b.outlet}</span>}
+    </span>
+    <span class="main">
+      {mode === 'hub' && <SectionIcon name={b.section} size={40} />}
+      <span class="t">{title}{!b.url && <span class="offline">Not online</span>}</span>
+    </span>
+    <span class="pods">
+      {b.accolade && <span class="pod">{b.accolade}</span>}
+      {mode === 'hub'
+        ? <span class="pod">{s.label}</span>
+        : mode === 'section' && <span class="pod pod--outline">{b.format}</span>}
+    </span>
+  </Tag>
+</li>
+
+<style>
+  .byline { list-style: none; }
+  .row { display: grid; grid-template-columns: 140px minmax(0, 1fr) auto; gap: 8px 24px; align-items: center; padding: 20px 0; border-top: 2px solid var(--ink); }
+  a.row:hover .t { color: var(--section-text); }
+  .meta { display: flex; flex-direction: column; font-size: 13px; line-height: 1.3; }
+  .outlet { font-weight: 800; }
+  .main { display: flex; align-items: center; gap: 16px; min-width: 0; }
+  .main :global(.section-icon) { flex: 0 0 auto; }
+  .t { font-size: 22px; font-weight: 800; line-height: 1.2; overflow-wrap: anywhere; }
+  .offline { display: inline-block; margin-left: 10px; font-size: 12px; font-weight: 400; color: var(--muted); vertical-align: 3px; }
+  .pods { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+  .pod { color: var(--pod-text); white-space: nowrap; }
+  .pod--outline { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); font-weight: 400; }
+  @media (max-width: 720px) {
+    .row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+    .meta { flex-direction: row; gap: 10px; }
+    .pods { justify-content: flex-start; }
+    .t { font-size: 19px; }
+  }
+</style>
