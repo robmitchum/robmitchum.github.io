@@ -8,16 +8,16 @@ each show's header row, starting with "Intro:").
 -->
 
 ## Bylines
-
+My work for magazines, podcasts, universities, and newspapers.
 
 ## Music
-
+Album reviews, profiles, and features for Pitchfork, Uncut, Paste, and others.
 
 ## Science
-
+News stories and features on research at Northwestern University, University of Illinois Chicago, and the University of Chicago.
 
 ## News
-
+Newspaper articles and other news stories for the Chicago Tribune and others.
 
 ## Podcasts
-
+Audio shows where I am the co-host, editor, or featured guest.
