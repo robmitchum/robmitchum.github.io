@@ -10,9 +10,10 @@
 
   /* Color by function */
   --bylines: #0072BC;  --bylines-text: #005A9C;  --bylines-light: #8CC4E8;
-  --music: #6B3FA0;
-  --science: #00A651;
-  --other: #E5007E;
+  --music: #6B3FA0;    --music-light: #B39DDB;
+  --science: #00A651;  --science-text: #007A3D;  --science-light: #8FD19E;
+  --news: #E5007E;     --news-text: #B3006A;     --news-light: #F59AC8;   /* was "Other" (renamed 2026-11-18) */
+  --podcasts: #00A3AD; --podcasts-text: #00737A; --podcasts-light: #8ED6DA;
   --phishcrit: #E2231A;
   --blog: #F58220;     --blog-light: #FBC08A;
   --projects: #FFC20E; --projects-dark: #E0A800; --projects-light: #FFD54F;

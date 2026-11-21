@@ -1,0 +1,869 @@
+{
+ "shows": [
+  {
+   "show": "Insight Unpacked",
+   "title": "Insight Unpacked, Season 3: Can We Still Build a Green Economy?",
+   "url": "https://insight.kellogg.northwestern.edu/podcasts/unpacked",
+   "role": "Editor",
+   "outlet": "Kellogg Insight",
+   "since": "2026-04-26",
+   "intro": "Miniseries that dive into complex business topics and emerge with insights from Kellogg School faculty."
+  },
+  {
+   "show": "36FTVQ",
+   "title": "36FTVQ",
+   "url": "https://stevenhyden.substack.com/t/36ftvq",
+   "role": "Co-host",
+   "outlet": "Evil Speakers",
+   "since": "2026-01-14",
+   "intro": "Steven Hyden and I continue dissecting Grateful Dead live releases focusing on the Dave's Picks series."
+  },
+  {
+   "show": "The Insightful Leader",
+   "title": "The Insightful Leader",
+   "url": "https://insight.kellogg.northwestern.edu/podcasts/the-insightful-leader",
+   "role": "Editor",
+   "outlet": "Kellogg Insight",
+   "since": "2025-05-13",
+   "intro": "The flagship podcast for the latest research and ideas from the faculty of the Kellogg School of Management at Northwestern University."
+  },
+  {
+   "show": "36 From the Vault",
+   "title": "36 From the Vault",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/",
+   "role": "Co-host",
+   "outlet": "Osiris",
+   "since": "2020-01-06",
+   "intro": "Steven Hyden and I explore the history of the Grateful Dead via the Dick's Picks series of archival live releases."
+  }
+ ],
+ "episodes": [
+  {
+   "title": "36FTVQ: Summer Magic 1985",
+   "outlet": "Evil Speakers",
+   "date": "2026-10-14",
+   "format": "Podcast",
+   "url": "https://stevenhyden.substack.com/p/36ftvq-summer-magic-1985",
+   "featured": true,
+   "artist": "Grateful Dead",
+   "work": "Summer Magic 1985",
+   "show": "36FTVQ",
+   "role": "Co-host"
+  },
+  {
+   "title": "36FTVQ: Dave's Picks Vol. 59",
+   "outlet": "Evil Speakers",
+   "date": "2026-09-02",
+   "format": "Podcast",
+   "url": "https://stevenhyden.substack.com/p/36ftvq-daves-picks-vol-57-b88",
+   "artist": "Grateful Dead",
+   "work": "Dave's Picks Vol. 59",
+   "show": "36FTVQ",
+   "role": "Co-host"
+  },
+  {
+   "title": "S3E5 | Electricity Was Supposed to Save Us. Will It Doom Us Instead?",
+   "outlet": "Kellogg Insight",
+   "date": "2026-07-02",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/podcast-electricity-was-supposed-to-save-us-will-it-doom-us-instead",
+   "show": "Insight Unpacked",
+   "role": "Editor"
+  },
+  {
+   "title": "S3E4 | Does Climate Policy Stand A Chance?",
+   "outlet": "Kellogg Insight",
+   "date": "2026-06-05",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/podcast-does-climate-policy-stand-a-chance",
+   "show": "Insight Unpacked",
+   "role": "Editor"
+  },
+  {
+   "title": "S3E3 | Why Wall Street Slowed Its Roll on Sustainability",
+   "outlet": "Kellogg Insight",
+   "date": "2026-05-21",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/podcast-why-wall-street-slowed-its-roll-on-sustainability",
+   "show": "Insight Unpacked",
+   "role": "Editor"
+  },
+  {
+   "title": "36FTVQ: Dave's Picks Vol. 58",
+   "outlet": "Evil Speakers",
+   "date": "2026-05-12",
+   "format": "Podcast",
+   "url": "https://stevenhyden.substack.com/p/36ftvq-daves-picks-vol-58",
+   "artist": "Grateful Dead",
+   "work": "Dave's Picks Vol. 58",
+   "show": "36FTVQ",
+   "role": "Co-host"
+  },
+  {
+   "title": "S3E2 | Why Companies Can't Keep Their Climate Commitments",
+   "outlet": "Kellogg Insight",
+   "date": "2026-05-08",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/podcast-why-companies-cant-keep-their-climate-commitments",
+   "show": "Insight Unpacked",
+   "role": "Editor"
+  },
+  {
+   "title": "S3E1 | The Climate Crisis Is Here. Will We Ever Fix It?",
+   "outlet": "Kellogg Insight",
+   "date": "2026-04-26",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/s3e1-the-climate-crisis-is-here-will-we-ever-fix-it",
+   "show": "Insight Unpacked",
+   "role": "Editor"
+  },
+  {
+   "title": "When It Comes to Biases, AI's Only Human",
+   "outlet": "Kellogg Insight",
+   "date": "2026-04-16",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/podcast-when-it-comes-to-biases-ais-only-human",
+   "show": "The Insightful Leader",
+   "role": "Editor"
+  },
+  {
+   "title": "Automation, Answers, and Advice—a Playbook for AI Adoption",
+   "outlet": "Kellogg Insight",
+   "date": "2026-03-10",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/podcast-automation-answers-and-advice-a-playbook-for-ai-adoption",
+   "show": "The Insightful Leader",
+   "role": "Editor"
+  },
+  {
+   "title": "The Global Trends Shaping the Way We Do Business",
+   "outlet": "Kellogg Insight",
+   "date": "2026-02-23",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/podcast-the-global-trends-shaping-the-way-we-do-business",
+   "show": "The Insightful Leader",
+   "role": "Editor"
+  },
+  {
+   "title": "36FTVQ: Dave's Picks Vol. 57",
+   "outlet": "Evil Speakers",
+   "date": "2026-02-12",
+   "format": "Podcast",
+   "url": "https://stevenhyden.substack.com/p/36ftvq-daves-picks-vol-57",
+   "artist": "Grateful Dead",
+   "work": "Dave's Picks Vol. 57",
+   "show": "36FTVQ",
+   "role": "Co-host"
+  },
+  {
+   "title": "Wilco the Podcast: Rob Mitchum Sets the Record Straight on Dad Rock",
+   "outlet": "Wilco the Podcast",
+   "date": "2026-02-11",
+   "format": "Podcast",
+   "url": "https://podcasts.apple.com/us/podcast/rob-mitchum-sets-the-record-straight-on-dad-rock/id1667171387?i=1000749248386",
+   "featured": true,
+   "artist": "Wilco",
+   "show": "Wilco the Podcast",
+   "role": "Guest"
+  },
+  {
+   "title": "How Do Those Valentine's Day Roses End Up in Your Bouquet? It's Complicated.",
+   "outlet": "Kellogg Insight",
+   "date": "2026-02-09",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/podcast-how-do-those-valentines-day-roses-end-up-in-your-bouquet-its-complicated",
+   "show": "The Insightful Leader",
+   "role": "Editor"
+  },
+  {
+   "title": "The Authentic Appeal of Influencer Marketing",
+   "outlet": "Kellogg Insight",
+   "date": "2026-01-24",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/podcast-calkins-influencers",
+   "show": "The Insightful Leader",
+   "role": "Editor"
+  },
+  {
+   "title": "36FTVQ: The 36FTV Bob Weir Tribute Special",
+   "outlet": "Evil Speakers",
+   "date": "2026-01-14",
+   "format": "Podcast",
+   "url": "https://stevenhyden.substack.com/p/the-36ftv-bob-weir-tribute-special",
+   "artist": "Bob Weir",
+   "show": "36FTVQ",
+   "role": "Co-host"
+  },
+  {
+   "title": "Focus on Your Story, Not Your Résumé",
+   "outlet": "Kellogg Insight",
+   "date": "2025-12-05",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/podcast-focus-on-your-story-not-your-résumé",
+   "show": "The Insightful Leader",
+   "role": "Editor"
+  },
+  {
+   "title": "I Respectfully Disagree",
+   "outlet": "Kellogg Insight",
+   "date": "2025-11-23",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/podcast-i-respectfully-disagree",
+   "show": "The Insightful Leader",
+   "role": "Editor"
+  },
+  {
+   "title": "Helping Friendly Podcast: Rob Mitchum",
+   "outlet": "Helping Friendly Podcast (Osiris)",
+   "date": "2025-11-10",
+   "format": "Podcast",
+   "url": "https://podcasts.apple.com/dk/podcast/rob-mitchum/id660686469?i=1000736178401",
+   "artist": "Phish",
+   "show": "Helping Friendly Podcast",
+   "role": "Guest"
+  },
+  {
+   "title": "In Workplace Negotiations, Put the Relationship First",
+   "outlet": "Kellogg Insight",
+   "date": "2025-11-07",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/podcast-in-workplace-negotiations-put-the-relationship-first",
+   "show": "The Insightful Leader",
+   "role": "Editor"
+  },
+  {
+   "title": "Never Ending Stories: RIP Donna Jean",
+   "outlet": "Never Ending Stories",
+   "date": "2025-11-07",
+   "format": "Podcast",
+   "url": "https://www.patreon.com/neverendingstories/posts/rip-donna-jean-142910668",
+   "artist": "Donna Jean Godchaux",
+   "show": "Never Ending Stories",
+   "role": "Guest"
+  },
+  {
+   "title": "Managing Layoffs without Compromising Your Morals",
+   "outlet": "Kellogg Insight",
+   "date": "2025-10-29",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/podcast-managing-layoffs-without-compromising-your-morals",
+   "show": "The Insightful Leader",
+   "role": "Editor"
+  },
+  {
+   "title": "When We Get Too Comfortable, It's Tough to Take Flight",
+   "outlet": "Kellogg Insight",
+   "date": "2025-10-13",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/podcast-when-we-get-too-comfortable-its-tough-to-take-flight",
+   "show": "The Insightful Leader",
+   "role": "Editor"
+  },
+  {
+   "title": "How to Stay Resilient in the Face of a Major Setback",
+   "outlet": "Kellogg Insight",
+   "date": "2025-06-12",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/podcast-how-to-stay-resilient-in-the-face-of-a-major-setback",
+   "show": "The Insightful Leader",
+   "role": "Editor"
+  },
+  {
+   "title": "Preventing a Potential Culture Clash at Work",
+   "outlet": "Kellogg Insight",
+   "date": "2025-05-13",
+   "format": "Podcast",
+   "url": "https://insight.kellogg.northwestern.edu/article/podcast-preventing-a-potential-culture-clash-at-work",
+   "show": "The Insightful Leader",
+   "role": "Editor"
+  },
+  {
+   "title": "Who Cares About the Rock Hall?: Phish w/ Rob Mitchum",
+   "outlet": "Who Cares About the Rock Hall? (Pantheon Podcasts)",
+   "date": "2025-03-21",
+   "format": "Podcast",
+   "url": "https://podcasts.apple.com/us/podcast/phish-w-rob-mitchum/id1372323455?i=1000700221043",
+   "featured": true,
+   "artist": "Phish",
+   "show": "Who Cares About the Rock Hall?",
+   "role": "Guest"
+  },
+  {
+   "title": "Never Ending Stories: RIP Phil Lesh",
+   "outlet": "Never Ending Stories",
+   "date": "2024-10-26",
+   "format": "Podcast",
+   "url": "https://www.patreon.com/neverendingstories/posts/rip-phil-lesh-114767807",
+   "artist": "Phil Lesh",
+   "show": "Never Ending Stories",
+   "role": "Guest"
+  },
+  {
+   "title": "Never Ending Stories: NES 022: Bob Dylan LIVE in Milwaukee 2023 with Rob Mitchum",
+   "outlet": "Never Ending Stories",
+   "date": "2023-10-19",
+   "format": "Podcast",
+   "url": "https://www.patreon.com/neverendingstories/posts/nes-022-bob-live-91221307",
+   "artist": "Bob Dylan",
+   "work": "Milwaukee, 2023",
+   "show": "Never Ending Stories",
+   "role": "Guest"
+  },
+  {
+   "title": "Never Ending Stories: NES 016: Bob Dylan & The Grateful Dead LIVE, 7/19/87 with Rob Mitchum",
+   "outlet": "Never Ending Stories",
+   "date": "2023-07-29",
+   "format": "Podcast",
+   "url": "https://www.patreon.com/neverendingstories/posts/nes-016-bob-dead-86841623",
+   "artist": "Bob Dylan & The Grateful Dead",
+   "work": "7/19/87, Autzen Stadium, Eugene, OR",
+   "show": "Never Ending Stories",
+   "role": "Guest"
+  },
+  {
+   "title": "36 From the Vault: Smartwool Presents—Comfort Listens: MSG 80s Release",
+   "outlet": "Osiris",
+   "date": "2022-12-01",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-smartwool-presents-comfort-listens-msg-80s-release/",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Smartwool Presents—Comfort Listens: Goose + Trey at Radio City",
+   "outlet": "Osiris",
+   "date": "2022-11-29",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-smartwool-presents-comfort-listens-goose-trey-at-radio-city/",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Smartwool Presents—Comfort Listens: Legion of Mary 4/19/75",
+   "outlet": "Osiris",
+   "date": "2022-11-29",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-smartwool-presents-comfort-listens-legion-of-mary-4-19-75/",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Smartwool Presents—Comfort Listens: PhilCo at Sacred Rose",
+   "outlet": "Osiris",
+   "date": "2022-11-28",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-smartwool-presents-comfort-listens-philco-at-sacred-rose/",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 36 — 9/21/72 Philadelphia, PA",
+   "outlet": "Osiris",
+   "date": "2022-08-15",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-36-9-21-72-philadelphia-pa/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 36",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 35 — 8/7/71 + 8/24/71 + 8/6/71",
+   "outlet": "Osiris",
+   "date": "2022-08-01",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-35-8-7-71-8-24-71-8-6-71-san-diego-ca-chicago-il-hollywood-ca/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 35",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 34 — 11/5/77 Rochester, NY",
+   "outlet": "Osiris",
+   "date": "2022-07-18",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-34-11-5-77-rochester-ny/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 34",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 33 — 10/9-10/76 Oakland, CA",
+   "outlet": "Osiris",
+   "date": "2022-07-04",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-33-10-9-10-76-oakland-ca/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 33",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Where The Light Is: Let's Talk About John Mayer",
+   "outlet": "Osiris",
+   "date": "2022-06-20",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-where-the-light-is-lets-talk-about-john-mayer/",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "Helping Friendly Podcast ON TOUR: 6/13-14/97: Summer Europe Tour Opener w/ Rob Mitchum",
+   "outlet": "Helping Friendly Podcast (Osiris)",
+   "date": "2022-06-13",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/episode/helping-friendly-podcast-on-tour-6-13-14-97-summer-europe-tour-opener-w-rob-mitchum/",
+   "artist": "Phish",
+   "work": "6/13-14/97, Dublin",
+   "show": "Helping Friendly Podcast",
+   "role": "Guest"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 32 — 08/07/82 East Troy, WI",
+   "outlet": "Osiris",
+   "date": "2022-06-06",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-32-08-07-82-east-troy-wi/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 32",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 31 — 08/04-08/05/74 & 08/06/74 Philadelphia, PA / Jersey City, NJ",
+   "outlet": "Osiris",
+   "date": "2022-05-23",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-31-08-04-08-05-74-08-06-74-philadelphia-pa-jersey-city-nj/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 31",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 30 — 03/25-28/72, New York City, NY",
+   "outlet": "Osiris",
+   "date": "2022-05-09",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-30-03-25-28-72-new-york-city-ny/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 30",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 29 — 05/19/77 & 05/21/77, Atlanta, GA / Lakeland, FL",
+   "outlet": "Osiris",
+   "date": "2022-04-25",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-29-05-19-77-05-21-77-atlanta-ga-lakeland-fl/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 29",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 28 — 02/26/73 & 02/28/73, Lincoln, NE / Salt Lake City, UT",
+   "outlet": "Osiris",
+   "date": "2022-04-11",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-28-02-26-73-02-28-73-lincoln-ne-salt-lake-city-ut/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 28",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Live Tour Rehearsals #3: Season 4 Preview",
+   "outlet": "Osiris",
+   "date": "2022-03-31",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-live-tour-rehearsals-3-season-4-preview/",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Live Tour Rehearsals #2: Season 4 Curveball Options",
+   "outlet": "Osiris",
+   "date": "2022-03-29",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-live-tour-rehearsals-2-season-4-curveball-options/",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Live Tour Rehearsals #1: Drafting Dick's Picks",
+   "outlet": "Osiris",
+   "date": "2022-03-28",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-live-tour-rehearsals-1-drafting-dicks-picks/",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "Rock Docs: Bittersweet Motel (Phish) Featuring Rob Mitchum",
+   "outlet": "Rock Docs",
+   "date": "2021-12-28",
+   "format": "Podcast",
+   "url": "https://rockdocspod.libsyn.com/bittersweet-motel-phish-featuring-rob-mitchum",
+   "artist": "Phish",
+   "work": "Bittersweet Motel",
+   "show": "Rock Docs",
+   "role": "Guest"
+  },
+  {
+   "title": "36 From the Vault: (36FTV Bonus) Josh's Picks – Chicago, IL, 9/17-18/21",
+   "outlet": "Osiris",
+   "date": "2021-09-27",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-36ftv-bonus-joshs-picks-chicago-il-9-17-18-21/",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 27 — 12/16/92, Oakland, CA",
+   "outlet": "Osiris",
+   "date": "2021-07-26",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-27-12-16-92-oakland-ca/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 27",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 26 — 04/26-27/69, Chicago, IL & Minneapolis, MN",
+   "outlet": "Osiris",
+   "date": "2021-07-12",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-26-04-26-27-69-chicago-il-minneapolis-mn/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 26",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 25 — 05/10-11/78, New Haven, CT & Springfield, MA",
+   "outlet": "Osiris",
+   "date": "2021-06-28",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-25-05-10-11-78-new-haven-ct-springfield-ma/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 25",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 24 — 03/23/74, Daly City, CA",
+   "outlet": "Osiris",
+   "date": "2021-06-14",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-24-03-23-74-daly-city-ca/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 24",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 23 — 09/17/72, Baltimore, MD",
+   "outlet": "Osiris",
+   "date": "2021-05-31",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-23-09-17-72-baltimore-md/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 23",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Play It F***ing Loud! (Let's Talk About Bob Dylan)",
+   "outlet": "Osiris",
+   "date": "2021-05-17",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-play-it-fing-loud-lets-talk-about-bob-dylan/",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 22 — 02/23-24/68, Kings Beach, CA",
+   "outlet": "Osiris",
+   "date": "2021-05-03",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-22-02-23-24-68-kings-beach-ca/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 22",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 21 — 11/01/85, Richmond, VA",
+   "outlet": "Osiris",
+   "date": "2021-04-19",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-21-11-01-85-richmond-va/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 21",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 20 — 09/25/76 & 09/28/76, Landover, MD / Syracuse, NY",
+   "outlet": "Osiris",
+   "date": "2021-04-05",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-20-09-25-76-09-28-76-landover-md-syracuse-ny/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 20",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 19 — 10/19/73, Oklahoma City, OK",
+   "outlet": "Osiris",
+   "date": "2021-03-22",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-19-10-19-73-oklahoma-city-ok/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 19",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "Bandsplain: Phish with Rob Mitchum",
+   "outlet": "Bandsplain",
+   "date": "2021-03-04",
+   "format": "Podcast",
+   "url": "https://open.spotify.com/episode/1eJdxd5soIV2rVnsu96x6j",
+   "artist": "Phish",
+   "show": "Bandsplain",
+   "role": "Guest"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 18 — 02/03-05/78, Madison & Milwaukee, WI / Cedar Falls, IA",
+   "outlet": "Osiris",
+   "date": "2020-11-16",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-18-02-03-05-78-madison-milwaukee-wi-cedar-falls-ia/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 18",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 17 — 09/25/91, Boston, MA (w/ David Lemieux)",
+   "outlet": "Osiris",
+   "date": "2020-11-02",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-vol-17-09-25-91-boston-ma-w-david-lemieux/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 17",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 16 — 11/07-08/69, San Francisco, CA",
+   "outlet": "Osiris",
+   "date": "2020-10-19",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-16-11-07-08-69-san-francisco-ca/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 16",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Blame It On The Dark Star (Let's Talk About Radiohead)",
+   "outlet": "Osiris",
+   "date": "2020-10-05",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-blame-it-on-the-dark-star-lets-talk-about-radiohead/",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 15 — 09/03/77, Englishtown, NJ",
+   "outlet": "Osiris",
+   "date": "2020-09-21",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-15-09-03-77-englishtown-nj/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 15",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 14 — 11/30-12/2/73, Boston, MA",
+   "outlet": "Osiris",
+   "date": "2020-09-07",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-14-11-30-12-2-73-boston-ma/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 14",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 13 — 05/06/81, Uniondale, NY",
+   "outlet": "Osiris",
+   "date": "2020-08-24",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-13-05-06-81-uniondale-ny/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 13",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "Dad Rocks!: What Is Dad Rock? An Interview With Rob Mitchum",
+   "outlet": "Dad Rocks!",
+   "date": "2020-08-16",
+   "format": "Podcast",
+   "url": "https://dadrocks.podbean.com/e/what-is-dad-rock-an-interview-with-rob-mitchum/",
+   "show": "Dad Rocks!",
+   "role": "Guest"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 12 — 06/26-28/74, Providence, RI & Boston, MA",
+   "outlet": "Osiris",
+   "date": "2020-08-10",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-12-06-26-28-74-providence-ri-boston-ma/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 12",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 11 — 9/27/72, Jersey City, NJ",
+   "outlet": "Osiris",
+   "date": "2020-07-27",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-11-9-27-72-jersey-city-nj/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 11",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 10 — 12/29-30/77, San Francisco, CA",
+   "outlet": "Osiris",
+   "date": "2020-07-13",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-10-12-29-30-77-san-francisco-ca/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 10",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 9 — 9/16/90, New York City, NY",
+   "outlet": "Osiris",
+   "date": "2020-05-18",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-9-9-16-90-new-york-city-ny/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 9",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 8 — 5/2/70, Binghamton, NY",
+   "outlet": "Osiris",
+   "date": "2020-05-04",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-8-5-2-70-binghamton-ny/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 8",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 7 — 09/09-11/74, London, ENG",
+   "outlet": "Osiris",
+   "date": "2020-04-15",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-7-09-09-11-74-london-eng/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 7",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: The Post-Jerry Void (Let's Talk About Phish)",
+   "outlet": "Osiris",
+   "date": "2020-04-08",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-the-post-jerry-void-lets-talk-about-phish/",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 6 — 10/14/83, Hartford, CT",
+   "outlet": "Osiris",
+   "date": "2020-03-25",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-6-10-14-83-hartford-ct/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 6",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 5 — 12/26/79, Oakland, CA",
+   "outlet": "Osiris",
+   "date": "2020-03-11",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-5-12-26-79-oakland-ca/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 5",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 4 — 2/13-14/70, New York, NY",
+   "outlet": "Osiris",
+   "date": "2020-02-26",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-4-2-13-14-70-new-york-ny/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 4",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 3 — 5/22/77, Pembroke Pines, FL",
+   "outlet": "Osiris",
+   "date": "2020-02-12",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-3-5-22-77-pembroke-pines-fl/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 3",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 2 — 10/31/71, Columbus, OH",
+   "outlet": "Osiris",
+   "date": "2020-01-29",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-2-10-31-71-columbus-oh/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 2",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  },
+  {
+   "title": "36 From the Vault: Dick's Picks Vol. 1 — 12/19/73, Tampa, FL",
+   "outlet": "Osiris",
+   "date": "2020-01-15",
+   "format": "Podcast",
+   "url": "https://www.osirispod.com/podcasts/36-from-the-vault/36-from-the-vault-dicks-picks-vol-1-12-19-73-tampa-fl/",
+   "artist": "Grateful Dead",
+   "work": "Dick's Picks Vol. 1",
+   "show": "36 From the Vault",
+   "role": "Co-host"
+  }
+ ]
+}

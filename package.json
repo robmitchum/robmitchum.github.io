@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "bylines": "node scripts/export-bylines.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",

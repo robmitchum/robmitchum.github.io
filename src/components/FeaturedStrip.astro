@@ -1,0 +1,47 @@
+---
+// "Selected work": the clips Rob ticked Featured in the Sheet.
+import { type Byline, sectionInfo, fmtIso } from '../lib/bylines';
+interface Props { items: Byline[]; heading?: string }
+const { items, heading = 'Selected work' } = Astro.props;
+---
+{items.length > 0 && (
+  <section class="featured" aria-labelledby="featured-h">
+    <h2 id="featured-h" class="fh">{heading}</h2>
+    <ul class="cards">
+      {items.map((b) => {
+        const s = sectionInfo(b.section);
+        const Tag = b.url ? 'a' : 'div';
+        return (
+          <li>
+            <Tag class="card" href={b.url ?? undefined} style={`--section:${s.color};--section-text:${s.text};--pod-text:${s.podText}`}>
+              <span class="lane" aria-hidden="true"></span>
+              <span class="meta"><span class="outlet">{b.outlet}</span><span>{fmtIso(b.date)}</span></span>
+              <span class="title">{b.title}</span>
+              <span class="pods">
+                <span class="pod">{b.section === 'podcasts' && b.role ? b.role : b.format}</span>
+                {b.accolade && <span class="pod pod--outline">{b.accolade}</span>}
+              </span>
+            </Tag>
+          </li>
+        );
+      })}
+    </ul>
+  </section>
+)}
+
+<style>
+  .featured { margin: 0 0 64px; }
+  .fh { margin: 0 0 20px; font-size: 14px; letter-spacing: 0; }
+  .cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px; }
+  .cards li { display: flex; }
+  .card { flex: 1; display: flex; flex-direction: column; gap: 14px; background: #fff; border: 2px solid var(--ink); border-radius: 28px; padding: 28px; }
+  a.card:hover { color: var(--ink); border-color: var(--section); }
+  a.card:hover .title { color: var(--section-text); }
+  .lane { display: block; width: 64px; height: 8px; border-radius: 4px; background: var(--section); }
+  .meta { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; }
+  .outlet { font-weight: 800; }
+  .title { font-size: 24px; font-weight: 800; line-height: 1.15; flex: 1; }
+  .pods { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pod { color: var(--pod-text); }
+  .pod--outline { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); font-weight: 400; }
+</style>

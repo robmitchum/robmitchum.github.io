@@ -1,0 +1,150 @@
+---
+// The full list for one Bylines section, with filters (search, outlet, year, format)
+// and pagination. Every row is in the HTML, so the list works without JavaScript;
+// the script below filters and pages it, and keeps the choices in the URL
+// (?outlet=Pitchfork&year=2008&page=2) so a filtered list can be linked.
+import BylineRow from './BylineRow.astro';
+import { type Byline, countBy, year } from '../lib/bylines';
+interface Props { items: Byline[]; perPage?: number; label: string }
+const { items, perPage = 50, label } = Astro.props;
+const outlets = countBy(items, (b) => b.outlet);
+const years = countBy(items, (b) => year(b.date)).sort((a, b) => b[0].localeCompare(a[0]));
+const formats = countBy(items, (b) => b.format);
+---
+<section class="blist" data-byline-list data-per-page={perPage} aria-label={`All ${label} bylines`}>
+  <h2 class="lh">All {items.length.toLocaleString('en-US')} {label.toLowerCase()} bylines</h2>
+  <form class="filters" role="search" aria-label={`Filter ${label} bylines`} hidden>
+    <label class="f f--q"><span>Search</span><input type="search" name="q" placeholder="Headline, artist or outlet" autocomplete="off" /></label>
+    {outlets.length > 1 && (
+      <label class="f"><span>Outlet</span>
+        <select name="outlet"><option value="">All outlets</option>{outlets.map(([o, n]) => <option value={o}>{o} ({n})</option>)}</select>
+      </label>
+    )}
+    <label class="f"><span>Year</span>
+      <select name="year"><option value="">All years</option>{years.map(([y, n]) => <option value={y}>{y} ({n})</option>)}</select>
+    </label>
+    {formats.length > 1 && (
+      <label class="f"><span>Format</span>
+        <select name="format"><option value="">All formats</option>{formats.map(([f, n]) => <option value={f}>{f} ({n})</option>)}</select>
+      </label>
+    )}
+    <button type="reset" class="reset">Reset</button>
+  </form>
+  <p class="status" aria-live="polite"></p>
+  <ul class="rows">
+    {items.map((b) => <BylineRow b={b} />)}
+  </ul>
+  <div class="end-rule"></div>
+  <p class="empty" hidden>Nothing matches those filters. <button type="button" class="linklike" data-reset>Clear them</button></p>
+  <nav class="pager" aria-label="Pages" hidden></nav>
+</section>
+
+<script>
+  const KEYS = ['q', 'outlet', 'year', 'format'] as const;
+  for (const root of document.querySelectorAll<HTMLElement>('[data-byline-list]')) {
+    const form = root.querySelector('form')!;
+    const rows = [...root.querySelectorAll<HTMLLIElement>('li.byline')];
+    const status = root.querySelector<HTMLElement>('.status')!;
+    const pager = root.querySelector<HTMLElement>('.pager')!;
+    const empty = root.querySelector<HTMLElement>('.empty')!;
+    const per = Number(root.dataset.perPage) || 50;
+    let page = 1;
+    form.hidden = false;
+
+    const field = (k: string) => form.elements.namedItem(k) as HTMLInputElement | HTMLSelectElement | null;
+
+    // Start from the URL.
+    const params = new URLSearchParams(location.search);
+    for (const k of KEYS) {
+      const el = field(k), v = params.get(k);
+      if (el && v !== null && (el.tagName !== 'SELECT' || [...(el as HTMLSelectElement).options].some((o) => o.value === v))) el.value = v;
+    }
+    page = Math.max(1, Number(params.get('page')) || 1);
+
+    function render(scroll = false) {
+      const q = (field('q')?.value ?? '').trim().toLowerCase();
+      const want = Object.fromEntries(KEYS.slice(1).map((k) => [k, field(k)?.value ?? '']));
+      const match = rows.filter((li) =>
+        (!q || q.split(/\s+/).every((w) => li.dataset.q!.includes(w))) &&
+        (!want.outlet || li.dataset.outlet === want.outlet) &&
+        (!want.year || li.dataset.year === want.year) &&
+        (!want.format || li.dataset.format === want.format));
+      const pages = Math.max(1, Math.ceil(match.length / per));
+      page = Math.min(page, pages);
+      const from = (page - 1) * per, to = from + per;
+      const shown = new Set(match.slice(from, to));
+      for (const li of rows) li.hidden = !shown.has(li);
+
+      const filtered = q || Object.values(want).some(Boolean);
+      status.textContent = match.length
+        ? `${filtered ? `${match.length.toLocaleString()} of ${rows.length.toLocaleString()} match` : `${rows.length.toLocaleString()} bylines`}` +
+          (pages > 1 ? ` · showing ${from + 1}–${Math.min(to, match.length)}` : '')
+        : '';
+      empty.hidden = match.length > 0;
+
+      pager.hidden = pages < 2;
+      pager.replaceChildren();
+      if (pages > 1) {
+        const btn = (label: string, p: number, opts: { current?: boolean; disabled?: boolean; aria?: string } = {}) => {
+          const b = document.createElement('button');
+          b.type = 'button'; b.textContent = label; b.className = 'pg';
+          if (opts.aria) b.setAttribute('aria-label', opts.aria);
+          if (opts.current) b.setAttribute('aria-current', 'page');
+          b.disabled = !!opts.disabled;
+          b.addEventListener('click', () => { page = p; render(true); });
+          pager.append(b);
+        };
+        btn('← Newer', page - 1, { disabled: page === 1, aria: 'Previous page' });
+        const nums = new Set([1, pages, page - 1, page, page + 1].filter((n) => n >= 1 && n <= pages));
+        let last = 0;
+        for (const n of [...nums].sort((a, b) => a - b)) {
+          if (n - last > 1) { const s = document.createElement('span'); s.className = 'gap'; s.textContent = '…'; pager.append(s); }
+          btn(String(n), n, { current: n === page, aria: `Page ${n}` });
+          last = n;
+        }
+        btn('Older →', page + 1, { disabled: page === pages, aria: 'Next page' });
+      }
+
+      const out = new URLSearchParams();
+      for (const k of KEYS) { const v = field(k)?.value; if (v) out.set(k, v); }
+      if (page > 1) out.set('page', String(page));
+      const qs = out.toString();
+      history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+      if (scroll) root.scrollIntoView({ block: 'start' });
+    }
+
+    form.addEventListener('input', () => { page = 1; render(); });
+    form.addEventListener('submit', (e) => e.preventDefault());
+    form.addEventListener('reset', () => setTimeout(() => { page = 1; render(); }));
+    root.querySelector('[data-reset]')?.addEventListener('click', () => form.reset());
+    render();
+  }
+</script>
+
+<style>
+  .blist { scroll-margin-top: 24px; }
+  .lh { margin: 0 0 20px; font-size: 14px; letter-spacing: 0; }
+  .filters { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: flex-end; margin-bottom: 16px; }
+  .filters[hidden] { display: none; }
+  .f { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 800; }
+  .f--q { flex: 1 1 260px; }
+  .f input, .f select, .reset, .pager :global(.pg) {
+    font: inherit; font-size: 15px; font-weight: 400; color: var(--ink); min-height: 44px; border-radius: 999px;
+    border: 2px solid var(--ink); background: #fff; padding: 8px 18px;
+  }
+  .f select { appearance: none; padding-right: 40px; max-width: 280px;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%231B1B19' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 16px center; }
+  .reset { background: transparent; font-weight: 800; cursor: pointer; }
+  .reset:hover { background: var(--ink); color: #fff; }
+  .status { margin: 0 0 12px; font-size: 13px; min-height: 1.3em; color: var(--muted); }
+  .rows { padding: 0; margin: 0; }
+  .end-rule { border-top: 2px solid var(--ink); }
+  .empty { padding: 24px 0; font-size: 16px; }
+  .linklike { font: inherit; font-weight: 800; background: none; border: 0; padding: 0; color: var(--section-text, var(--bylines-text)); cursor: pointer; text-decoration: underline; }
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; margin-top: 32px; }
+  .pager[hidden] { display: none; }
+  .pager :global(.pg) { cursor: pointer; padding: 8px 16px; min-width: 44px; }
+  .pager :global(.pg[aria-current='page']) { background: var(--ink); color: #fff; font-weight: 800; }
+  .pager :global(.pg:disabled) { opacity: 0.35; cursor: default; }
+  .pager :global(.gap) { padding: 0 4px; }
+</style>
