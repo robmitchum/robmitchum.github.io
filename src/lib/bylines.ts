@@ -71,8 +71,12 @@ export const fmtIso = (iso: string) =>
 export const year = (iso: string) => iso.slice(0, 4);
 
 // "36 From the Vault: Dick's Picks Vol. 1 — …" → "Dick's Picks Vol. 1 — …" inside its own show's list.
-export const episodeTitle = (b: Byline) =>
-  b.show && b.title.startsWith(`${b.show}: `) ? b.title.slice(b.show.length + 2) : b.title;
+// Also drops a tag after the show name: "Helping Friendly Podcast ON TOUR: 6/13-14/97…" → "6/13-14/97…".
+export const episodeTitle = (b: Byline) => {
+  if (!b.show || !b.title.startsWith(b.show)) return b.title;
+  const i = b.title.indexOf(': ', b.show.length);
+  return i >= 0 ? b.title.slice(i + 2) : b.title;
+};
 
 export function countBy<T>(items: T[], key: (t: T) => string) {
   const m = new Map<string, number>();
