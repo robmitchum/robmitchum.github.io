@@ -23,8 +23,14 @@ for (const e of episodes.filter((e) => !ownNames.has(e.show!))) {
   guestMap.set(e.show!, [...(guestMap.get(e.show!) ?? []), e]);
 }
 const guests = [...guestMap.entries()]
-  .map(([show, eps]) => ({ show, eps, outlet: eps[0].outlet, latest: eps[0].date }))
+  .map(([show, eps]) => ({ show, eps, network: network(show, eps[0].outlet), latest: eps[0].date }))
   .sort((a, b) => b.latest.localeCompare(a.latest));
+// "Helping Friendly Podcast (Osiris)" under "Helping Friendly Podcast" → just "Osiris".
+function network(show: string, outlet: string) {
+  if (outlet === show) return null;
+  const m = outlet.match(/^(.*) \(([^)]+)\)$/);
+  return m && m[1] === show ? m[2] : outlet;
+}
 const guestCount = guests.reduce((n, g) => n + g.eps.length, 0);
 const featured = episodes.filter((b) => b.featured);
 ---
@@ -69,7 +75,7 @@ const featured = episodes.filter((b) => b.featured);
       <h2 id="guest-h" class="section-head">Guest appearances <span class="gcount">{guestCount}</span></h2>
       {guests.map((g) => (
         <div class="gshow">
-          <h3>{g.show}{g.outlet !== g.show && <span class="gout">{g.outlet}</span>}</h3>
+          <h3>{g.show}{g.network && <span class="gout">{g.network}</span>}</h3>
           <ul class="rows">{g.eps.map((e) => <BylineRow b={e} mode="episode" />)}</ul>
         </div>
       ))}
