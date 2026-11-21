@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import BylinesHeader from '../../components/BylinesHeader.astro';
 import BylineRow from '../../components/BylineRow.astro';
 import SectionIcon from '../../components/SectionIcon.astro';
-import { SECTIONS, bylines, allBylines, countBy, yearSpan, ownShows } from '../../lib/bylines';
+import { SECTIONS, bylines, allBylines, countBy, yearSpan, ownShows, pageIntro } from '../../lib/bylines';
 const recent = allBylines().slice(0, 10);
 const cards = SECTIONS.map((s) => {
   const items = bylines[s.id];
@@ -16,7 +16,7 @@ const cards = SECTIONS.map((s) => {
 <BaseLayout title="Bylines" section="var(--bylines)" description="Rob Mitchum's published writing and podcast work: music, science, news and podcasts.">
   <div class="wrap">
     <BylinesHeader title="Bylines" meta="Writing and podcasts" color="var(--bylines-text)">
-      <p slot="intro" class="intro placeholder">[A line introducing your published writing and podcast work.]</p>
+      <p slot="intro" class:list={['intro', { placeholder: !pageIntro('bylines') }]}>{pageIntro('bylines') ?? '[A line introducing your published writing and podcast work.]'}</p>
     </BylinesHeader>
 
     <ul class="sections">

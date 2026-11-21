@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import BylinesHeader from '../../components/BylinesHeader.astro';
 import FeaturedStrip from '../../components/FeaturedStrip.astro';
 import BylineList from '../../components/BylineList.astro';
-import { SECTIONS, bylines, countBy, yearSpan, type SectionId } from '../../lib/bylines';
+import { SECTIONS, bylines, countBy, yearSpan, pageIntro, type SectionId } from '../../lib/bylines';
 
 export function getStaticPaths() {
   // Podcasts has its own page, organized by show (bylines/podcasts/index.astro).
@@ -19,7 +19,7 @@ const outlets = countBy(items, (b) => b.outlet);
   <div class="wrap" style={`--section:${s.color};--section-text:${s.text};--pod-text:${s.podText}`}>
     <BylinesHeader current={id} title={s.label} meta={`${items.length.toLocaleString('en-US')} pieces, ${yearSpan(items)}`} color={s.text}>
       <div slot="intro" class="intro-block">
-        <p class="intro placeholder">[A line introducing your {s.label.toLowerCase()} writing.]</p>
+        <p class:list={['intro', { placeholder: !pageIntro(id) }]}>{pageIntro(id) ?? `[A line introducing your ${s.label.toLowerCase()} writing.]`}</p>
         <p class="outlets">{outlets.map(([o, n], i) => <span>{o} <span class="n">{n}</span>{i < outlets.length - 1 ? ' · ' : ''}</span>)}</p>
       </div>
     </BylinesHeader>

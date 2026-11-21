@@ -5,6 +5,7 @@ import musicJson from '../data/bylines/music.json';
 import scienceJson from '../data/bylines/science.json';
 import newsJson from '../data/bylines/news.json';
 import podcastsJson from '../data/bylines/podcasts.json';
+import introsMd from '../data/bylines/intros.md?raw';
 
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const byline = z.object({
@@ -95,3 +96,12 @@ const ROLE_RANK = { 'Co-host': 0, Editor: 1, Guest: 2 } as const;
 const showRank = (s: string) => (SHOW_ORDER.includes(s) ? SHOW_ORDER.indexOf(s) : SHOW_ORDER.length);
 export const ownShows = (): Show[] => [...showHeaders].sort((a, b) =>
   ROLE_RANK[a.role] - ROLE_RANK[b.role] || showRank(a.show) - showRank(b.show) || a.since.localeCompare(b.since));
+
+// Page intros from src/data/bylines/intros.md ("## Music" headings). Empty → placeholder.
+const introMap = new Map<string, string>();
+for (const part of introsMd.replace(/<!--[\s\S]*?-->/g, '').split(/^## +/m).slice(1)) {
+  const [head, ...rest] = part.split('\n');
+  const text = rest.join(' ').replace(/\s+/g, ' ').trim();
+  if (text) introMap.set(head.trim().toLowerCase(), text);
+}
+export const pageIntro = (key: 'bylines' | SectionId) => introMap.get(key);

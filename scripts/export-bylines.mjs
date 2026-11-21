@@ -11,7 +11,8 @@
 //
 // What it does besides copying cells:
 //   - Podcast show-header rows (Headline equals Show, or Notes contain
-//     "Show-level entry") become `shows` entries, not episodes.
+//     "Show-level entry", or Notes start with "Intro:") become `shows`
+//     entries, not episodes.
 //   - Notes stay out of the site (they're research notes), except a header
 //     row's Notes that start with "Intro:", which become the show's intro.
 //   - scripts/bylines-fixes.json corrects headlines the Sheet can't hold as
@@ -113,7 +114,7 @@ body.forEach((r, i) => {
     entry.show = show;
     entry.role = role;
     const notes = get(r, 'notes');
-    if (title === show || /Show-level entry/i.test(notes)) {
+    if (title === show || /Show-level entry/i.test(notes) || /^Intro:/i.test(notes)) {
       const intro = notes.match(/^Intro:\s*([\s\S]+)/i);
       shows.push({ show, title, url, role, outlet: entry.outlet, since: entry.date, ...(intro ? { intro: intro[1].trim() } : {}) });
       return;

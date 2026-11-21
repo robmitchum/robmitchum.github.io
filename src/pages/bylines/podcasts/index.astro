@@ -8,7 +8,7 @@ import BylinesHeader from '../../../components/BylinesHeader.astro';
 import FeaturedStrip from '../../../components/FeaturedStrip.astro';
 import BylineRow from '../../../components/BylineRow.astro';
 import { slugify as slug } from '../../../lib/content';
-import { bylines, ownShows, sectionInfo, yearSpan, type Byline } from '../../../lib/bylines';
+import { bylines, ownShows, pageIntro, sectionInfo, yearSpan, type Byline } from '../../../lib/bylines';
 
 const s = sectionInfo('podcasts');
 const episodes = bylines.podcasts;
@@ -32,7 +32,7 @@ const featured = episodes.filter((b) => b.featured);
   <div class="wrap" style={`--section:${s.color};--section-text:${s.text};--pod-text:${s.podText}`}>
     <BylinesHeader current="podcasts" title="Podcasts" meta={`${episodes.length} episodes, ${yearSpan(episodes)}`} color={s.text}>
       <div slot="intro" class="intro-block">
-        <p class="intro placeholder">[A line introducing your podcast work.]</p>
+        <p class:list={['intro', { placeholder: !pageIntro('podcasts') }]}>{pageIntro('podcasts') ?? '[A line introducing your podcast work.]'}</p>
         <nav class="jump" aria-label="Shows">
           {own.map((h) => <a href={`#${slug(h.show)}`}>{h.show}</a>)}
           <a href="#guest">Guest appearances</a>
