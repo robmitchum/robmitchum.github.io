@@ -4,20 +4,27 @@
 //   npm run aoty:links -- 2025 --top 200     the Consensus top 200
 //   npm run aoty:links -- 2025               every album
 //   npm run aoty:links -- 2025 --redo        look up found albums again too (except locked ones)
-//   npm run aoty:links -- 2025 --debug "Clipse - Let God Sort Em Out"
-//                                            show what Apple and Bandcamp return for one album
+//   npm run aoty:links -- 2025 --debug "Geese - Getting Killed"
+//                                            show what each service returns for one album
 //
 // For each album:
-//   - Apple (iTunes Search API) → Listen goes to its album.link page (album.link/i/<Apple id>,
-//     which lists every streaming service), and the cover is saved at 300×300 to
-//     public/aoty/covers/<year>/<slug>.jpg. Three searches, stopping at the first match:
-//     artist + title; the title alone; the artist's albums.
-//   - Bandcamp → Buy. Bandcamp's own search-box API first, then its search page. A best guess.
+//   1. Deezer's search API finds the album (Apple's own search API misses too much).
+//      Its cover is saved at 300×300 to public/aoty/covers/<year>/<slug>.jpg.
+//   2. Odesli (the service behind album.link) turns that into Listen: the album.link
+//      page, which links every streaming service, and the Apple Music link.
+//   3. MusicBrainz finds the Bandcamp page, when its entry for the album lists one → Buy.
+//      (Bandcamp blocks scripts from its own search.)
+//   If Deezer misses, Apple's search is tried as a fallback.
+//
 // Results go to src/data/aoty/links/<year>.json, keyed by "artist - title" in lower case.
-// An album already found is skipped; one not found is tried again on the next run.
-// Fix anything by hand there and add "locked": true so runs leave it alone; set
-// "bandcamp": "" to hide a wrong Buy button. Albums still missing at the end are listed in
+// Albums already found are skipped; misses are tried again on every run and listed in
 // src/data/aoty/links/<year>-missing.txt. Saved after every album: Ctrl-C and rerun is safe.
+//
+// Fixing by hand, in the links file:
+//   - Paste an Apple Music album URL as "apple" (and remove "listen") for a miss or a wrong
+//     match: the next run fills in Listen and the cover from it.
+//   - Paste a Bandcamp album URL as "bandcamp"; "bandcamp": "" hides a wrong Buy button.
+//   - Add "locked": true to keep the script from touching an album again.
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -31,7 +38,7 @@ const top = opt('--top') ? Number(opt('--top')) : Infinity;
 const redo = args.includes('--redo');
 const debug = opt('--debug');
 
-const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36';
+const UA = 'robmitchum.com-aoty/1.0 ( https://robmitchum.com )'; // MusicBrainz asks for an identifying user agent
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 let links = {};
@@ -61,41 +68,26 @@ const albums = data.albums.map((a) => {
   .slice(0, top);
 
 let looked = 0;
-let bandcampDown = 0;
-
 for (const [i, a] of albums.entries()) {
   const key = `${a.artist} - ${a.title}`.toLowerCase();
   const entry = links[key] ?? {};
   if (entry.locked) continue;
-  const needApple = redo || !entry.listen;
-  const needBandcamp = redo || entry.bandcamp === undefined;
-  if (!needApple && !needBandcamp) continue;
+  const needListen = redo || !entry.listen || !entry.cover || entry.retryOdesli;
+  const needBuy = redo || entry.bandcamp === undefined;
+  if (!needListen && !needBuy) continue;
   const notes = [];
+  const file = `${slugify(`${a.artist} ${a.title}`)}.jpg`;
 
-  if (needApple) {
-    const { match, why } = await findApple(a.artist, a.title);
-    if (match) {
-      entry.apple = match.collectionViewUrl.replace(/\?.*$/, '');
-      entry.listen = `https://album.link/i/${match.collectionId}`;
-      const art = match.artworkUrl100?.replace(/\/\d+x\d+bb\.(jpg|png)$/, '/300x300bb.jpg');
-      if (art) {
-        const file = `${slugify(`${a.artist} ${a.title}`)}.jpg`;
-        try {
-          const res = await fetch(art);
-          if (res.ok) { writeFileSync(resolve(coverDir, file), Buffer.from(await res.arrayBuffer())); entry.cover = `/aoty/covers/${year}/${file}`; }
-        } catch { /* the cover is optional */ }
-      }
-      notes.push(`Apple: ${match.artistName} – ${match.collectionName}`);
-    } else {
-      notes.push(`Apple: not found (${why})`);
-    }
+  if (needListen) {
+    try { notes.push(await fillListen(a, entry, file)); }
+    catch (e) { notes.push(`Listen: error (${e.message})`); }
   }
-
-  if (needBandcamp && bandcampDown < 5) {
-    const { url, why, down } = await findBandcamp(a.artist, a.title);
-    if (url) { entry.bandcamp = url; notes.push('Bandcamp: found'); bandcampDown = 0; }
-    else { notes.push(`Bandcamp: not found (${why})`); bandcampDown = down ? bandcampDown + 1 : 0; }
-    if (bandcampDown === 5) console.warn('\n  Bandcamp failed 5 times in a row, so the rest of this run skips it. Run again later.\n');
+  if (needBuy) {
+    try {
+      const { url, why } = await findBandcamp(a.artist, a.title);
+      if (url) { entry.bandcamp = url; notes.push('Buy: Bandcamp found (MusicBrainz)'); }
+      else notes.push(`Buy: none (${why})`);
+    } catch (e) { notes.push(`Buy: error (${e.message})`); }
   }
 
   links[key] = entry;
@@ -109,103 +101,165 @@ const all = albums.map((a) => links[`${a.artist} - ${a.title}`.toLowerCase()] ??
 const missing = albums.filter((a, i) => !all[i].listen).map((a) => `${a.artist} - ${a.title}`);
 writeFileSync(missingPath, missing.join('\n') + (missing.length ? '\n' : ''));
 console.log(`\nLooked up ${looked} albums this run.`);
-console.log(`Of these ${albums.length}: ${all.filter((e) => e.listen).length} have Listen links (Apple), ${all.filter((e) => e.bandcamp).length} have Buy links (Bandcamp).`);
+console.log(`Of these ${albums.length}: ${all.filter((e) => e.listen).length} have Listen links, ${all.filter((e) => e.cover).length} have covers, ${all.filter((e) => e.bandcamp).length} have Buy links.`);
 if (missing.length) console.log(`The ${missing.length} without a Listen link are listed in ${missingPath}`);
 
 // ---------------------------------------------------------------------------
-// Apple
+// Listen + cover
 
-async function itunes(params) {
-  const url = `https://itunes.apple.com/search?${new URLSearchParams({ media: 'music', entity: 'album', country: 'US', limit: '50', ...params })}`;
-  for (let attempt = 0; attempt < 4; attempt++) {
-    await sleep(3200); // Apple allows about 20 searches a minute
+async function fillListen(a, entry, file) {
+  // A pasted Apple Music URL wins: fill in from it.
+  const pastedId = entry.apple?.match(/\/(\d{6,})(?:\?|$)/)?.[1];
+  if (pastedId && (!entry.listen || !entry.cover)) {
+    entry.listen ||= `https://album.link/i/${pastedId}`;
+    if (!entry.cover) {
+      const r = (await itunesLookup(pastedId))[0];
+      if (r?.artworkUrl100) await saveCover(entry, r.artworkUrl100.replace(/\/\d+x\d+bb\.(jpg|png)$/, '/300x300bb.jpg'), file);
+    }
+    return `Listen: from the Apple link in the file${entry.cover ? ' + cover' : ''}`;
+  }
+
+  const dz = await findDeezer(a.artist, a.title);
+  if (dz.match) {
+    const m = dz.match;
+    entry.deezer = m.link;
+    const cover = m.md5_image
+      ? `https://e-cdns-images.dzcdn.net/images/cover/${m.md5_image}/300x300-000000-80-0-0.jpg`
+      : m.cover_medium || m.cover_big;
+    if (cover && (!entry.cover || redo)) await saveCover(entry, cover, file);
+    const od = await odesli(m.link);
+    if (od) {
+      entry.listen = od.pageUrl;
+      delete entry.retryOdesli;
+      if (od.apple) entry.apple = od.apple;
+      return `Listen: Deezer “${m.artist?.name} – ${m.title}” → album.link${od.apple ? ' (+ Apple)' : ''}`;
+    }
+    // Odesli unavailable right now: link the Deezer page; the next run retries Odesli.
+    entry.listen = m.link;
+    entry.retryOdesli = true;
+    return `Listen: Deezer “${m.artist?.name} – ${m.title}” (album.link failed; will retry next run)`;
+  }
+
+  // Fallback: Apple's search API.
+  const ap = await findApple(a.artist, a.title);
+  if (ap.match) {
+    entry.apple = ap.match.collectionViewUrl.replace(/\?.*$/, '');
+    entry.listen = `https://album.link/i/${ap.match.collectionId}`;
+    if (ap.match.artworkUrl100 && !entry.cover) await saveCover(entry, ap.match.artworkUrl100.replace(/\/\d+x\d+bb\.(jpg|png)$/, '/300x300bb.jpg'), file);
+    return `Listen: Apple “${ap.match.artistName} – ${ap.match.collectionName}”`;
+  }
+  return `Listen: not found (Deezer: ${dz.why}; Apple: ${ap.why})`;
+}
+
+async function saveCover(entry, url, file) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return;
+    writeFileSync(resolve(coverDir, file), Buffer.from(await res.arrayBuffer()));
+    entry.cover = `/aoty/covers/${year}/${file}`;
+  } catch { /* the cover is optional */ }
+}
+
+// Retry on rate limits and server errors; give up (and save) after a few tries.
+async function getJson(url, { pause = 0, init = {}, name = 'request', tries = 4 } = {}) {
+  for (let attempt = 0; attempt < tries; attempt++) {
+    if (pause) await sleep(pause);
     let res;
-    try { res = await fetch(url, { headers: { 'user-agent': UA } }); } catch { await sleep(5000); continue; }
-    if (res.status === 403 || res.status === 429 || res.status >= 500) {
-      const wait = 60000 * (attempt + 1);
-      console.warn(`       Apple is rate-limiting (HTTP ${res.status}); waiting ${wait / 1000}s…`);
+    try { res = await fetch(url, { ...init, headers: { 'user-agent': UA, accept: 'application/json', ...(init.headers ?? {}) } }); }
+    catch { await sleep(5000); continue; }
+    if (res.status === 403 || res.status === 429 || res.status === 503 || res.status >= 500) {
+      const wait = 30000 * (attempt + 1);
+      console.warn(`       ${name} is busy or rate-limiting (HTTP ${res.status}); waiting ${wait / 1000}s…`);
       await sleep(wait);
       continue;
     }
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    try { return JSON.parse(await res.text()).results ?? []; } catch { return []; }
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error(`${name} HTTP ${res.status}`);
+    const text = await res.text();
+    try { return JSON.parse(text); } catch { throw new Error(`${name} sent a web page instead of data`); }
   }
-  console.error('\nApple kept refusing searches. Progress is saved: wait 10 minutes and run the same command again.');
-  save();
-  process.exit(1);
+  throw new Error(`${name} kept refusing`);
 }
 
-async function findApple(artist, title) {
+async function findDeezer(artist, title) {
   const selfTitled = /^(s\/t|self[- ]titled)$/i.test(title.trim());
   const want = wanted(artist, selfTitled ? artist : title);
-  const tries = [
-    { term: `${artist} ${selfTitled ? '' : title}`.trim() },
-    ...(selfTitled ? [] : [{ term: title, attribute: 'albumTerm' }]),
-    { term: artist, attribute: 'artistTerm', limit: '200' },
+  const qs = [
+    selfTitled ? `artist:"${artist}"` : `artist:"${artist}" album:"${title}"`,
+    `${artist} ${selfTitled ? '' : title}`.trim(),
+    ...(selfTitled ? [] : [`album:"${title}"`]),
   ];
-  let seen = 0; let closest = null;
-  for (const t of tries) {
-    const results = await itunes(t);
+  let closest = null; let seen = 0;
+  for (const q of qs) {
+    const json = await getJson(`https://api.deezer.com/search/album?${new URLSearchParams({ q, limit: '25' })}`, { pause: 250, name: 'Deezer' });
+    if (json?.error) throw new Error(`Deezer: ${json.error.message ?? 'error'}`);
+    const results = json?.data ?? [];
     seen += results.length;
-    const best = pickBest(want, results.map((r) => ({ r, a: r.artistName, t: r.collectionName })));
+    const best = pickBest(want, results.map((r) => ({ r, a: r.artist?.name ?? '', t: r.title ?? '' })));
     if (best && best.s >= 1.5) return { match: best.r };
     if (best && (!closest || best.s > closest.s)) closest = best;
   }
-  return { match: null, why: seen ? `closest: ${closest.r.artistName} – ${closest.r.collectionName}` : 'no results' };
+  return { match: null, why: seen ? `closest “${closest.r.artist?.name} – ${closest.r.title}”` : 'no results' };
+}
+
+// Odesli allows about 10 lookups a minute without an API key. If it fails 3 albums in a
+// row, the rest of the run skips it (those albums get the Deezer link and a retry next run).
+let odesliDown = 0;
+async function odesli(url) {
+  if (odesliDown >= 3) return null;
+  try {
+    const json = await getJson(`https://api.song.link/v1-alpha.1/links?${new URLSearchParams({ url, userCountry: 'US' })}`, { pause: 6500, name: 'album.link', tries: 2 });
+    odesliDown = 0;
+    if (!json?.pageUrl) return null;
+    return { pageUrl: json.pageUrl, apple: json.linksByPlatform?.appleMusic?.url?.replace(/\?.*$/, '') };
+  } catch (e) {
+    odesliDown++;
+    console.warn(`       album.link lookup failed: ${e.message}${odesliDown >= 3 ? ' (skipping album.link for the rest of this run)' : ''}`);
+    return null;
+  }
+}
+
+async function findApple(artist, title) {
+  const want = wanted(artist, title);
+  const json = await getJson(`https://itunes.apple.com/search?${new URLSearchParams({ term: `${artist} ${title}`, media: 'music', entity: 'album', country: 'US', limit: '25' })}`, { pause: 3200, name: 'Apple' });
+  const results = json?.results ?? [];
+  const best = pickBest(want, results.map((r) => ({ r, a: r.artistName, t: r.collectionName })));
+  if (best && best.s >= 1.5) return { match: best.r };
+  return { match: null, why: results.length ? `closest “${best.r.artistName} – ${best.r.collectionName}”` : 'no results' };
+}
+
+async function itunesLookup(id) {
+  const json = await getJson(`https://itunes.apple.com/lookup?${new URLSearchParams({ id, entity: 'album', country: 'US' })}`, { pause: 3200, name: 'Apple' });
+  return json?.results ?? [];
 }
 
 // ---------------------------------------------------------------------------
-// Bandcamp
+// Buy: Bandcamp links recorded in MusicBrainz (1 request a second, as MusicBrainz asks)
 
 async function findBandcamp(artist, title) {
   const selfTitled = /^(s\/t|self[- ]titled)$/i.test(title.trim());
   const want = wanted(artist, selfTitled ? artist : title);
-  const q = `${artist} ${selfTitled ? '' : title}`.trim();
-  let down = false; let why = 'no results';
-  for (const search of [bandcampApi, bandcampPage]) {
-    try {
-      const results = await search(q);
-      const best = pickBest(want, results);
-      if (best && best.s >= 1.6) return { url: best.r.url };
-      if (best) why = `closest: ${best.r.a} – ${best.r.t}`;
-      down = false;
-    } catch (e) { why = e.message; down = true; }
+  const esc = (s) => s.replace(/(["\\])/g, '\\$1');
+  const query = `releasegroup:"${esc(selfTitled ? artist : title)}" AND artist:"${esc(artist)}"`;
+  const json = await getJson(`https://musicbrainz.org/ws/2/release-group/?${new URLSearchParams({ query, fmt: 'json', limit: '5' })}`, { pause: 1100, name: 'MusicBrainz' });
+  const groups = json?.['release-groups'] ?? [];
+  const best = pickBest(want, groups.map((g) => ({ r: g, a: credit(g['artist-credit']), t: g.title })));
+  if (!best || best.s < 1.5) return { url: null, why: groups.length ? 'no matching MusicBrainz entry' : 'not in MusicBrainz' };
+  // Bandcamp links usually sit on a release, sometimes on the release group.
+  const rg = await getJson(`https://musicbrainz.org/ws/2/release-group/${best.r.id}?${new URLSearchParams({ inc: 'url-rels+releases', fmt: 'json' })}`, { pause: 1100, name: 'MusicBrainz' });
+  let url = bandcampIn(rg?.relations);
+  for (const rel of (rg?.releases ?? []).slice(0, 4)) {
+    if (url) break;
+    const r = await getJson(`https://musicbrainz.org/ws/2/release/${rel.id}?${new URLSearchParams({ inc: 'url-rels', fmt: 'json' })}`, { pause: 1100, name: 'MusicBrainz' });
+    url = bandcampIn(r?.relations);
   }
-  return { url: null, why, down };
+  return url ? { url } : { url: null, why: 'MusicBrainz lists no Bandcamp page' };
 }
-
-// The JSON search Bandcamp's own search box uses.
-async function bandcampApi(q) {
-  await sleep(1200);
-  const res = await fetch('https://bandcamp.com/api/bcsearch_public_api/1/autocomplete_elastic', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', 'user-agent': UA, origin: 'https://bandcamp.com', referer: 'https://bandcamp.com/' },
-    body: JSON.stringify({ search_text: q, search_filter: 'a', full_page: false, fan_id: null }),
-  });
-  if (!res.ok) throw new Error(`Bandcamp API HTTP ${res.status}`);
-  const json = await res.json();
-  const results = json?.auto?.results ?? json?.results ?? [];
-  return results.filter((r) => !r.type || r.type === 'a').map((r) => ({
-    a: r.band_name ?? r.artist_name ?? '',
-    t: r.name ?? r.title ?? '',
-    url: String(r.item_url_path ?? r.url ?? '').replace(/\?.*$/, ''),
-  })).filter((r) => r.url.startsWith('http'));
+function bandcampIn(relations = []) {
+  const hit = relations.find((r) => /bandcamp\.com\/album\//.test(r.url?.resource ?? ''));
+  return hit ? hit.url.resource.replace(/\?.*$/, '') : null;
 }
-
-// Fallback: the search results page.
-async function bandcampPage(q) {
-  await sleep(1200);
-  const res = await fetch(`https://bandcamp.com/search?${new URLSearchParams({ q, item_type: 'a' })}`, { headers: { 'user-agent': UA, 'accept-language': 'en-US' } });
-  if (!res.ok) throw new Error(`Bandcamp page HTTP ${res.status}`);
-  const html = await res.text();
-  const out = [];
-  for (const item of html.split(/<li class="searchresult/).slice(1)) {
-    const head = item.match(/class="heading">\s*<a[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/);
-    const sub = item.match(/class="subhead">([\s\S]*?)<\/div>/);
-    if (head && sub) out.push({ url: decode(head[1]).replace(/\?.*$/, ''), t: decode(strip(head[2])), a: decode(strip(sub[1])).replace(/^\s*by\s+/i, '') });
-  }
-  return out;
-}
+function credit(ac = []) { return ac.map((c) => (c.name ?? c.artist?.name ?? '') + (c.joinphrase ?? '')).join(''); }
 
 // ---------------------------------------------------------------------------
 // Matching: up to 1 point for the artist, up to 1 for the title.
@@ -243,7 +297,7 @@ function overlap(x, y) {
   return [...a].filter((w) => b.has(w)).length / Math.max(a.size, b.size, 1) * 0.75;
 }
 function norm(s) {
-  return String(s).normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase()
+  return String(s).normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
     .replace(/&/g, ' and ').replace(/\$/g, 's').replace(/[^a-z0-9]+/g, ' ').trim().replace(/^the /, '');
 }
 // Titles also drop " - EP", " - Single", and trailing (…) or […], e.g. "(Deluxe Edition)".
@@ -255,10 +309,8 @@ function normTitle(s) {
 function splitArtists(s) {
   return String(s).split(/\s*(?:,|&|\band\b|\bwith\b|\bx\b|\bfeat\.?|\bft\.?|\+)\s*/i).map(norm).filter(Boolean);
 }
-function strip(s) { return s.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(); }
-function decode(s) { return s.replace(/&amp;/g, '&').replace(/&#39;|&#x27;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>'); }
 function slugify(s) {
-  return s.normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase()
+  return s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
     .replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80);
 }
 function sortKeys(o) { return Object.fromEntries(Object.entries(o).sort(([a], [b]) => a.localeCompare(b))); }
@@ -267,24 +319,20 @@ function sortKeys(o) { return Object.fromEntries(Object.entries(o).sort(([a], [b
 
 async function runDebug(artist, title) {
   console.log(`Album: ${artist} – ${title}\n`);
-  const want = wanted(artist, title);
-  for (const t of [{ term: `${artist} ${title}` }, { term: title, attribute: 'albumTerm' }, { term: artist, attribute: 'artistTerm', limit: '200' }]) {
-    const results = await itunes(t);
-    console.log(`Apple search ${JSON.stringify(t)}: ${results.length} results`);
-    for (const r of results.slice(0, 8)) {
-      const s = artistScore(want, r.artistName) + titleScore(want.t, normTitle(r.collectionName));
-      console.log(`   ${s.toFixed(2)}  ${r.artistName} – ${r.collectionName}  (${r.collectionId})`);
+  try {
+    const dz = await findDeezer(artist, title);
+    console.log(dz.match ? `Deezer: found “${dz.match.artist?.name} – ${dz.match.title}” ${dz.match.link}` : `Deezer: ${dz.why}`);
+    if (dz.match) {
+      const od = await odesli(dz.match.link);
+      console.log(od ? `album.link: ${od.pageUrl}${od.apple ? `\n  Apple Music: ${od.apple}` : '\n  (no Apple Music link)'}` : 'album.link: failed');
     }
-  }
-  for (const [name, fn] of [['Bandcamp API', bandcampApi], ['Bandcamp page', bandcampPage]]) {
-    try {
-      const results = await fn(`${artist} ${title}`);
-      console.log(`${name}: ${results.length} results`);
-      for (const r of results.slice(0, 8)) {
-        const s = artistScore(want, r.a) + titleScore(want.t, normTitle(r.t));
-        console.log(`   ${s.toFixed(2)}  ${r.a} – ${r.t}  ${r.url}`);
-      }
-    } catch (e) { console.log(`${name}: failed (${e.message})`); }
-  }
-  console.log('\nA score of 1.5 or more counts as a match for Apple, 1.6 for Bandcamp.');
+  } catch (e) { console.log(`Deezer: failed (${e.message})`); }
+  try {
+    const ap = await findApple(artist, title);
+    console.log(ap.match ? `Apple search: found “${ap.match.artistName} – ${ap.match.collectionName}”` : `Apple search: ${ap.why}`);
+  } catch (e) { console.log(`Apple search: failed (${e.message})`); }
+  try {
+    const bc = await findBandcamp(artist, title);
+    console.log(bc.url ? `Bandcamp (via MusicBrainz): ${bc.url}` : `Bandcamp (via MusicBrainz): ${bc.why}`);
+  } catch (e) { console.log(`MusicBrainz: failed (${e.message})`); }
 }
