@@ -33,4 +33,4 @@ At the most basic level, if you notice a mistake, shout it out...maintaining the
 This project has gone through several iterations over the years. Thank you to Alessandro Panella, Ben Greenfield, Diego Garcia-Olano, and Jonathan Rockower for their data science assistance along the way.
 
 ## Support Musicians
-If you find something you like, please consider buying it! It's tough out there for musicians right now. I have included links to buy albums on Bandcamp wherever possible, but feel free to use the independent record store of your choice.
+If you find something you like, please consider buying it! It's tough out there for musicians right now. I have included links to buy albums on Bandcamp or Amoeba wherever possible, but feel free to use the independent record store of your choice.
