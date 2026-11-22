@@ -55,9 +55,13 @@
     "bandcamp": "https://annieandthecaldwells.bandcamp.com/album/can-t-lose-my-soul"
   },
   "anthony szmierek - service station at the end of the universe": {},
+  "antony szmierek - service station at the end of the universe": {
+    "cover": "/aoty/covers/2025/antony-szmierek-service-station-at-the-end-of-the-universe.jpg"
+  },
   "aya - hexed!": {
     "bandcamp": "https://aya-yco.bandcamp.com/album/hexed",
-    "apple": "https://music.apple.com/us/album/hexed/1791674346"
+    "apple": "https://music.apple.com/us/album/hexed/1791674346",
+    "cover": "/aoty/covers/2025/aya-hexed.jpg"
   },
   "backxwash - only dust remains": {
     "deezer": "https://www.deezer.com/album/704501261",
@@ -186,6 +190,9 @@
     "bandcamp": "https://cassmccombs.bandcamp.com/album/interior-live-oak"
   },
   "cate le bon - michaelangelo dying": {},
+  "cate le bon - michelangelo dying": {
+    "cover": "/aoty/covers/2025/cate-le-bon-michelangelo-dying.jpg"
+  },
   "chance the rapper - star line": {
     "deezer": "https://www.deezer.com/album/803730621",
     "cover": "/aoty/covers/2025/chance-the-rapper-star-line.jpg",
@@ -272,7 +279,8 @@
   },
   "dj haram - beside myself": {
     "bandcamp": "https://djharam.bandcamp.com/album/beside-myself",
-    "apple": "https://music.apple.com/us/album/beside-myself/1811423740"
+    "apple": "https://music.apple.com/us/album/beside-myself/1811423740",
+    "cover": "/aoty/covers/2025/dj-haram-beside-myself.jpg"
   },
   "dj k - radio libertadora!": {
     "deezer": "https://www.deezer.com/album/770420961",
@@ -439,6 +447,9 @@
     "apple": "https://music.apple.com/us/album/glutton-for-punishment/1767822146",
     "listen": "https://album.link/i/1767822146",
     "cover": "/aoty/covers/2025/heartworms-glutton-for-punishment.jpg"
+  },
+  "heinali & andriana-yaroslava saienko - hildegard": {
+    "cover": "/aoty/covers/2025/heinali-and-andriana-yaroslava-saienko-hildegard.jpg"
   },
   "heinali & andriana-yaroslave saienko - hildegard": {},
   "horsegirl - phonetics on and on": {
@@ -768,7 +779,9 @@
     "cover": "/aoty/covers/2025/panda-bear-sinister-grift.jpg",
     "bandcamp": "https://pandabearmusic.bandcamp.com/album/sinister-grift"
   },
-  "patterson hood - exploding trees & airplane screams": {},
+  "patterson hood - exploding trees & airplane screams": {
+    "cover": "/aoty/covers/2025/patterson-hood-exploding-trees-and-airplane-screams.jpg"
+  },
   "paul weller - find el dorado": {
     "apple": "https://music.apple.com/us/album/find-el-dorado/1812036585",
     "listen": "https://album.link/i/1812036585",
@@ -945,6 +958,9 @@
     "apple": "https://music.apple.com/us/album/vendr%C3%A1n-suaves-lluvias/1824504862",
     "listen": "https://album.link/i/1824504862",
     "cover": "/aoty/covers/2025/silvana-estrada-vendran-suaves-lluvias.jpg"
+  },
+  "skrillex - fuck u skrillex you think ur andy warhol but ur not!! <3": {
+    "cover": "/aoty/covers/2025/skrillex-fuck-u-skrillex-you-think-ur-andy-warhol-but-ur-not-3.jpg"
   },
   "skrillex - fuck u skrillex you think ur andy warhold but ur not!! <3": {},
   "smerz - big city life": {

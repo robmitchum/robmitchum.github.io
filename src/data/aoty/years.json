@@ -1,18 +1,166 @@
 [
-  { "year": 2025, "sheetId": "1PenaCq3J-kwcnGyySj8Ne0NsGDZhxVBcr7Sv8xe7X6w", "tab": "Classic", "lists": 29, "no1": ["Geese", "Getting Killed"], "status": "final", "replayLast": 3 },
-  { "year": 2024, "sheetId": "1JOuUrJtT6w0tHy28fTuSmWUq1d-IVLc48swyx6UIeSQ", "tab": "Classic", "lists": 38, "no1": ["Charli xcx", "Brat"] },
-  { "year": 2023, "sheetId": "1mlSJ5DU0RKccuNBfAgsiw-_xUApis7zC3ZjJofXyZB4", "tab": "Classic", "lists": 44, "no1": ["Sufjan Stevens", "Javelin"] },
-  { "year": 2022, "sheetId": "1m5v1y2Bj88JTmSZGAoGFTuCQPPWQDwxkIfT8QhTh478", "tab": "Classic", "lists": 47, "no1": ["Kendrick Lamar", "Mr. Morale & The Big Steppers"] },
-  { "year": 2021, "sheetId": "1IoFuhHS63IJ6L15rLN7FBd6zvK0wOUwLYAZGbDr3wTQ", "tab": "Overall", "lists": 26, "no1": ["Little Simz", "Sometimes I Might Be Introvert"] },
-  { "year": 2020, "sheetId": "1vpxZunN4M8gvnsireG4TEPSlA-pxo8Ta9Y6Kj8zgWwg", "tab": "main", "lists": 34, "no1": ["Phoebe Bridgers", "Punisher"],
-    "extras": [{ "label": "Data assistance: Jonathan Rockower", "url": "https://github.com/jrockower/" }] },
-  { "year": 2019, "sheetId": "1SklyhzT6ty4fJH9wrItm0qOiI6kiloRdkZMhONpZ0CA", "tab": "Overall", "lists": 18, "no1": ["Lana Del Rey", "Norman Fucking Rockwell!"] },
-  { "year": 2018, "sheetId": "1BwJaVJa_OZezUbbCE9Z6HpNdcl6wwmlPrCLWm3sKygo", "tab": "Overall", "lists": 32, "no1": ["Pusha-T", "Daytona"] },
-  { "year": 2017, "sheetId": "1-uY5_BeeKH_e2-XROri85qpV8s_5hMEEoFoxigci61I", "tab": "Overall", "lists": 27, "no1": ["Kendrick Lamar", "DAMN."] },
-  { "year": 2016, "sheetId": "1qoiuqi8DzKgT2KVUKJBR7Xdo2dFNF8WT7uO9gtvoyFI", "tab": "Overall", "lists": 36, "no1": ["David Bowie", "Blackstar"], "no1Apple": "1676286487",
-    "extras": [{ "label": "Interactive viz by Diego Garcia-Olano", "url": "http://diegoolano.com/robmitchum/endofyear/" }] },
-  { "year": 2015, "sheetId": "1FQO_gdYXCFARbyfE8La08bgv041nYZDLTL6jV3rtPKU", "tab": "Overall", "lists": 20, "no1": ["Kendrick Lamar", "To Pimp a Butterfly"] },
-  { "year": 2014, "sheetId": "1dLn6jBLBx_j8H9lug0hX4UZEhrckdsx9kDLEa_Ca8QE", "tab": "Overall", "lists": 35, "no1": ["FKA twigs", "LP1"],
-    "extras": [{ "label": "Deadspin: The rock-critic hive mind", "url": "http://theconcourse.deadspin.com/the-rock-critic-hive-mind-dissecting-the-best-albums-1676075373" }] },
-  { "year": 2013, "sheetId": "19LMb7DNa0Hi7XBa2rPr2vECe0RxFOffGsYLIc4wwwrs", "tab": "Sheet1", "lists": 24, "no1": ["Kanye West", "Yeezus"] }
+  {
+    "year": 2025,
+    "sheetId": "1PenaCq3J-kwcnGyySj8Ne0NsGDZhxVBcr7Sv8xe7X6w",
+    "tab": "Classic",
+    "lists": 29,
+    "no1": [
+      "Geese",
+      "Getting Killed"
+    ],
+    "status": "final",
+    "replayLast": 3,
+    "no1Cover": "/aoty/covers/no1/2025.jpg"
+  },
+  {
+    "year": 2024,
+    "sheetId": "1JOuUrJtT6w0tHy28fTuSmWUq1d-IVLc48swyx6UIeSQ",
+    "tab": "Classic",
+    "lists": 38,
+    "no1": [
+      "Charli xcx",
+      "Brat"
+    ],
+    "no1Cover": "/aoty/covers/no1/2024.jpg"
+  },
+  {
+    "year": 2023,
+    "sheetId": "1mlSJ5DU0RKccuNBfAgsiw-_xUApis7zC3ZjJofXyZB4",
+    "tab": "Classic",
+    "lists": 44,
+    "no1": [
+      "Sufjan Stevens",
+      "Javelin"
+    ],
+    "no1Cover": "/aoty/covers/no1/2023.jpg"
+  },
+  {
+    "year": 2022,
+    "sheetId": "1m5v1y2Bj88JTmSZGAoGFTuCQPPWQDwxkIfT8QhTh478",
+    "tab": "Classic",
+    "lists": 47,
+    "no1": [
+      "Kendrick Lamar",
+      "Mr. Morale & The Big Steppers"
+    ],
+    "no1Cover": "/aoty/covers/no1/2022.jpg"
+  },
+  {
+    "year": 2021,
+    "sheetId": "1IoFuhHS63IJ6L15rLN7FBd6zvK0wOUwLYAZGbDr3wTQ",
+    "tab": "Overall",
+    "lists": 26,
+    "no1": [
+      "Little Simz",
+      "Sometimes I Might Be Introvert"
+    ],
+    "no1Cover": "/aoty/covers/no1/2021.jpg"
+  },
+  {
+    "year": 2020,
+    "sheetId": "1vpxZunN4M8gvnsireG4TEPSlA-pxo8Ta9Y6Kj8zgWwg",
+    "tab": "main",
+    "lists": 34,
+    "no1": [
+      "Phoebe Bridgers",
+      "Punisher"
+    ],
+    "extras": [
+      {
+        "label": "Data assistance: Jonathan Rockower",
+        "url": "https://github.com/jrockower/"
+      }
+    ],
+    "no1Cover": "/aoty/covers/no1/2020.jpg"
+  },
+  {
+    "year": 2019,
+    "sheetId": "1SklyhzT6ty4fJH9wrItm0qOiI6kiloRdkZMhONpZ0CA",
+    "tab": "Overall",
+    "lists": 18,
+    "no1": [
+      "Lana Del Rey",
+      "Norman Fucking Rockwell!"
+    ],
+    "no1Cover": "/aoty/covers/no1/2019.jpg"
+  },
+  {
+    "year": 2018,
+    "sheetId": "1BwJaVJa_OZezUbbCE9Z6HpNdcl6wwmlPrCLWm3sKygo",
+    "tab": "Overall",
+    "lists": 32,
+    "no1": [
+      "Pusha-T",
+      "Daytona"
+    ],
+    "no1Cover": "/aoty/covers/no1/2018.jpg"
+  },
+  {
+    "year": 2017,
+    "sheetId": "1-uY5_BeeKH_e2-XROri85qpV8s_5hMEEoFoxigci61I",
+    "tab": "Overall",
+    "lists": 27,
+    "no1": [
+      "Kendrick Lamar",
+      "DAMN."
+    ],
+    "no1Cover": "/aoty/covers/no1/2017.jpg"
+  },
+  {
+    "year": 2016,
+    "sheetId": "1qoiuqi8DzKgT2KVUKJBR7Xdo2dFNF8WT7uO9gtvoyFI",
+    "tab": "Overall",
+    "lists": 36,
+    "no1": [
+      "David Bowie",
+      "Blackstar"
+    ],
+    "no1Apple": "1676286487",
+    "extras": [
+      {
+        "label": "Interactive viz by Diego Garcia-Olano",
+        "url": "http://diegoolano.com/robmitchum/endofyear/"
+      }
+    ],
+    "no1Cover": "/aoty/covers/no1/2016.jpg"
+  },
+  {
+    "year": 2015,
+    "sheetId": "1FQO_gdYXCFARbyfE8La08bgv041nYZDLTL6jV3rtPKU",
+    "tab": "Overall",
+    "lists": 20,
+    "no1": [
+      "Kendrick Lamar",
+      "To Pimp a Butterfly"
+    ],
+    "no1Cover": "/aoty/covers/no1/2015.jpg"
+  },
+  {
+    "year": 2014,
+    "sheetId": "1dLn6jBLBx_j8H9lug0hX4UZEhrckdsx9kDLEa_Ca8QE",
+    "tab": "Overall",
+    "lists": 35,
+    "no1": [
+      "FKA twigs",
+      "LP1"
+    ],
+    "extras": [
+      {
+        "label": "Deadspin: The rock-critic hive mind",
+        "url": "http://theconcourse.deadspin.com/the-rock-critic-hive-mind-dissecting-the-best-albums-1676075373"
+      }
+    ],
+    "no1Cover": "/aoty/covers/no1/2014.jpg"
+  },
+  {
+    "year": 2013,
+    "sheetId": "19LMb7DNa0Hi7XBa2rPr2vECe0RxFOffGsYLIc4wwwrs",
+    "tab": "Sheet1",
+    "lists": 24,
+    "no1": [
+      "Kanye West",
+      "Yeezus"
+    ],
+    "no1Cover": "/aoty/covers/no1/2013.jpg"
+  }
 ]
