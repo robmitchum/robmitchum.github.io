@@ -8,8 +8,8 @@
 // The tab is read by header name: the first column is "Artist - Title", every column
 // whose header matches an abbreviation in src/data/aoty/publications/<year>.json is a
 // list, and the stats columns on the right (AVG, CONS SCORE, # Lists, …) are ignored —
-// the site recomputes them. Optional LISTEN and BUY columns hold links that override what
-// the links script finds. A header the script doesn't recognize stops it, so a new
+// the site recomputes them. Optional LISTEN, BUY and COVER columns (filled in the sheet by
+// scripts/sheets/aoty-links.gs, or by hand) hold the album's links; LINK CHECK is ignored. A header the script doesn't recognize stops it, so a new
 // list can't be dropped by accident: add the outlet to the publications file first.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -33,7 +33,8 @@ const byAbbr = new Map(pubs.map((p) => [norm(p.abbr), p]));
 
 // Columns that hold stats, ids or notes rather than a publication's list.
 const IGNORE = new Set(['AVG', 'AVERAGE', 'WT-AVG', 'WTAVG', 'WT AVG', 'CONS SCORE', 'CONS', 'CONSENSUS',
-  '# LISTS', '#LISTS', 'LISTS', 'TOP 10S', 'TOP10S', 'TOP 10', '#1S', '# 1S', 'NO. 1S', 'ID', 'GENRE', 'NOTES', '']);
+  '# LISTS', '#LISTS', 'LISTS', 'TOP 10S', 'TOP10S', 'TOP 10', '#1S', '# 1S', 'NO. 1S', 'ID', 'GENRE', 'NOTES',
+  'LINK CHECK', '']);
 
 let rows;
 if (source === '--download') {
@@ -55,8 +56,9 @@ const unknown = [];
 // Optional link columns: a URL here beats anything the links script finds.
 const listenCol = header.findIndex((h) => h.toUpperCase() === 'LISTEN');
 const buyCol = header.findIndex((h) => h.toUpperCase() === 'BUY');
+const coverCol = header.findIndex((h) => h.toUpperCase() === 'COVER');
 header.forEach((h, i) => {
-  if (i === 0 || i === listenCol || i === buyCol) return;
+  if (i === 0 || i === listenCol || i === buyCol || i === coverCol) return;
   // CONS is both Consequence's abbreviation and a stats heading in some years: a known
   // publication wins.
   const p = byAbbr.get(norm(h));
@@ -90,7 +92,7 @@ for (let r = 1; r < rows.length; r++) {
   if (seen.has(key)) problems.push(`row ${r + 1}: "${cell}" repeats row ${seen.get(key)}`);
   seen.set(key, r + 1);
   const album = { artist: split[0], title: split[1], ranks };
-  for (const [col, field] of [[listenCol, 'listen'], [buyCol, 'buy']]) {
+  for (const [col, field] of [[listenCol, 'listen'], [buyCol, 'buy'], [coverCol, 'cover']]) {
     if (col < 0) continue;
     const v = String(rows[r][col] ?? '').trim();
     if (!v) continue;
@@ -101,7 +103,9 @@ for (let r = 1; r < rows.length; r++) {
 }
 if (problems.length) fail(`Fix these in the sheet (or the CSV) and run again:\n  ${problems.join('\n  ')}`);
 
-const out = { year, pubs: cols.map(([, p]) => p.abbr), albums };
+// linkColumns: the sheet manages links (scripts/sheets/aoty-links.gs), so the links script
+// only downloads covers.
+const out = { year, pubs: cols.map(([, p]) => p.abbr), linkColumns: listenCol >= 0, albums };
 const path = resolve(dataDir, `${year}.json`);
 writeFileSync(path, JSON.stringify(out, null, 0).replace(/\},\{"artist"/g, '},\n{"artist"') + '\n');
 const nl = albums.filter((a) => a.listen).length; const nb = albums.filter((a) => a.buy).length;

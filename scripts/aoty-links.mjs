@@ -77,6 +77,28 @@ const albums = data.albums.map((a) => {
   .slice(0, top);
 
 let looked = 0;
+
+// The sheet manages links (LISTEN / BUY / COVER columns, filled by scripts/sheets/aoty-links.gs):
+// just download each COVER that isn't saved yet. No searching.
+if (data.linkColumns && !redo) {
+  let saved = 0; let missingCover = 0;
+  for (const a of albums) {
+    const key = `${a.artist} - ${a.title}`.toLowerCase();
+    const entry = links[key] ?? {};
+    if (entry.locked) continue;
+    if (!a.cover) { if (!entry.cover) missingCover++; continue; }
+    if (entry.cover && entry.coverFrom === a.cover) continue;
+    const file = `${slugify(`${a.artist} ${a.title}`)}.jpg`;
+    await saveCover(entry, a.cover, file);
+    if (entry.cover) { entry.coverFrom = a.cover; saved++; }
+    links[key] = entry;
+  }
+  save();
+  console.log(`Downloaded ${saved} covers from the sheet's COVER column.` +
+    (missingCover ? ` ${missingCover} albums have no cover yet (run "Find links" in the sheet).` : ''));
+  process.exit(0);
+}
+
 // Control-C: save, and still write the missing list.
 process.on('SIGINT', () => { save(); summarize(); process.exit(130); });
 

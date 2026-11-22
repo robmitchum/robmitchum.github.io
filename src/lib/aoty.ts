@@ -34,8 +34,9 @@ const Pub = z.object({ abbr: z.string(), name: z.string(), url: z.string().url()
 const YearData = z.object({
   year: z.number(),
   pubs: z.array(z.string()),
+  linkColumns: z.boolean().optional(),
   albums: z.array(z.object({ artist: z.string(), title: z.string(), ranks: z.array(z.number().nullable()),
-    listen: z.string().url().optional(), buy: z.string().url().optional() })),
+    listen: z.string().url().optional(), buy: z.string().url().optional(), cover: z.string().url().optional() })),
 });
 const Link = z.object({
   apple: z.string().optional(),
@@ -223,10 +224,13 @@ function applyPrev(albums: Album[], data: z.infer<typeof YearData>, prevRanks: (
   prev.forEach((p, i) => { p.album.prev = i + 1; });
 }
 
-// Listen: the Odesli (album.link) page when the lookup found one, else an Apple Music search.
+// Listen: an album.link page (every streaming service) when we know the Apple Music album,
+// any other link as given, else an Apple Music search.
 export function listenUrl(a: Album) {
-  return a.links.listen || a.links.apple
-    || `https://music.apple.com/us/search?term=${encodeURIComponent(`${a.artist} ${a.title}`)}`;
+  const link = a.links.listen || a.links.apple;
+  const appleId = link?.match(/music\.apple\.com\/.*?\/(\d{6,})(?:[?#]|$)/)?.[1];
+  if (appleId) return `https://album.link/i/${appleId}`;
+  return link || `https://music.apple.com/us/search?term=${encodeURIComponent(`${a.artist} ${a.title}`)}`;
 }
 export function buyUrl(a: Album) {
   return a.links.bandcamp || null;

@@ -30,12 +30,12 @@ Feeds: `/phishcrit/rss.xml`, `/blog/rss.xml`.
 - `src/data/aoty/publications/<year>.json` — the outlets for that year: sheet abbreviation, name, list URL
   (optional `short` for a shorter name on the site, and from 2026 an `added` date, YYYY-MM-DD, for "Last update").
 - `src/data/aoty/<year>.json` — every album's placements, written by the export script. A year with this file gets a chart page.
-- Optional **LISTEN** and **BUY** columns in a year's sheet (after the stats) hold links that beat anything the links script finds. Fix links there, then re-run the export.
+- **LISTEN / BUY / COVER / LINK CHECK** columns in a year's sheet hold each album's links. `scripts/sheets/aoty-links.gs` (pasted into the sheet's Extensions → Apps Script) fills them from an "Albums" menu; you can also type or fix links by hand. When a sheet has these columns, `npm run aoty:links` only downloads covers.
 - `src/data/aoty/links/<year>.json` — Listen, Buy and cover for each album, filled in by the links script.
 - `src/data/aoty/hub.md` — the hub page text.
 
 ```sh
 npm run aoty -- 2025 --download        # pull the sheet (shared "anyone with the link") into src/data/aoty/2025.json
 npm run aoty -- 2025 path/to/file.csv  # or from a CSV you downloaded
-npm run aoty:links -- 2025 --top 200   # look up Listen/Buy links and covers (slow; resumable)
+npm run aoty:links -- 2025             # download covers (or, for a sheet without link columns, look links up)
 ```
