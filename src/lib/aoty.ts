@@ -22,6 +22,8 @@ const YearMeta = z.object({
   tab: z.string(),
   lists: z.number(),
   no1: z.tuple([z.string(), z.string()]),
+  no1Apple: z.string().optional(), // Apple Music id, for scripts/aoty-no1-covers.mjs
+  no1Cover: z.string().optional(), // saved by that script
   status: z.enum(['final', 'live']).optional(),
   // 2025 only: the "Last update" column replays the lists in sheet order and shows the
   // standings before the last N were added. Years with real dates per list don't need it.

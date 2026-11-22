@@ -21,7 +21,7 @@ const sections = [
 ];
 const intro = hubText('intro');
 const help = hubText('can i help?');
-const cover = (y: number) => (hasChart(y) ? loadYear(y).albums[0].links.cover : undefined);
+const cover = (y: (typeof years)[number]) => y.no1Cover ?? (hasChart(y.year) ? loadYear(y.year).albums[0].links.cover : undefined);
 ---
 <BaseLayout title="Albums of the Year" section="var(--projects)" description="Every December, the year-end album lists from dozens of publications, compiled into one ranking: the Consensus 200, 2013 to now.">
   <div class="wrap aoty hub">
@@ -91,7 +91,7 @@ const cover = (y: number) => (hasChart(y) ? loadYear(y).albums[0].links.cover : 
       <div class="label" id="a-h">Every year</div>
       <div class="years">
         {years.map((y, i) => {
-          const c = cover(y.year);
+          const c = cover(y);
           return (
             <article class:list={['yr', { first: i === 0 }]}>
               <div class="yr-cover">

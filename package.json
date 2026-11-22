@@ -8,7 +8,8 @@
     "preview": "astro preview",
     "bylines": "node scripts/export-bylines.mjs",
     "aoty": "node scripts/export-aoty.mjs",
-    "aoty:links": "node scripts/aoty-links.mjs"
+    "aoty:links": "node scripts/aoty-links.mjs",
+    "aoty:no1": "node scripts/aoty-no1-covers.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
