@@ -1,0 +1,10 @@
+---
+import { buyStore, buyUrl, listenUrl, type Album } from '../../lib/aoty';
+interface Props { album: Album; small?: boolean }
+const { album, small = false } = Astro.props;
+const buy = buyUrl(album);
+const cls = small ? 'pill pill--sm' : 'pill';
+const name = `${album.title} by ${album.artist}`;
+---
+<a class={cls} href={buy} aria-label={`Buy ${name} at ${buyStore(buy)}`}>Buy <span aria-hidden="true">↗</span></a>
+<a class={cls} href={listenUrl(album)} aria-label={`Listen to ${name}`}>Listen <span aria-hidden="true">↗</span></a>

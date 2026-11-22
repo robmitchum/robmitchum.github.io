@@ -6,13 +6,19 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "bylines": "node scripts/export-bylines.mjs"
+    "bylines": "node scripts/export-bylines.mjs",
+    "aoty": "node scripts/export-aoty.mjs",
+    "aoty:links": "node scripts/aoty-links.mjs",
+    "aoty:no1": "node scripts/aoty-no1-covers.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
     "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource-variable/libre-franklin": "^5.3.0",
     "@fontsource-variable/source-serif-4": "^5.3.1",
+    "@fontsource/anton": "^5.3.0",
     "@fontsource/courier-prime": "^5.3.0",
+    "@fontsource/news-cycle": "^5.3.0",
     "@fontsource/schibsted-grotesk": "^5.3.0",
     "@fontsource/unifrakturmaguntia": "^5.3.0",
     "astro": "^7.4.12"

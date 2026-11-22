@@ -1,0 +1,97 @@
+---
+import AotyLayout from '../../../../layouts/AotyLayout.astro';
+import ChartHead from '../../../../components/aoty/ChartHead.astro';
+import ChartRow from '../../../../components/aoty/ChartRow.astro';
+import PickOne from '../../../../components/aoty/PickOne.astro';
+import Sleepers from '../../../../components/aoty/Sleepers.astro';
+import Outliers from '../../../../components/aoty/Outliers.astro';
+import { CHART_SIZE, MISS, years, hasChart, loadYear, sheetUrl } from '../../../../lib/aoty';
+
+export function getStaticPaths() {
+  return years.filter((y) => hasChart(y.year)).map((y) => ({ params: { year: String(y.year) } }));
+}
+const year = loadYear(Number(Astro.params.year));
+const { meta } = year;
+const chart = year.albums.slice(0, CHART_SIZE);
+const showPrev = year.prevLabel !== null;
+const PAGE = 50;
+const live = meta.status === 'live';
+---
+<AotyLayout title={`The Consensus 200: ${meta.year}`} description={`The Consensus 200 for ${meta.year}: ${year.pubs.length} publications' year-end album lists compiled into one chart. No. 1: ${year.albums[0].title} by ${year.albums[0].artist}.`}>
+  <div class="aoty-page">
+    <header class="mast">
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <span class="kick" style="font-size:13px">Albums of the Year</span>
+        <h1 class="anton">The Consensus 200</h1>
+      </div>
+      <div class="mast-side">
+        <span class="for">For the year {meta.year}</span>
+        <span>Compiled from {year.pubs.length} publications’ year-end lists{live && ' so far'}</span>
+        <span>{year.albums.length} albums charted</span>
+        <a class="pill pill--on-green" href={sheetUrl(meta)} target="_blank" rel="noopener" style="margin-top:8px">The data: {meta.year} spreadsheet <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+    <div class="bar-under"></div>
+
+    <div class="aoty-cols">
+      <section class="aoty-main" aria-label="The Consensus 200">
+        <div class="legend">
+          <span>{showPrev && <><span class="dot">●</span> Moved up 3 or more places since the last update · </>}<strong>Sleeper</strong> also in the Sleepers top 10 · click an album to see every list it made</span>
+          <span style="font-style:italic">Score: average position across all {year.pubs.length} lists, {MISS} for each list missed. Lower is better.</span>
+        </div>
+        <div class="chart" role="table" aria-label={`The Consensus 200, ${meta.year}`} data-chart data-page={PAGE}>
+          <ChartHead showPrev={showPrev} />
+          {chart.map((a) => <ChartRow album={a} year={year} showPrev={showPrev} />)}
+        </div>
+      </section>
+      <aside class="aoty-side" aria-label="More from this year">
+        <PickOne year={year} />
+        <Sleepers year={year} />
+        <Outliers year={year} />
+      </aside>
+    </div>
+
+    <div class="more">
+      <span class="count" data-chart-count>Showing 1–{chart.length} of {CHART_SIZE}</span>
+      <span class="btns">
+        <a class="btn btn--dark" href={`/projects/aoty/${meta.year}/all/`} data-next hidden>Next {PAGE}</a>
+        <a class="btn" href={`/projects/aoty/${meta.year}/all/`}>Full list: all {year.albums.length} albums</a>
+        <a class="btn" href={sheetUrl(meta)} target="_blank" rel="noopener">The spreadsheet <span aria-hidden="true" style="margin-left:5px">↗</span></a>
+      </span>
+    </div>
+    {showPrev && meta.replayLast && (
+      <p class="fine">“Last update” replays the lists in spreadsheet order and shows where each album stood {year.prevLabel}; a dash means it was outside the {CHART_SIZE} then. From 2026 on it will be the standings from the previous time new lists were added.</p>
+    )}
+  </div>
+</AotyLayout>
+
+<script>
+  import { wireToggles } from '../../../../components/aoty/toggles';
+  wireToggles();
+  // Show the chart 50 at a time. Without JavaScript every row stays visible.
+  const chart = document.querySelector<HTMLElement>('[data-chart]');
+  if (chart) {
+    const step = Number(chart.dataset.page);
+    const rows = [...chart.querySelectorAll<HTMLElement>('[data-pos]')];
+    const next = document.querySelector<HTMLAnchorElement>('[data-next]')!;
+    const count = document.querySelector('[data-chart-count]')!;
+    const want = Number(new URLSearchParams(location.search).get('show')) || step;
+    let shown = 0;
+    const show = (n: number) => {
+      shown = Math.min(Math.max(n, step), rows.length);
+      rows.forEach((r, i) => { r.hidden = i >= shown; });
+      count.textContent = `Showing 1–${shown} of ${rows.length}`;
+      next.hidden = false;
+      next.textContent = shown < rows.length ? `Next ${Math.min(step, rows.length - shown)}` : 'Keep going: the full list';
+    };
+    show(want);
+    next.addEventListener('click', (e) => {
+      if (shown >= rows.length) return;
+      e.preventDefault();
+      const first = rows[shown];
+      show(shown + step);
+      history.replaceState(null, '', `?show=${shown}`);
+      first.querySelector<HTMLElement>('button')?.focus();
+    });
+  }
+</script>

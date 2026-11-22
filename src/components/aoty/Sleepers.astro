@@ -1,0 +1,36 @@
+---
+import { SLEEPER_MIN, SLEEPER_MAX, fmt1, type Year } from '../../lib/aoty';
+import BuyListen from './BuyListen.astro';
+import Breakdown from './Breakdown.astro';
+interface Props { year: Year }
+const { year } = Astro.props;
+---
+<section aria-labelledby="sleepers-h">
+  <div class="side-head"><span class="kick">Few lists, high marks</span><h2 class="anton" id="sleepers-h">Sleepers</h2></div>
+  <div class="bar-under"></div>
+  <p class="side-note">Albums on {SLEEPER_MIN} to {SLEEPER_MAX} of the {year.pubs.length} lists, ranked by their average position on the lists that picked them. Click one to see its lists.</p>
+  <div class="mini" role="table" aria-label={`Sleepers, ${year.meta.year}`}>
+    <div class="hd" role="row">
+      <span role="columnheader" style="text-align:center">No.</span>
+      <span role="columnheader">Title · Artist</span>
+      <span role="columnheader" style="text-align:center">Lists</span>
+      <span role="columnheader" style="text-align:right">Avg.</span>
+    </div>
+    {year.sleepers.map((a) => (
+      <div class:list={['grp', { five: a.sleeper % 5 === 0 }]} role="rowgroup">
+        <div class="row" role="row">
+          <span class="n" role="cell">{a.sleeper}</span>
+          <span class="ttl" role="cell">
+            <button type="button" class="open-btn" aria-expanded="false" aria-controls={`sl-${a.slug}`}>
+              <span class="t nc">{a.title}</span><span class="a nc">{a.artist}</span>
+            </button>
+            <span class="pills"><BuyListen album={a} small /></span>
+          </span>
+          <span class="ctr" role="cell">{a.lists}</span>
+          <span class="r tnum" role="cell">{fmt1(a.avg)}</span>
+        </div>
+        <Breakdown album={a} year={year} id={`sl-${a.slug}`} />
+      </div>
+    ))}
+  </div>
+</section>

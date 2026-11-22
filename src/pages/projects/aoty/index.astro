@@ -1,10 +1,201 @@
 ---
+// Albums of the Year hub: this year's chart up top, how it works, every year, thanks.
+// Main-site look with the green Consensus-chart pieces embedded (notes/phase-5-aoty-archive.md).
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SectionIcon from '../../../components/SectionIcon.astro';
+import PickOne from '../../../components/aoty/PickOne.astro';
+import { years, hasChart, loadYear, sheetUrl, hubText, inline, fmt1, CHART_SIZE } from '../../../lib/aoty';
+import '../../../styles/aoty.css';
+
+const charted = years.filter((y) => hasChart(y.year));
+const current = loadYear(charted[0].year);
+const top10 = current.albums.slice(0, 10);
+const sleeper = current.sleepers[0];
+const status = current.meta.status === 'live' ? `${current.pubs.length} lists so far` : 'Final';
+
+const sections = [
+  ['What this is', '[Why you compile the lists each year: catching albums you missed, keeping everything in one place, and what the data says about criticism and trends.]'],
+  ['Which lists count', '[Your inclusion rules: voted on by a staff, not one writer; covers several genres; at least 50 albums; from a known or legitimate publication.]'],
+  ['How albums are ranked', '[The Consensus Score: average position across every list, 75 for each list missed; lower is better.]'],
+  ['Can I help?', '[An invitation to send corrections, statistical ideas, data requests or visualization proposals, and how to reach you.]'],
+];
+const acknowledgements = [
+  ['Thanks', '[Thanks to the people who have helped with the project.]'],
+  ['Support Musicians', '[A note on supporting the artists on these lists.]'],
+];
+const intro = hubText('intro');
+const cover = (y: (typeof years)[number]) => y.no1Cover ?? (hasChart(y.year) ? loadYear(y.year).albums[0].links.cover : undefined);
 ---
-<BaseLayout title="Albums of the Year" section="var(--projects)">
-  <div class="wrap">
-    <h1 class="page-title">Albums of the Year</h1>
-    <p class="stub"><strong>Phase 5.</strong> Hub for the year-end album data (2013–2025), with a page per year built from the Google Sheets.</p>
+<BaseLayout title="Albums of the Year" section="var(--projects)" description="Every December, the year-end album lists from dozens of publications, compiled into one ranking: the Consensus 200, 2013 to now.">
+  <div class="wrap aoty hub">
+    <section class="hero">
+      <div class="hero-title">
+        <SectionIcon name="data" size={96} />
+        <h1>Albums of the Year</h1>
+      </div>
+      {intro
+        ? intro.map((b) => b.kind === 'p' ? <p class="lede" set:html={inline(b.text)} /> : <ul class="lede">{b.items.map((i) => <li set:html={inline(i)} />)}</ul>)
+        : <p class="lede ph">[A line introducing the project: every December, the year-end lists from dozens of publications, compiled into one ranking.]</p>}
+    </section>
+
+    <section class="band" aria-labelledby="ty-h">
+      <div class="label" id="ty-h">This year</div>
+      <div class="ty">
+        <div class="ty-chart">
+          <div class="ty-mast">
+            <div><span class="kick">Albums of the Year</span><h2 class="anton">The Consensus {CHART_SIZE}</h2></div>
+            <span class="ty-status">{current.meta.year} · {status}</span>
+          </div>
+          <div class="bar-under"></div>
+          <ol class="ty-list">
+            {top10.map((a) => (
+              <li class:list={{ one: a.pos === 1 }}>
+                <span class="n">{a.pos}</span>
+                <span class="tt"><span class="nc t">{a.title}</span><span class="nc a">{a.artist}</span></span>
+                <span class="li">{a.lists} lists</span>
+              </li>
+            ))}
+          </ol>
+          <div class="ty-btns">
+            <a class="btn btn--dark" href={`/projects/aoty/${current.meta.year}/`}>See the full chart</a>
+            <a class="btn" href={sheetUrl(current.meta)} target="_blank" rel="noopener">The spreadsheet <span aria-hidden="true" style="margin-left:5px">↗</span></a>
+          </div>
+        </div>
+        <div class="ty-side">
+          <PickOne year={current} />
+          <a class="tile" href={`/projects/aoty/${current.meta.year}/#sleepers-h`}>
+            <span class="tile-head anton">Sleepers</span>
+            <span class="kick tile-k">Top sleeper: few lists, high marks</span>
+            <span class="nc tile-t">{sleeper.title} <span class="tile-a">· {sleeper.artist}</span></span>
+            <span class="tile-m">{sleeper.lists} lists · average spot {fmt1(sleeper.avg)}</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="method" aria-labelledby="m-h">
+      <div class="label" id="m-h">How it works</div>
+      <div class="method">
+        {sections.map(([h, ph]) => {
+          const body = hubText(h);
+          return (
+            <div>
+              <h2>{h}</h2>
+              {body
+                ? body.map((b) => b.kind === 'p' ? <p set:html={inline(b.text)} /> : <ul>{b.items.map((i) => <li set:html={inline(i)} />)}</ul>)
+                : <p class="ph">{ph}</p>}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+
+    <section class="band" id="archive" aria-labelledby="a-h">
+      <div class="label" id="a-h">Every year</div>
+      <div class="years">
+        {years.map((y, i) => {
+          const c = cover(y);
+          return (
+            <article class:list={['yr', { first: i === 0 }]}>
+              <div class="yr-cover">
+                {c ? <img src={c} alt={`Cover of ${y.no1[1]}`} width="300" height="300" loading="lazy" decoding="async" />
+                   : <svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="25" fill="none" stroke-width="6" stroke="#00703A"></circle><circle cx="32" cy="32" r="16" fill="none" stroke-width="6" stroke="#7CC49A"></circle><circle cx="32" cy="32" r="7" fill="none" stroke-width="6" stroke="#00703A"></circle></svg>}
+              </div>
+              <div class="yr-top"><h3 class="anton">{y.year}</h3><span>{y.lists} lists</span></div>
+              <span class="yr-no1">
+                <span class="kick">No. 1</span>
+                <span class="nc t">{y.no1[1]}</span>
+                <span class="nc a">{y.no1[0]}</span>
+              </span>
+              {y.extras?.map((x) => <a class="yr-extra" href={x.url}>{x.label} <span aria-hidden="true">↗</span></a>)}
+              <span class="yr-links">
+                {hasChart(y.year) && <a class="pill" href={`/projects/aoty/${y.year}/`}>Chart</a>}
+                <a class="pill" href={sheetUrl(y)} target="_blank" rel="noopener">Spreadsheet <span aria-hidden="true">↗</span></a>
+              </span>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="h-h">
+      <div class="label" id="h-h">Acknowledgements</div>
+      <div class="method">
+        {acknowledgements.map(([h, ph]) => {
+          const body = hubText(h);
+          return (
+            <div>
+              <h2>{h}</h2>
+              {body
+                ? body.map((b) => b.kind === 'p' ? <p set:html={inline(b.text)} /> : <ul>{b.items.map((i) => <li set:html={inline(i)} />)}</ul>)
+                : <p class="ph">{ph}</p>}
+            </div>
+          );
+        })}
+      </div>
+    </section>
   </div>
 </BaseLayout>
-<style>.page-title { font-size: clamp(40px, 7vw, 76px); margin: 72px 0 40px; }</style>
+
+<style>
+  .hub { font-family: var(--font); }
+  .hero { padding: 64px 0 40px; display: flex; flex-direction: column; gap: 24px; }
+  .hero-title { display: flex; align-items: flex-end; gap: 28px; flex-wrap: wrap; }
+  .hero h1 { margin: 0; font-size: clamp(48px, 9vw, 96px); line-height: 0.95; letter-spacing: -0.025em; }
+  .lede { margin: 0; font-size: 20px; line-height: 1.5; max-width: 72ch; text-wrap: balance; }
+  .ph { color: var(--muted); font-style: italic; }
+
+  .band { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 24px; padding: 40px 0 64px; border-top: 4px solid var(--ink); }
+  .band .label { font-size: 13px; line-height: 1.3; padding-top: 8px; font-weight: 800; }
+  @media (max-width: 760px) { .band { grid-template-columns: 1fr; gap: 12px; } }
+
+  .ty { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; min-width: 0; }
+  .ty-chart { flex: 1 1 520px; min-width: 0; font-family: 'Libre Franklin Variable', sans-serif; }
+  .ty-side { flex: 1 1 320px; max-width: 420px; display: flex; flex-direction: column; gap: 24px; font-family: 'Libre Franklin Variable', sans-serif; }
+  @media (max-width: 1100px) { .ty-side { max-width: none; } }
+  .ty-mast { background: var(--green); color: #fff; padding: 14px 22px 12px; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 24px; }
+  .ty-mast h2 { margin: 0; font-size: clamp(40px, 6vw, 56px); line-height: 1; letter-spacing: 0; }
+  .ty-status { font-weight: 900; font-size: 20px; text-transform: uppercase; }
+  .ty-list { list-style: none; margin: 0; padding: 0; }
+  .ty-list li { display: grid; grid-template-columns: 44px minmax(0, 1fr) 64px; gap: 0 12px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--ink); }
+  .ty-list li.one { background: var(--tint); }
+  .ty-list .n { text-align: center; font-weight: 900; font-size: 24px; line-height: 1; }
+  .ty-list .tt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; min-width: 0; }
+  .ty-list .t { font-weight: 700; font-size: 17px; line-height: 1.15; }
+  .ty-list .a { font-size: 14px; }
+  .ty-list .li { text-align: right; font-size: 14px; }
+  .ty-btns { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 20px; }
+
+  .tile { display: flex; flex-direction: column; gap: 6px; border: 2px solid var(--ink); background: #fff; padding: 0 0 14px; }
+  .tile:hover { border-color: var(--green); }
+  .tile > span:not(.tile-head) { padding: 0 16px; }
+  .tile-head { display: block; background: var(--green); color: #fff; padding: 8px 16px; font-size: 30px; line-height: 1; margin-bottom: 6px; }
+  .tile-k { font-size: 11px; color: var(--green); }
+  .tile-t { font-weight: 700; font-size: 18px; line-height: 1.15; }
+  .tile-a { font-weight: 400; font-size: 14px; }
+  .tile-m { font-size: 13px; color: var(--soft); }
+
+  .method { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 48px; }
+  @media (max-width: 900px) { .method { grid-template-columns: 1fr; } }
+  .method > div { display: flex; flex-direction: column; gap: 10px; }
+  .method h2 { margin: 0; font-size: 28px; }
+  .method p, .method ul { margin: 0; font-size: 17px; line-height: 1.55; color: #4A4A45; }
+  .method :global(a), .lede :global(a) { text-decoration: underline; text-underline-offset: 2px; }
+  .method :global(a:hover), .lede :global(a:hover) { color: var(--green); }
+  .method ul { padding-left: 1.2em; }
+
+  .years { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px 32px; font-family: 'Libre Franklin Variable', sans-serif; }
+  .yr { border-top: 6px solid var(--ink); padding: 14px 0 18px; display: flex; flex-direction: column; gap: 8px; }
+  .yr.first { border-top-color: var(--green); }
+  .yr-cover { aspect-ratio: 1 / 1; width: 100%; background: var(--tint); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .yr-cover img { width: 100%; height: 100%; object-fit: cover; }
+  .yr-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 13px; }
+  .yr-top h3 { margin: 0; font-size: 44px; line-height: 1; letter-spacing: 0; }
+  .yr-no1 { display: flex; flex-direction: column; gap: 2px; }
+  .yr-no1 .kick { font-size: 11px; letter-spacing: 0.08em; color: var(--green); }
+  .yr-no1 .t { font-weight: 700; font-size: 17px; line-height: 1.15; }
+  .yr-no1 .a { font-size: 14px; }
+  .yr-extra { font-size: 13px; text-decoration: underline; }
+  .yr-links { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 4px; }
+  .yr-links .pill { font-size: 12px; padding: 3px 10px; }
+</style>

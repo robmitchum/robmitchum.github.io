@@ -1,8 +1,9 @@
 ---
 // "Lanes" icons: parallel stripes and track bends in two shades of the section color.
 // Music = record grooves, Science = double helix, News = nested open rings,
-// Bylines = page-corner bends, Podcasts = sound waves around a source.
-interface Props { name: 'music' | 'science' | 'news' | 'podcasts' | 'bylines'; size?: number }
+// Bylines = page-corner bends, Podcasts = sound waves around a source,
+// Data (Albums of the Year, Listening Diary) = touching vertical bars.
+interface Props { name: 'music' | 'science' | 'news' | 'podcasts' | 'bylines' | 'data'; size?: number }
 const { name, size = 40 } = Astro.props;
 const C: Record<string, [string, string]> = {
   music: ['#6B3FA0', '#B39DDB'],
@@ -10,6 +11,7 @@ const C: Record<string, [string, string]> = {
   news: ['#E5007E', '#F59AC8'],
   podcasts: ['#00A3AD', '#8ED6DA'],
   bylines: ['#0072BC', '#8CC4E8'],
+  data: ['#FFC20E', '#F2D27A'],
 };
 const [a, b] = C[name];
 ---
@@ -38,6 +40,10 @@ const [a, b] = C[name];
       <path d="M10 58V24A16 16 0 0 1 26 8H56" stroke={a} />
       <path d="M17 58V24A9 9 0 0 1 26 15H56" stroke={b} />
       <path d="M24 58V24A2 2 0 0 1 26 22H56" stroke={a} />
+    </>)}
+    {name === 'data' && (<>
+      <path d="M10 58V30M24 58V22M38 58V26M52 58V36" stroke={a} />
+      <path d="M17 58V14M31 58V8M45 58V18" stroke={b} />
     </>)}
   </g>
 </svg>
