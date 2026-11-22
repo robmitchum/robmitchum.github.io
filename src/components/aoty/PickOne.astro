@@ -1,5 +1,5 @@
 ---
-// "Pick one for me": a random album from the whole year, filtered by two dropdowns.
+// "Pick One": a random album from the whole year, filtered by two dropdowns.
 // The album data rides along as JSON; scripts/aoty-pick.ts does the picking.
 import { CHART_SIZE, buyUrl, listenUrl, type Year } from '../../lib/aoty';
 interface Props { year: Year }
@@ -27,7 +27,7 @@ const data = {
 };
 ---
 <section class="pick" aria-labelledby="pick-h" data-pick>
-  <div class="pick-head"><h2 class="anton" id="pick-h">Pick one for me</h2><span>From all {year.albums.length}</span></div>
+  <div class="pick-head"><h2 class="anton" id="pick-h">Pick One</h2><span>From all {year.albums.length}</span></div>
   <div class="pick-body">
     <label>Pick from
       <select data-filter>

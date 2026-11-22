@@ -50,7 +50,7 @@
 .aoty-page { max-width: 1400px; margin: 0 auto; padding: 32px var(--gutter) 0; }
 .aoty-cols { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
 .aoty-main { flex: 1 1 760px; min-width: 0; }
-.aoty-side { flex: 1 1 340px; max-width: 420px; display: flex; flex-direction: column; gap: 40px; }
+.aoty-side { flex: 1 1 340px; max-width: 420px; display: flex; flex-direction: column; gap: 40px; padding-top: 24px; }
 @media (max-width: 1180px) { .aoty-side { max-width: none; } }
 
 .legend { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding: 10px 0; font-size: 13px; border-bottom: 1px solid var(--ink); }

@@ -28,7 +28,7 @@ const live = meta.status === 'live';
         <span class="for">For the year {meta.year}</span>
         <span>Compiled from {year.pubs.length} publications’ year-end lists{live && ' so far'}</span>
         <span>{year.albums.length} albums charted</span>
-        <a class="pill pill--on-green" href={sheetUrl(meta)} style="margin-top:8px">The data: {meta.year} spreadsheet <span aria-hidden="true">↗</span></a>
+        <a class="pill pill--on-green" href={sheetUrl(meta)} target="_blank" rel="noopener" style="margin-top:8px">The data: {meta.year} spreadsheet <span aria-hidden="true">↗</span></a>
       </div>
     </header>
     <div class="bar-under"></div>
@@ -56,7 +56,7 @@ const live = meta.status === 'live';
       <span class="btns">
         <a class="btn btn--dark" href={`/projects/aoty/${meta.year}/all/`} data-next hidden>Next {PAGE}</a>
         <a class="btn" href={`/projects/aoty/${meta.year}/all/`}>Full list: all {year.albums.length} albums</a>
-        <a class="btn" href={sheetUrl(meta)}>The spreadsheet <span aria-hidden="true" style="margin-left:5px">↗</span></a>
+        <a class="btn" href={sheetUrl(meta)} target="_blank" rel="noopener">The spreadsheet <span aria-hidden="true" style="margin-left:5px">↗</span></a>
       </span>
     </div>
     {showPrev && meta.replayLast && (

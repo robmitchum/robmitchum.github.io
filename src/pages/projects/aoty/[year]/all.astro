@@ -37,7 +37,7 @@ const showPrev = year.prevLabel !== null;
       {year.albums.map((a) => <ChartRow album={a} year={year} showPrev={showPrev} />)}
     </div>
     <p data-none hidden style="font-size:14px">No album matches.</p>
-    <div class="more"><span></span><span class="btns"><a class="btn" href={sheetUrl(meta)}>The spreadsheet <span aria-hidden="true" style="margin-left:5px">↗</span></a></span></div>
+    <div class="more"><span></span><span class="btns"><a class="btn" href={sheetUrl(meta)} target="_blank" rel="noopener">The spreadsheet <span aria-hidden="true" style="margin-left:5px">↗</span></a></span></div>
   </div>
 </AotyLayout>
 <script>
