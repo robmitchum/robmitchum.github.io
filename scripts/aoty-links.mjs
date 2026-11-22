@@ -21,7 +21,9 @@
 // Albums already found are skipped; misses are tried again on every run and listed in
 // src/data/aoty/links/<year>-missing.txt. Saved after every album: Ctrl-C and rerun is safe.
 //
-// Fixing by hand, in the links file:
+// Fixing by hand: the best place is the year's sheet. Its LISTEN and BUY columns (any link)
+// beat everything here; run `npm run aoty -- <year> --download` first to pull them in.
+// Or, in the links file:
 //   - Paste an Apple Music album URL as "apple" (and remove "listen") for a miss or a wrong
 //     match: the next run fills in Listen and the cover from it.
 //   - Any other Listen link (Bandcamp, YouTube, Spotify…) goes in "listen". The script keeps
@@ -77,13 +79,19 @@ for (const [i, a] of albums.entries()) {
   const key = `${a.artist} - ${a.title}`.toLowerCase();
   const entry = links[key] ?? {};
   if (entry.locked) continue;
-  const needListen = redo || !entry.listen || !entry.cover || !!entry.retryOdesli || entry.listen.includes('deezer.com');
-  const needBuy = redo || entry.bandcamp === undefined;
+  // Links in the sheet's LISTEN / BUY columns are final: only the cover is still looked for.
+  const sheetListen = a.listen; const sheetBuy = a.buy;
+  const needListen = sheetListen ? !entry.cover || redo
+    : redo || !entry.listen || !entry.cover || !!entry.retryOdesli || entry.listen.includes('deezer.com');
+  const needBuy = !sheetBuy && (redo || entry.bandcamp === undefined);
   if (!needListen && !needBuy) continue;
   const notes = [];
   const file = `${slugify(`${a.artist} ${a.title}`)}.jpg`;
 
-  if (needListen) {
+  if (needListen && sheetListen) {
+    try { notes.push(await coverFor(a, sheetListen, entry, file)); }
+    catch (e) { notes.push(`Cover: error (${e.message})`); }
+  } else if (needListen) {
     try { notes.push(await fillListen(a, entry, file)); }
     catch (e) { notes.push(`Listen: error (${e.message})`); }
   }
@@ -102,7 +110,12 @@ for (const [i, a] of albums.entries()) {
 }
 save();
 
-const all = albums.map((a) => links[`${a.artist} - ${a.title}`.toLowerCase()] ?? {});
+const all = albums.map((a) => {
+  const e = { ...(links[`${a.artist} - ${a.title}`.toLowerCase()] ?? {}) };
+  if (a.listen) e.listen = a.listen;
+  if (a.buy) e.bandcamp = a.buy;
+  return e;
+});
 const missing = albums.filter((a, i) => !all[i].listen).map((a) => `${a.artist} - ${a.title}`);
 writeFileSync(missingPath, missing.join('\n') + (missing.length ? '\n' : ''));
 console.log(`\nLooked up ${looked} albums this run.`);
@@ -172,6 +185,22 @@ async function fillListen(a, entry, file) {
     return `Listen: Apple “${ap.match.artistName} – ${ap.match.collectionName}”`;
   }
   return `Listen: not found (Deezer: ${dz.why}; Apple: ${ap.why})`;
+}
+
+// Cover for an album whose Listen link came from the sheet: from Apple if it's an Apple
+// Music link, otherwise from Deezer.
+async function coverFor(a, listen, entry, file) {
+  const id = /music\.apple\.com/.test(listen) ? listen.match(/\/(\d{6,})(?:\?|$)/)?.[1] : null;
+  if (id) {
+    const r = (await itunesLookup(id))[0];
+    if (r?.artworkUrl100) await saveCover(entry, r.artworkUrl100.replace(/\/\d+x\d+bb\.(jpg|png)$/, '/300x300bb.jpg'), file);
+    if (entry.cover) return 'Listen: from the sheet · cover from Apple';
+  }
+  const dz = await findDeezer(a.artist, a.title);
+  const m = dz.match;
+  const cover = m && (m.md5_image ? `https://e-cdns-images.dzcdn.net/images/cover/${m.md5_image}/300x300-000000-80-0-0.jpg` : m.cover_medium || m.cover_big);
+  if (cover) await saveCover(entry, cover, file);
+  return `Listen: from the sheet · ${entry.cover ? 'cover from Deezer' : 'no cover found'}`;
 }
 
 async function saveCover(entry, url, file) {

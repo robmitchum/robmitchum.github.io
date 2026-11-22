@@ -30,7 +30,8 @@ Feeds: `/phishcrit/rss.xml`, `/blog/rss.xml`.
 - `src/data/aoty/publications/<year>.json` — the outlets for that year: sheet abbreviation, name, list URL
   (optional `short` for a shorter name on the site, and from 2026 an `added` date, YYYY-MM-DD, for "Last update").
 - `src/data/aoty/<year>.json` — every album's placements, written by the export script. A year with this file gets a chart page.
-- `src/data/aoty/links/<year>.json` — Listen, Buy and cover for each album. Edit by hand; add `"locked": true` to keep a fix.
+- Optional **LISTEN** and **BUY** columns in a year's sheet (after the stats) hold links that beat anything the links script finds. Fix links there, then re-run the export.
+- `src/data/aoty/links/<year>.json` — Listen, Buy and cover for each album, filled in by the links script.
 - `src/data/aoty/hub.md` — the hub page text.
 
 ```sh

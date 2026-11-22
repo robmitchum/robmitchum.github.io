@@ -34,7 +34,8 @@ const Pub = z.object({ abbr: z.string(), name: z.string(), url: z.string().url()
 const YearData = z.object({
   year: z.number(),
   pubs: z.array(z.string()),
-  albums: z.array(z.object({ artist: z.string(), title: z.string(), ranks: z.array(z.number().nullable()) })),
+  albums: z.array(z.object({ artist: z.string(), title: z.string(), ranks: z.array(z.number().nullable()),
+    listen: z.string().url().optional(), buy: z.string().url().optional() })),
 });
 const Link = z.object({
   apple: z.string().optional(),
@@ -148,7 +149,8 @@ export function loadYear(year: number): Year {
       score: scoreOf(a.ranks),
       avg: placements.reduce((s, p) => s + p.rank, 0) / placements.length,
       pos: 0, prev: null, best, sleeper: 0, solo: placements.length === 1,
-      links: links[key] ?? {},
+      // Links typed into the sheet's LISTEN / BUY columns win over the links file.
+      links: { ...(links[key] ?? {}), ...(a.listen ? { listen: a.listen } : {}), ...(a.buy ? { bandcamp: a.buy } : {}) },
     };
   });
   albums.sort(rankOrder);

@@ -8,7 +8,8 @@
 // The tab is read by header name: the first column is "Artist - Title", every column
 // whose header matches an abbreviation in src/data/aoty/publications/<year>.json is a
 // list, and the stats columns on the right (AVG, CONS SCORE, # Lists, …) are ignored —
-// the site recomputes them. A header the script doesn't recognize stops it, so a new
+// the site recomputes them. Optional LISTEN and BUY columns hold links that override what
+// the links script finds. A header the script doesn't recognize stops it, so a new
 // list can't be dropped by accident: add the outlet to the publications file first.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -51,8 +52,11 @@ if (source === '--download') {
 const header = rows[0].map((h) => String(h ?? '').trim());
 const cols = []; // [columnIndex, publication]
 const unknown = [];
+// Optional link columns: a URL here beats anything the links script finds.
+const listenCol = header.findIndex((h) => h.toUpperCase() === 'LISTEN');
+const buyCol = header.findIndex((h) => h.toUpperCase() === 'BUY');
 header.forEach((h, i) => {
-  if (i === 0) return;
+  if (i === 0 || i === listenCol || i === buyCol) return;
   // CONS is both Consequence's abbreviation and a stats heading in some years: a known
   // publication wins.
   const p = byAbbr.get(norm(h));
@@ -85,14 +89,23 @@ for (let r = 1; r < rows.length; r++) {
   const key = cell.toLowerCase();
   if (seen.has(key)) problems.push(`row ${r + 1}: "${cell}" repeats row ${seen.get(key)}`);
   seen.set(key, r + 1);
-  albums.push({ artist: split[0], title: split[1], ranks });
+  const album = { artist: split[0], title: split[1], ranks };
+  for (const [col, field] of [[listenCol, 'listen'], [buyCol, 'buy']]) {
+    if (col < 0) continue;
+    const v = String(rows[r][col] ?? '').trim();
+    if (!v) continue;
+    if (!/^https?:\/\//.test(v)) problems.push(`row ${r + 1} (${cell}), ${header[col]}: "${v}" isn't a link`);
+    else album[field] = v;
+  }
+  albums.push(album);
 }
 if (problems.length) fail(`Fix these in the sheet (or the CSV) and run again:\n  ${problems.join('\n  ')}`);
 
 const out = { year, pubs: cols.map(([, p]) => p.abbr), albums };
 const path = resolve(dataDir, `${year}.json`);
 writeFileSync(path, JSON.stringify(out, null, 0).replace(/\},\{"artist"/g, '},\n{"artist"') + '\n');
-console.log(`Wrote ${path}: ${albums.length} albums on ${cols.length} lists.`);
+const nl = albums.filter((a) => a.listen).length; const nb = albums.filter((a) => a.buy).length;
+console.log(`Wrote ${path}: ${albums.length} albums on ${cols.length} lists${nl || nb ? `; ${nl} Listen and ${nb} Buy links from the sheet` : ''}.`);
 
 // ---------------------------------------------------------------------------
 
