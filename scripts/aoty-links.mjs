@@ -24,7 +24,11 @@
 // Fixing by hand, in the links file:
 //   - Paste an Apple Music album URL as "apple" (and remove "listen") for a miss or a wrong
 //     match: the next run fills in Listen and the cover from it.
+//   - Any other Listen link (Bandcamp, YouTube, Spotify…) goes in "listen". The script keeps
+//     it and only looks for a cover.
 //   - Paste a Bandcamp album URL as "bandcamp"; "bandcamp": "" hides a wrong Buy button.
+//   - A cover you saved yourself: put the image in public/aoty/covers/<year>/ and set
+//     "cover": "/aoty/covers/<year>/<file name>".
 //   - Add "locked": true to keep the script from touching an album again.
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -111,6 +115,17 @@ if (missing.length) console.log(`The ${missing.length} without a Listen link are
 async function fillListen(a, entry, file) {
   // Left over from the album.link-API version: a Deezer page standing in for Listen.
   if (entry.retryOdesli || entry.listen?.includes('deezer.com')) { delete entry.retryOdesli; delete entry.listen; }
+  // A Listen link typed in by hand (Bandcamp, YouTube, Spotify…): never replaced. Only the
+  // cover is looked for, on Deezer.
+  if (entry.listen && !/album\.link|song\.link|deezer\.com/.test(entry.listen)) {
+    if (entry.cover) return 'Listen: your link (kept)';
+    const dz = await findDeezer(a.artist, a.title);
+    const m = dz.match;
+    const cover = m && (m.md5_image ? `https://e-cdns-images.dzcdn.net/images/cover/${m.md5_image}/300x300-000000-80-0-0.jpg` : m.cover_medium || m.cover_big);
+    if (cover) await saveCover(entry, cover, file);
+    return `Listen: your link (kept)${entry.cover ? ' + cover from Deezer' : '; no cover found'}`;
+  }
+
   // A pasted Apple Music URL wins: fill in from it.
   const pastedId = entry.apple?.match(/\/(\d{6,})(?:\?|$)/)?.[1];
   if (pastedId && (!entry.listen || !entry.cover)) {
