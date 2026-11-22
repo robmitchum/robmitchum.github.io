@@ -10,11 +10,12 @@
 // For each album:
 //   1. Deezer's search API finds the album (Apple's own search API misses too much).
 //      Its cover is saved at 300×300 to public/aoty/covers/<year>/<slug>.jpg.
-//   2. Odesli (the service behind album.link) turns that into Listen: the album.link
-//      page, which links every streaming service, and the Apple Music link.
+//   2. Deezer's record of the album has its UPC (barcode); Apple's lookup finds the same
+//      release by UPC → the Apple Music link, and Listen = album.link/i/<Apple id>, a page
+//      linking every streaming service. (Odesli's API needs a key now; this doesn't.)
 //   3. MusicBrainz finds the Bandcamp page, when its entry for the album lists one → Buy.
 //      (Bandcamp blocks scripts from its own search.)
-//   If Deezer misses, Apple's search is tried as a fallback.
+//   If Deezer or the barcode misses, Apple's search is tried as a fallback.
 //
 // Results go to src/data/aoty/links/<year>.json, keyed by "artist - title" in lower case.
 // Albums already found are skipped; misses are tried again on every run and listed in
@@ -43,7 +44,6 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 let links = {};
 let save = () => {};
-let odesliDown = 0; // album.link failures in a row (see odesli())
 
 if (debug) {
   const [artist, title] = debug.split(/\s+[-–—]\s+/);
@@ -73,7 +73,7 @@ for (const [i, a] of albums.entries()) {
   const key = `${a.artist} - ${a.title}`.toLowerCase();
   const entry = links[key] ?? {};
   if (entry.locked) continue;
-  const needListen = redo || !entry.listen || !entry.cover || entry.retryOdesli;
+  const needListen = redo || !entry.listen || !entry.cover || !!entry.retryOdesli || entry.listen.includes('deezer.com');
   const needBuy = redo || entry.bandcamp === undefined;
   if (!needListen && !needBuy) continue;
   const notes = [];
@@ -109,6 +109,8 @@ if (missing.length) console.log(`The ${missing.length} without a Listen link are
 // Listen + cover
 
 async function fillListen(a, entry, file) {
+  // Left over from the album.link-API version: a Deezer page standing in for Listen.
+  if (entry.retryOdesli || entry.listen?.includes('deezer.com')) { delete entry.retryOdesli; delete entry.listen; }
   // A pasted Apple Music URL wins: fill in from it.
   const pastedId = entry.apple?.match(/\/(\d{6,})(?:\?|$)/)?.[1];
   if (pastedId && (!entry.listen || !entry.cover)) {
@@ -124,21 +126,26 @@ async function fillListen(a, entry, file) {
   if (dz.match) {
     const m = dz.match;
     entry.deezer = m.link;
+    delete entry.retryOdesli;
     const cover = m.md5_image
       ? `https://e-cdns-images.dzcdn.net/images/cover/${m.md5_image}/300x300-000000-80-0-0.jpg`
       : m.cover_medium || m.cover_big;
     if (cover && (!entry.cover || redo)) await saveCover(entry, cover, file);
-    const od = await odesli(m.link);
-    if (od) {
-      entry.listen = od.pageUrl;
-      delete entry.retryOdesli;
-      if (od.apple) entry.apple = od.apple;
-      return `Listen: Deezer “${m.artist?.name} – ${m.title}” → album.link${od.apple ? ' (+ Apple)' : ''}`;
+    // Deezer's album record has the UPC (barcode); Apple's lookup finds the same release by it.
+    const apple = await appleByUpc(m.id);
+    if (apple) {
+      entry.apple = apple.collectionViewUrl.replace(/\?.*$/, '');
+      entry.listen = `https://album.link/i/${apple.collectionId}`;
+      return `Listen: Deezer “${m.artist?.name} – ${m.title}” → Apple by barcode → album.link`;
     }
-    // Odesli unavailable right now: link the Deezer page; the next run retries Odesli.
-    entry.listen = m.link;
-    entry.retryOdesli = true;
-    return `Listen: Deezer “${m.artist?.name} – ${m.title}” (album.link failed; will retry next run)`;
+    const ap = await findApple(a.artist, a.title);
+    if (ap.match) {
+      entry.apple = ap.match.collectionViewUrl.replace(/\?.*$/, '');
+      entry.listen = `https://album.link/i/${ap.match.collectionId}`;
+      return `Listen: Deezer “${m.artist?.name} – ${m.title}” (cover); Apple search → album.link`;
+    }
+    delete entry.listen;
+    return `Listen: cover from Deezer, but no Apple Music match (paste the Apple link by hand)`;
   }
 
   // Fallback: Apple's search API.
@@ -203,20 +210,17 @@ async function findDeezer(artist, title) {
   return { match: null, why: seen ? `closest “${closest.r.artist?.name} – ${closest.r.title}”` : 'no results' };
 }
 
-// Odesli allows about 10 lookups a minute without an API key. If it fails 3 albums in a
-// row, the rest of the run skips it (those albums get the Deezer link and a retry next run).
-async function odesli(url) {
-  if (odesliDown >= 3) return null;
-  try {
-    const json = await getJson(`https://api.song.link/v1-alpha.1/links?${new URLSearchParams({ url, userCountry: 'US' })}`, { pause: 6500, name: 'album.link', tries: 2 });
-    odesliDown = 0;
-    if (!json?.pageUrl) return null;
-    return { pageUrl: json.pageUrl, apple: json.linksByPlatform?.appleMusic?.url?.replace(/\?.*$/, '') };
-  } catch (e) {
-    odesliDown++;
-    console.warn(`       album.link lookup failed: ${e.message}${odesliDown >= 3 ? ' (skipping album.link for the rest of this run)' : ''}`);
-    return null;
+// Deezer album → its UPC → Apple's lookup by UPC.
+async function appleByUpc(deezerId) {
+  const album = await getJson(`https://api.deezer.com/album/${deezerId}`, { pause: 250, name: 'Deezer', backoff: 5000 });
+  const upc = album?.upc;
+  if (!upc) return null;
+  for (const code of [upc, upc.replace(/^0+/, ''), upc.padStart(13, '0')]) {
+    const json = await getJson(`https://itunes.apple.com/lookup?${new URLSearchParams({ upc: code, entity: 'album', country: 'US' })}`, { pause: 3200, name: 'Apple', backoff: 60000 });
+    const hit = (json?.results ?? []).find((r) => r.collectionId && r.collectionViewUrl);
+    if (hit) return hit;
   }
+  return null;
 }
 
 async function findApple(artist, title) {
@@ -323,8 +327,8 @@ async function runDebug(artist, title) {
     const dz = await findDeezer(artist, title);
     console.log(dz.match ? `Deezer: found “${dz.match.artist?.name} – ${dz.match.title}” ${dz.match.link}` : `Deezer: ${dz.why}`);
     if (dz.match) {
-      const od = await odesli(dz.match.link);
-      console.log(od ? `album.link: ${od.pageUrl}${od.apple ? `\n  Apple Music: ${od.apple}` : '\n  (no Apple Music link)'}` : 'album.link: failed');
+      const ap = await appleByUpc(dz.match.id);
+      console.log(ap ? `Apple by barcode: “${ap.artistName} – ${ap.collectionName}” ${ap.collectionViewUrl.replace(/\?.*$/, '')}\n  Listen: https://album.link/i/${ap.collectionId}` : 'Apple by barcode: no match');
     }
   } catch (e) { console.log(`Deezer: failed (${e.message})`); }
   try {
