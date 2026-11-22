@@ -78,25 +78,53 @@ const albums = data.albums.map((a) => {
 
 let looked = 0;
 
-// The sheet manages links (LISTEN / BUY / COVER columns, filled by scripts/sheets/aoty-links.gs):
-// just download each COVER that isn't saved yet. No searching.
+// The sheet manages links (LISTEN / BUY / COVER columns, filled by scripts/sheets/aoty-links.gs).
+// No searching: each cover follows the sheet. It comes from the COVER column, or, when that is
+// empty, from the album the LISTEN link points to (Apple's artwork, or the Bandcamp page's image).
+// A saved cover whose source has changed in the sheet is replaced.
 if (data.linkColumns && !redo) {
-  let saved = 0; let missingCover = 0;
+  let fromSheet = 0; let fromListen = 0; let replaced = 0; const noCover = [];
   for (const a of albums) {
     const key = `${a.artist} - ${a.title}`.toLowerCase();
     const entry = links[key] ?? {};
     if (entry.locked) continue;
-    if (!a.cover) { if (!entry.cover) missingCover++; continue; }
-    if (entry.cover && entry.coverFrom === a.cover) continue;
+    const source = a.cover || a.listen || '';
+    if (entry.cover && source && entry.coverFrom === source) continue;
+    if (entry.cover) { delete entry.cover; replaced++; }
+    delete entry.coverFrom;
     const file = `${slugify(`${a.artist} ${a.title}`)}.jpg`;
-    await saveCover(entry, a.cover, file);
-    if (entry.cover) { entry.coverFrom = a.cover; saved++; }
+    if (a.cover) await saveCover(entry, a.cover, file);
+    else if (a.listen) await coverFromListen(entry, a.listen, file);
+    if (entry.cover) { entry.coverFrom = source; if (a.cover) fromSheet++; else fromListen++; }
+    else noCover.push(`${a.artist} - ${a.title}`);
     links[key] = entry;
+    if ((fromSheet + fromListen) % 25 === 0 && (fromSheet + fromListen)) save();
   }
   save();
-  console.log(`Downloaded ${saved} covers from the sheet's COVER column.` +
-    (missingCover ? ` ${missingCover} albums have no cover yet (run "Find links" in the sheet).` : ''));
+  console.log(`Covers saved: ${fromSheet} from the COVER column, ${fromListen} from the Listen link.` +
+    (replaced ? ` (${replaced} old covers replaced because the sheet changed.)` : ''));
+  if (noCover.length) console.log(`No cover yet for ${noCover.length}: ${noCover.slice(0, 8).join('; ')}${noCover.length > 8 ? '; …' : ''}`);
   process.exit(0);
+}
+
+async function coverFromListen(entry, listen, file) {
+  const id = /music\.apple\.com/.test(listen) ? listen.match(/\/(\d{6,})(?:[?#]|$)/)?.[1] : null;
+  if (id) {
+    try {
+      const r = (await itunesLookup(id))[0];
+      if (r?.artworkUrl100) await saveCover(entry, r.artworkUrl100.replace(/\/\d+x\d+bb\.(jpg|png)$/, '/300x300bb.jpg'), file);
+    } catch { /* optional */ }
+    return;
+  }
+  if (/bandcamp\.com\//.test(listen)) {
+    try {
+      const res = await fetch(listen, { headers: { 'user-agent': UA } });
+      if (!res.ok) return;
+      const img = (await res.text()).match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/)?.[1];
+      // Bandcamp art: _10 is the full image, _2 is 350px; ask for the smaller one.
+      if (img) await saveCover(entry, img.replace(/_\d+\.jpg$/, '_2.jpg'), file);
+    } catch { /* optional */ }
+  }
 }
 
 // Control-C: save, and still write the missing list.

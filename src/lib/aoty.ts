@@ -234,8 +234,17 @@ export function listenUrl(a: Album) {
   if (appleId) return `https://album.link/i/${appleId}`;
   return link || `https://music.apple.com/us/search?term=${encodeURIComponent(`${a.artist} ${a.title}`)}`;
 }
+// Buy: the sheet's BUY link (usually Bandcamp); otherwise a search at Amoeba Music,
+// an independent record store, so every album has somewhere to buy it.
 export function buyUrl(a: Album) {
-  return a.links.bandcamp || null;
+  return a.links.bandcamp || `https://www.amoeba.com/search/all/?s=${encodeURIComponent(`${a.artist} ${a.title}`).replace(/%20/g, '+')}`;
+}
+// The store's name, for screen-reader labels ("Buy X on Bandcamp").
+export function buyStore(url: string) {
+  const host = (() => { try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return ''; } })();
+  if (host.endsWith('bandcamp.com')) return 'Bandcamp';
+  if (host.endsWith('amoeba.com')) return 'Amoeba Music';
+  return host || 'the store';
 }
 
 export const fmt1 = (x: number) => x.toFixed(1);

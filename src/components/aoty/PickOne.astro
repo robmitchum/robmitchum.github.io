@@ -1,7 +1,7 @@
 ---
 // "Pick One": a random album from the whole year, filtered by two dropdowns.
 // The album data rides along as JSON; scripts/aoty-pick.ts does the picking.
-import { CHART_SIZE, buyUrl, listenUrl, type Year } from '../../lib/aoty';
+import { CHART_SIZE, buyStore, buyUrl, listenUrl, type Year } from '../../lib/aoty';
 interface Props { year: Year }
 const { year } = Astro.props;
 const filters = [
@@ -22,7 +22,7 @@ const data = {
   albums: year.albums.map((a) => ({
     a: a.artist, t: a.title, pos: a.pos, li: a.lists, tt: a.top10s, o: a.no1s,
     b: [a.best.rank, a.best.pub], p: a.placements.map((x) => x.pub), sl: a.sleeper,
-    buy: buyUrl(a), listen: listenUrl(a), cover: a.links.cover ?? null,
+    buy: buyUrl(a), store: buyStore(buyUrl(a)), listen: listenUrl(a), cover: a.links.cover ?? null,
   })),
 };
 ---
@@ -66,7 +66,7 @@ const data = {
 
 <script>
   type A = { a: string; t: string; pos: number; li: number; tt: number; o: number; b: [number, number]; p: number[]; sl: number;
-    buy: string | null; listen: string; cover: string | null };
+    buy: string | null; store: string; listen: string; cover: string | null };
   for (const root of document.querySelectorAll<HTMLElement>('[data-pick]')) {
     const d = JSON.parse(root.querySelector('[data-pick-json]')!.textContent!) as { n: number; chart: number; pubs: string[]; albums: A[] };
     const $ = <T extends Element>(s: string) => root.querySelector<T>(s)!;
@@ -105,7 +105,7 @@ const data = {
       $('[data-why]').textContent = bits.join('\n'); // one stat per line (white-space: pre-line)
       const buy = $<HTMLAnchorElement>('[data-buy]');
       buy.hidden = !a.buy;
-      if (a.buy) { buy.href = a.buy; buy.setAttribute('aria-label', `Buy ${a.t} by ${a.a} on Bandcamp`); }
+      if (a.buy) { buy.href = a.buy; buy.setAttribute('aria-label', `Buy ${a.t} by ${a.a} at ${a.store}`); }
       const listen = $<HTMLAnchorElement>('[data-listen]');
       listen.href = a.listen;
       listen.setAttribute('aria-label', `Listen to ${a.t} by ${a.a}`);

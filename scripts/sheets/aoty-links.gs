@@ -177,6 +177,7 @@ function lookUp_(artist, title, have) {
     var apple = null;
     if (!have.listen) {
       if (dz) apple = appleByUpc_(dz.id);
+      if (apple && isNotAlbum_(apple.collectionName, want)) apple = null;
       if (!apple) apple = findAppleSearch_(artist, selfTitled ? '' : title, want);
       if (apple) out.listen = String(apple.collectionViewUrl).replace(/\?.*$/, '');
     } else if (appleId && !have.cover) {
@@ -209,7 +210,7 @@ function findDeezer_(artist, title, selfTitled, want) {
   for (var i = 0; i < queries.length; i++) {
     var json = getJson_('https://api.deezer.com/search/album?limit=25&q=' + encodeURIComponent(queries[i]), CONFIG.deezerGapMs);
     var results = (json && json.data) || [];
-    var best = pickBest_(want, results.map(function (r) { return { r: r, a: (r.artist && r.artist.name) || '', t: r.title || '' }; }));
+    var best = pickBest_(want, results.map(function (r) { return { r: r, a: (r.artist && r.artist.name) || '', t: r.title || '', type: r.record_type || '' }; }));
     if (best && best.s >= 1.5) return best.r;
   }
   return null;
@@ -251,7 +252,7 @@ function bandcampFromMusicBrainz_(artist, title, want) {
   var query = 'releasegroup:"' + esc(title) + '" AND artist:"' + esc(artist) + '"';
   var json = getJson_('https://musicbrainz.org/ws/2/release-group/?fmt=json&limit=5&query=' + encodeURIComponent(query), CONFIG.musicbrainzGapMs);
   var groups = (json && json['release-groups']) || [];
-  var best = pickBest_(want, groups.map(function (g) { return { r: g, a: credit_(g['artist-credit']), t: g.title }; }));
+  var best = pickBest_(want, groups.map(function (g) { return { r: g, a: credit_(g['artist-credit']), t: g.title, type: g['primary-type'] === 'Album' ? '' : (g['primary-type'] || '') }; }));
   if (!best || best.s < 1.5) return null;
   var rg = getJson_('https://musicbrainz.org/ws/2/release-group/' + best.r.id + '?fmt=json&inc=url-rels%2Breleases', CONFIG.musicbrainzGapMs);
   var url = bandcampIn_(rg && rg.relations);
@@ -299,15 +300,33 @@ function splitAlbum_(s) {
   var m = String(s).match(/^(.+?)\s+[-–—]\s+(.+)$/);
   return m ? { artist: m[1].trim(), title: m[2].trim() } : null;
 }
-function wanted_(artist, title) { return { a: norm_(artist), t: normTitle_(title), artists: splitArtists_(artist) }; }
+function wanted_(artist, title) { return { a: norm_(artist), t: normTitle_(title), raw: String(title).toLowerCase(), artists: splitArtists_(artist) }; }
 function pickBest_(want, cands) {
   var best = null;
   for (var i = 0; i < cands.length; i++) {
-    var s = artistScore_(want, cands[i].a) + titleScore_(want.t, normTitle_(cands[i].t));
+    var s = artistScore_(want, cands[i].a) + titleScore_(want.t, normTitle_(cands[i].t)) - kindPenalty_(want, cands[i].t, cands[i].type);
     if (!best || s > best.s) best = { r: cands[i].r, s: s };
   }
   return best;
 }
+// Singles, EPs, remixes, live and alternate versions share the album's name but aren't the
+// album: mark them down so they fall below the 1.5 a match needs. Deluxe editions only slightly,
+// so the standard edition wins when both exist.
+var VARIANT_ = /\b(remix(es)?|version|ver\.|live|acoustic|mix|redux|edit|instrumentals?|sped up|slowed|sessions?|demos?|commentary|reimagined|stripped)\b/;
+function kindPenalty_(want, rawTitle, type) {
+  var t = String(rawTitle || '').toLowerCase();
+  var p = 0;
+  // A single never counts; an EP can, when there's no full-length by that name (0.45 leaves an
+  // exact match just above the bar, and below the album when both turn up).
+  if (/^single$/i.test(type || '') || /\s-\ssingle$/.test(t)) p += 0.6;
+  else if (/^ep$/i.test(type || '') || /\s-\sep$/.test(t)) p += 0.45;
+  var extra = (t.match(/[(\[][^)\]]*[)\]]/g) || []).join(' ') + ' ' + (t.split(':')[1] || '');
+  var m = extra.match(VARIANT_);
+  if (m && want.raw.indexOf(m[0]) < 0) p += 0.6;
+  if (/deluxe|expanded|anniversary|bonus/.test(extra) && !/deluxe|expanded|anniversary|bonus/.test(want.raw)) p += 0.05;
+  return p;
+}
+function isNotAlbum_(name, want) { return kindPenalty_(want, name, '') >= 0.6; }
 function artistScore_(want, name) {
   var got = norm_(name);
   if (!got) return 0;
