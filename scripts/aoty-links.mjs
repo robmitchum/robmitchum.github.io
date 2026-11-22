@@ -43,6 +43,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 let links = {};
 let save = () => {};
+let odesliDown = 0; // album.link failures in a row (see odesli())
 
 if (debug) {
   const [artist, title] = debug.split(/\s+[-–—]\s+/);
@@ -161,14 +162,14 @@ async function saveCover(entry, url, file) {
 }
 
 // Retry on rate limits and server errors; give up (and save) after a few tries.
-async function getJson(url, { pause = 0, init = {}, name = 'request', tries = 4 } = {}) {
+async function getJson(url, { pause = 0, init = {}, name = 'request', tries = 4, backoff = 30000 } = {}) {
   for (let attempt = 0; attempt < tries; attempt++) {
     if (pause) await sleep(pause);
     let res;
     try { res = await fetch(url, { ...init, headers: { 'user-agent': UA, accept: 'application/json', ...(init.headers ?? {}) } }); }
     catch { await sleep(5000); continue; }
     if (res.status === 403 || res.status === 429 || res.status === 503 || res.status >= 500) {
-      const wait = 30000 * (attempt + 1);
+      const wait = backoff * (attempt + 1);
       console.warn(`       ${name} is busy or rate-limiting (HTTP ${res.status}); waiting ${wait / 1000}s…`);
       await sleep(wait);
       continue;
@@ -191,7 +192,7 @@ async function findDeezer(artist, title) {
   ];
   let closest = null; let seen = 0;
   for (const q of qs) {
-    const json = await getJson(`https://api.deezer.com/search/album?${new URLSearchParams({ q, limit: '25' })}`, { pause: 250, name: 'Deezer' });
+    const json = await getJson(`https://api.deezer.com/search/album?${new URLSearchParams({ q, limit: '25' })}`, { pause: 250, name: 'Deezer', backoff: 5000 });
     if (json?.error) throw new Error(`Deezer: ${json.error.message ?? 'error'}`);
     const results = json?.data ?? [];
     seen += results.length;
@@ -204,7 +205,6 @@ async function findDeezer(artist, title) {
 
 // Odesli allows about 10 lookups a minute without an API key. If it fails 3 albums in a
 // row, the rest of the run skips it (those albums get the Deezer link and a retry next run).
-let odesliDown = 0;
 async function odesli(url) {
   if (odesliDown >= 3) return null;
   try {
@@ -221,7 +221,7 @@ async function odesli(url) {
 
 async function findApple(artist, title) {
   const want = wanted(artist, title);
-  const json = await getJson(`https://itunes.apple.com/search?${new URLSearchParams({ term: `${artist} ${title}`, media: 'music', entity: 'album', country: 'US', limit: '25' })}`, { pause: 3200, name: 'Apple' });
+  const json = await getJson(`https://itunes.apple.com/search?${new URLSearchParams({ term: `${artist} ${title}`, media: 'music', entity: 'album', country: 'US', limit: '25' })}`, { pause: 3200, name: 'Apple', backoff: 60000 });
   const results = json?.results ?? [];
   const best = pickBest(want, results.map((r) => ({ r, a: r.artistName, t: r.collectionName })));
   if (best && best.s >= 1.5) return { match: best.r };
@@ -229,7 +229,7 @@ async function findApple(artist, title) {
 }
 
 async function itunesLookup(id) {
-  const json = await getJson(`https://itunes.apple.com/lookup?${new URLSearchParams({ id, entity: 'album', country: 'US' })}`, { pause: 3200, name: 'Apple' });
+  const json = await getJson(`https://itunes.apple.com/lookup?${new URLSearchParams({ id, entity: 'album', country: 'US' })}`, { pause: 3200, name: 'Apple', backoff: 60000 });
   return json?.results ?? [];
 }
 
@@ -241,16 +241,16 @@ async function findBandcamp(artist, title) {
   const want = wanted(artist, selfTitled ? artist : title);
   const esc = (s) => s.replace(/(["\\])/g, '\\$1');
   const query = `releasegroup:"${esc(selfTitled ? artist : title)}" AND artist:"${esc(artist)}"`;
-  const json = await getJson(`https://musicbrainz.org/ws/2/release-group/?${new URLSearchParams({ query, fmt: 'json', limit: '5' })}`, { pause: 1100, name: 'MusicBrainz' });
+  const json = await getJson(`https://musicbrainz.org/ws/2/release-group/?${new URLSearchParams({ query, fmt: 'json', limit: '5' })}`, { pause: 1100, name: 'MusicBrainz', tries: 5, backoff: 3000 });
   const groups = json?.['release-groups'] ?? [];
   const best = pickBest(want, groups.map((g) => ({ r: g, a: credit(g['artist-credit']), t: g.title })));
   if (!best || best.s < 1.5) return { url: null, why: groups.length ? 'no matching MusicBrainz entry' : 'not in MusicBrainz' };
   // Bandcamp links usually sit on a release, sometimes on the release group.
-  const rg = await getJson(`https://musicbrainz.org/ws/2/release-group/${best.r.id}?${new URLSearchParams({ inc: 'url-rels+releases', fmt: 'json' })}`, { pause: 1100, name: 'MusicBrainz' });
+  const rg = await getJson(`https://musicbrainz.org/ws/2/release-group/${best.r.id}?${new URLSearchParams({ inc: 'url-rels+releases', fmt: 'json' })}`, { pause: 1100, name: 'MusicBrainz', tries: 5, backoff: 3000 });
   let url = bandcampIn(rg?.relations);
   for (const rel of (rg?.releases ?? []).slice(0, 4)) {
     if (url) break;
-    const r = await getJson(`https://musicbrainz.org/ws/2/release/${rel.id}?${new URLSearchParams({ inc: 'url-rels', fmt: 'json' })}`, { pause: 1100, name: 'MusicBrainz' });
+    const r = await getJson(`https://musicbrainz.org/ws/2/release/${rel.id}?${new URLSearchParams({ inc: 'url-rels', fmt: 'json' })}`, { pause: 1100, name: 'MusicBrainz', tries: 5, backoff: 3000 });
     url = bandcampIn(r?.relations);
   }
   return url ? { url } : { url: null, why: 'MusicBrainz lists no Bandcamp page' };
