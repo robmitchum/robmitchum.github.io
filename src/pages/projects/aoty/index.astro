@@ -17,7 +17,6 @@ const sections = [
   ['What this is', '[Why you compile the lists each year: catching albums you missed, keeping everything in one place, and what the data says about criticism and trends.]'],
   ['Which lists count', '[Your inclusion rules: voted on by a staff, not one writer; covers several genres; at least 50 albums; from a known or legitimate publication.]'],
   ['How albums are ranked', '[The Consensus Score: average position across every list, 75 for each list missed; lower is better.]'],
-  ['Reading the chart', `[Short definitions: Lists, Top 10s, No. 1s, Last update, Greatest Gainer, Sleepers (3–8 lists, by average spot) and Outliers (publications by the average Consensus spot of their picks).]`],
   ['Can I help?', '[An invitation to send corrections, statistical ideas, data requests or visualization proposals, and how to reach you.]'],
 ];
 const acknowledgements = [
@@ -143,7 +142,7 @@ const cover = (y: (typeof years)[number]) => y.no1Cover ?? (hasChart(y.year) ? l
   .hero { padding: 64px 0 40px; display: flex; flex-direction: column; gap: 24px; }
   .hero-title { display: flex; align-items: flex-end; gap: 28px; flex-wrap: wrap; }
   .hero h1 { margin: 0; font-size: clamp(48px, 9vw, 96px); line-height: 0.95; letter-spacing: -0.025em; }
-  .lede { margin: 0; font-size: 20px; line-height: 1.5; max-width: 52ch; }
+  .lede { margin: 0; font-size: 20px; line-height: 1.5; max-width: 72ch; text-wrap: balance; }
   .ph { color: var(--muted); font-style: italic; }
 
   .band { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 24px; padding: 40px 0 64px; border-top: 4px solid var(--ink); }
