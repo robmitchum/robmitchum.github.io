@@ -4,7 +4,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SectionIcon from '../../../components/SectionIcon.astro';
 import PickOne from '../../../components/aoty/PickOne.astro';
-import { years, hasChart, loadYear, sheetUrl, hubText, fmt1, CHART_SIZE } from '../../../lib/aoty';
+import { years, hasChart, loadYear, sheetUrl, hubText, inline, fmt1, CHART_SIZE } from '../../../lib/aoty';
 import '../../../styles/aoty.css';
 
 const charted = years.filter((y) => hasChart(y.year));
@@ -18,9 +18,13 @@ const sections = [
   ['Which lists count', '[Your inclusion rules: voted on by a staff, not one writer; covers several genres; at least 50 albums; from a known or legitimate publication.]'],
   ['How albums are ranked', '[The Consensus Score: average position across every list, 75 for each list missed; lower is better.]'],
   ['Reading the chart', `[Short definitions: Lists, Top 10s, No. 1s, Last update, Greatest Gainer, Sleepers (3–8 lists, by average spot) and Outliers (publications by the average Consensus spot of their picks).]`],
+  ['Can I help?', '[An invitation to send corrections, statistical ideas, data requests or visualization proposals, and how to reach you.]'],
+];
+const acknowledgements = [
+  ['Thanks', '[Thanks to the people who have helped with the project.]'],
+  ['Support Musicians', '[A note on supporting the artists on these lists.]'],
 ];
 const intro = hubText('intro');
-const help = hubText('can i help?');
 const cover = (y: (typeof years)[number]) => y.no1Cover ?? (hasChart(y.year) ? loadYear(y.year).albums[0].links.cover : undefined);
 ---
 <BaseLayout title="Albums of the Year" section="var(--projects)" description="Every December, the year-end album lists from dozens of publications, compiled into one ranking: the Consensus 200, 2013 to now.">
@@ -31,7 +35,7 @@ const cover = (y: (typeof years)[number]) => y.no1Cover ?? (hasChart(y.year) ? l
         <h1>Albums of the Year</h1>
       </div>
       {intro
-        ? intro.map((b) => b.kind === 'p' ? <p class="lede">{b.text}</p> : <ul class="lede">{b.items.map((i) => <li>{i}</li>)}</ul>)
+        ? intro.map((b) => b.kind === 'p' ? <p class="lede" set:html={inline(b.text)} /> : <ul class="lede">{b.items.map((i) => <li set:html={inline(i)} />)}</ul>)
         : <p class="lede ph">[A line introducing the project: every December, the year-end lists from dozens of publications, compiled into one ranking.]</p>}
     </section>
 
@@ -79,7 +83,7 @@ const cover = (y: (typeof years)[number]) => y.no1Cover ?? (hasChart(y.year) ? l
             <div>
               <h2>{h}</h2>
               {body
-                ? body.map((b) => b.kind === 'p' ? <p>{b.text}</p> : <ul>{b.items.map((i) => <li>{i}</li>)}</ul>)
+                ? body.map((b) => b.kind === 'p' ? <p set:html={inline(b.text)} /> : <ul>{b.items.map((i) => <li set:html={inline(i)} />)}</ul>)
                 : <p class="ph">{ph}</p>}
             </div>
           );
@@ -116,16 +120,19 @@ const cover = (y: (typeof years)[number]) => y.no1Cover ?? (hasChart(y.year) ? l
     </section>
 
     <section class="band" aria-labelledby="h-h">
-      <div class="label" id="h-h">Can I help?</div>
+      <div class="label" id="h-h">Acknowledgements</div>
       <div class="method">
-        <div>
-          {help ? help.map((b) => b.kind === 'p' ? <p>{b.text}</p> : <ul>{b.items.map((i) => <li>{i}</li>)}</ul>)
-                : <p class="ph">[An invitation to send corrections, statistical ideas, data requests or visualization proposals, and how to reach you.]</p>}
-        </div>
-        <div>
-          <h2>Thanks to</h2>
-          <p>Alessandro Panella · Ben Greenfield · Diego Garcia-Olano · Jonathan Rockower</p>
-        </div>
+        {acknowledgements.map(([h, ph]) => {
+          const body = hubText(h);
+          return (
+            <div>
+              <h2>{h}</h2>
+              {body
+                ? body.map((b) => b.kind === 'p' ? <p set:html={inline(b.text)} /> : <ul>{b.items.map((i) => <li set:html={inline(i)} />)}</ul>)
+                : <p class="ph">{ph}</p>}
+            </div>
+          );
+        })}
       </div>
     </section>
   </div>
@@ -174,6 +181,8 @@ const cover = (y: (typeof years)[number]) => y.no1Cover ?? (hasChart(y.year) ? l
   .method > div { display: flex; flex-direction: column; gap: 10px; }
   .method h2 { margin: 0; font-size: 28px; }
   .method p, .method ul { margin: 0; font-size: 17px; line-height: 1.55; color: #4A4A45; }
+  .method :global(a), .lede :global(a) { text-decoration: underline; text-underline-offset: 2px; }
+  .method :global(a:hover), .lede :global(a:hover) { color: var(--green); }
   .method ul { padding-left: 1.2em; }
 
   .years { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px 32px; font-family: 'Libre Franklin Variable', sans-serif; }

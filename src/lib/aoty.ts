@@ -257,3 +257,15 @@ for (const part of hubMd.replace(/<!--[\s\S]*?-->/g, '').split(/^## +/m).slice(1
   }));
 }
 export const hubText = (key: string) => hub.get(key.toLowerCase());
+
+// Inline formatting for hub.md text: [label](https://…) links and *italics*. Returns HTML;
+// everything else is escaped.
+export function inline(text: string) {
+  const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return esc(text)
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+|\/[^\s)]*)\)/g, (_, label, url) => {
+      const external = /^https?:/.test(url);
+      return `<a href="${url}"${external ? ' target="_blank" rel="noopener"' : ''}>${label}</a>`;
+    })
+    .replace(/(^|[\s(])\*([^*\s][^*]*?)\*(?=[\s.,;:!?)]|$)/g, '$1<em>$2</em>');
+}
