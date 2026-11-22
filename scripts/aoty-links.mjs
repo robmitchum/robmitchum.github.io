@@ -53,7 +53,7 @@ for (const a of albums) {
     if (apple) {
       entry.apple = apple.collectionViewUrl.replace(/\?.*$/, '');
       entry.listen = `https://album.link/i/${apple.collectionId}`;
-      const art = apple.artworkUrl100?.replace(/\/\d+x\d+bb\.(jpg|png)$/, '/600x600bb.jpg');
+      const art = apple.artworkUrl100?.replace(/\/\d+x\d+bb\.(jpg|png)$/, '/300x300bb.jpg');
       if (art) {
         const file = `${slugify(`${a.artist} ${a.title}`)}.jpg`;
         const res = await fetch(art);

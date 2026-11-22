@@ -95,7 +95,7 @@ const cover = (y: number) => (hasChart(y) ? loadYear(y).albums[0].links.cover : 
           return (
             <article class:list={['yr', { first: i === 0 }]}>
               <div class="yr-cover">
-                {c ? <img src={c} alt={`Cover of ${y.no1[1]}`} width="300" height="300" loading="lazy" />
+                {c ? <img src={c} alt={`Cover of ${y.no1[1]}`} width="300" height="300" loading="lazy" decoding="async" />
                    : <svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="25" fill="none" stroke-width="6" stroke="#00703A"></circle><circle cx="32" cy="32" r="16" fill="none" stroke-width="6" stroke="#7CC49A"></circle><circle cx="32" cy="32" r="7" fill="none" stroke-width="6" stroke="#00703A"></circle></svg>}
               </div>
               <div class="yr-top"><h3 class="anton">{y.year}</h3><span>{y.lists} lists</span></div>
