@@ -4,6 +4,7 @@
 //   npm run aoty:links -- 2025 --top 200     the Consensus top 200
 //   npm run aoty:links -- 2025               every album
 //   npm run aoty:links -- 2025 --redo        look up found albums again too (except locked ones)
+//   npm run aoty:links -- 2025 --skip-buy    skip the Bandcamp lookup (much faster)
 //   npm run aoty:links -- 2025 --debug "Geese - Getting Killed"
 //                                            show what each service returns for one album
 //
@@ -43,6 +44,7 @@ if (!year) { console.error('Usage: npm run aoty:links -- <year> [--top N] [--red
 const opt = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined);
 const top = opt('--top') ? Number(opt('--top')) : Infinity;
 const redo = args.includes('--redo');
+const skipBuy = args.includes('--skip-buy'); // leave Bandcamp to the sheet's BUY column
 const debug = opt('--debug');
 
 const UA = 'robmitchum.com-aoty/1.0 ( https://robmitchum.com )'; // MusicBrainz asks for an identifying user agent
@@ -75,6 +77,23 @@ const albums = data.albums.map((a) => {
   .slice(0, top);
 
 let looked = 0;
+// Control-C: save, and still write the missing list.
+process.on('SIGINT', () => { save(); summarize(); process.exit(130); });
+
+function summarize() {
+  const all = albums.map((a) => {
+    const e = { ...(links[`${a.artist} - ${a.title}`.toLowerCase()] ?? {}) };
+    if (a.listen) e.listen = a.listen;
+    if (a.buy) e.bandcamp = a.buy;
+    return e;
+  });
+  const missing = albums.filter((a, i) => !all[i].listen).map((a) => `${a.artist} - ${a.title}`);
+  writeFileSync(missingPath, missing.join('\n') + (missing.length ? '\n' : ''));
+  console.log(`\nLooked up ${looked} albums this run.`);
+  console.log(`Of these ${albums.length}: ${all.filter((e) => e.listen).length} have Listen links, ${all.filter((e) => e.cover).length} have covers, ${all.filter((e) => e.bandcamp).length} have Buy links.`);
+  if (missing.length) console.log(`The ${missing.length} without a Listen link are listed in ${missingPath}`);
+}
+
 for (const [i, a] of albums.entries()) {
   const key = `${a.artist} - ${a.title}`.toLowerCase();
   const entry = links[key] ?? {};
@@ -83,7 +102,7 @@ for (const [i, a] of albums.entries()) {
   const sheetListen = a.listen; const sheetBuy = a.buy;
   const needListen = sheetListen ? !entry.cover || redo
     : redo || !entry.listen || !entry.cover || !!entry.retryOdesli || entry.listen.includes('deezer.com');
-  const needBuy = !sheetBuy && (redo || entry.bandcamp === undefined);
+  const needBuy = !skipBuy && !sheetBuy && (redo || entry.bandcamp === undefined);
   if (!needListen && !needBuy) continue;
   const notes = [];
   const file = `${slugify(`${a.artist} ${a.title}`)}.jpg`;
@@ -110,17 +129,7 @@ for (const [i, a] of albums.entries()) {
 }
 save();
 
-const all = albums.map((a) => {
-  const e = { ...(links[`${a.artist} - ${a.title}`.toLowerCase()] ?? {}) };
-  if (a.listen) e.listen = a.listen;
-  if (a.buy) e.bandcamp = a.buy;
-  return e;
-});
-const missing = albums.filter((a, i) => !all[i].listen).map((a) => `${a.artist} - ${a.title}`);
-writeFileSync(missingPath, missing.join('\n') + (missing.length ? '\n' : ''));
-console.log(`\nLooked up ${looked} albums this run.`);
-console.log(`Of these ${albums.length}: ${all.filter((e) => e.listen).length} have Listen links, ${all.filter((e) => e.cover).length} have covers, ${all.filter((e) => e.bandcamp).length} have Buy links.`);
-if (missing.length) console.log(`The ${missing.length} without a Listen link are listed in ${missingPath}`);
+summarize();
 
 // ---------------------------------------------------------------------------
 // Listen + cover
