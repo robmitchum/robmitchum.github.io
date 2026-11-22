@@ -101,8 +101,8 @@ const data = {
       $('[data-a]').textContent = a.a;
       const bits = [a.li === 1 ? 'On 1 list' : `On ${a.li} of ${d.n} lists`,
         a.pos <= d.chart ? `No. ${a.pos} in the Consensus ${d.chart}` : `Outside the ${d.chart} (No. ${a.pos})`,
-        a.li === 1 ? `No. ${a.b[0]} at ${d.pubs[a.b[1]]}` : `best: No. ${a.b[0]} at ${d.pubs[a.b[1]]}`];
-      $('[data-why]').textContent = bits.join(' · ');
+        a.li === 1 ? `No. ${a.b[0]} at ${d.pubs[a.b[1]]}` : `Best: No. ${a.b[0]} at ${d.pubs[a.b[1]]}`];
+      $('[data-why]').textContent = bits.join('\n'); // one stat per line (white-space: pre-line)
       const buy = $<HTMLAnchorElement>('[data-buy]');
       buy.hidden = !a.buy;
       if (a.buy) { buy.href = a.buy; buy.setAttribute('aria-label', `Buy ${a.t} by ${a.a} on Bandcamp`); }
