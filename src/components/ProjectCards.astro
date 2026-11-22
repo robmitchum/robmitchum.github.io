@@ -1,0 +1,65 @@
+---
+// The two Projects cards (homepage and /projects/), each previewing its own data:
+// AOTY = the current year's Consensus top 5 in the chart's green; Diary = entries per month.
+import '@fontsource/anton/400.css';
+import SectionIcon from './SectionIcon.astro';
+import MonthBars from './diary/MonthBars.astro';
+import { years, hasChart, loadYear, CHART_SIZE } from '../lib/aoty';
+import { diaryYears, loadDiary, stats, fmtDate, num } from '../lib/diary';
+
+const aotyYear = loadYear(years.filter((y) => hasChart(y.year))[0].year);
+const top5 = aotyYear.albums.slice(0, 5);
+const first = years.at(-1)!.year;
+const dYear = diaryYears[0];
+const ds = stats(loadDiary(dYear));
+---
+<div class="pcards">
+  <a class="pcard" href="/projects/aoty/">
+    <span class="card-top">
+      <SectionIcon name="data" size={56} />
+      <span class="pod pod--dark-text">Data</span>
+    </span>
+    <span class="card-title">Albums of the Year</span>
+    <span>Every December, the year-end lists from dozens of publications, compiled into one ranking. {first}–{aotyYear.meta.year}.</span>
+    <span class="viz aoty-viz" aria-hidden="true">
+      <span class="av-mast"><span class="av-name">The Consensus {CHART_SIZE}</span><span class="av-yr">{aotyYear.meta.year}</span></span>
+      {top5.map((a) => (
+        <span class="av-row"><span class="av-n">{a.pos}</span><span class="av-t">{a.title}</span><span class="av-a">{a.artist}</span></span>
+      ))}
+    </span>
+  </a>
+  <a class="pcard" href="/projects/listening-diary/">
+    <span class="card-top">
+      <SectionIcon name="data" size={56} />
+      <span class="pod pod--dark-text">Diary</span>
+    </span>
+    <span class="card-title">Listening Diary {dYear}</span>
+    <span>Every album, live show and playlist, logged as I play it. {num(ds.total)} entries through {fmtDate(ds.last, true)}.</span>
+    <span class="viz diary-viz" aria-hidden="true">
+      <MonthBars byMonth={ds.byMonth} lastMonth={ds.lastMonth} year={dYear} mini />
+      <span class="dv-cap"><span>Jan</span><span>Entries per month</span><span>Dec</span></span>
+    </span>
+  </a>
+</div>
+<style>
+  .pcards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr)); gap: 32px; }
+  .pcard { display: flex; flex-direction: column; gap: 20px; background: #fff; border-radius: 28px; padding: 32px; border: 2px solid var(--ink); }
+  .pcard:hover { color: var(--ink); border-color: var(--projects-dark); }
+  .card-top { display: flex; justify-content: space-between; align-items: center; }
+  .card-title { font-size: 32px; font-weight: 800; line-height: 1.05; }
+  .viz { margin-top: auto; border-radius: 20px; background: var(--paper); padding: 18px 20px; display: flex; flex-direction: column; }
+  .aoty-viz { gap: 0; }
+  .av-mast { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 4px solid #00703A; padding-bottom: 4px; margin-bottom: 4px; }
+  .av-name, .av-yr { font-family: Anton, Impact, sans-serif; text-transform: uppercase; color: #00703A; }
+  .av-name { font-size: 22px; letter-spacing: 0.01em; }
+  .av-yr { font-size: 16px; }
+  .av-row { display: grid; grid-template-columns: 28px minmax(0, auto) minmax(0, 1fr); gap: 10px; align-items: baseline; padding: 5px 0; border-bottom: 1px solid #D8D2C4; font-size: 14px; }
+  .av-row:last-child { border-bottom: 0; }
+  .av-row:nth-child(2) { background: #E1F1E6; margin: 0 -8px; padding: 5px 8px; }
+  .av-n { font-weight: 800; color: #00703A; font-variant-numeric: tabular-nums; }
+  .av-t { font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .av-a { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .diary-viz { gap: 8px; }
+  .dv-cap { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+  .dv-cap span:nth-child(2) { font-weight: 800; color: var(--ink); }
+</style>

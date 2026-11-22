@@ -1,0 +1,53 @@
+---
+// Every day of the year as a square, shaded by how many entries it got. Weeks run in
+// columns, Sunday on top. Days after the last entry are left as outlines.
+import { MONTHS, fmtDate } from '../../lib/diary';
+interface Props { year: number; byDay: Map<string, number>; last: string }
+const { year, byDay, last } = Astro.props;
+const start = Date.UTC(year, 0, 1);
+const end = Date.UTC(year, 11, 31);
+const offset = new Date(start).getUTCDay();
+const S = 13, G = 3, top = 18, left = 26;
+const cells = [] as { x: number; y: number; iso: string; n: number; future: boolean }[];
+const monthX: [number, number][] = [];
+for (let t = start, i = 0; t <= end; t += 864e5, i++) {
+  const d = new Date(t);
+  const iso = d.toISOString().slice(0, 10);
+  const k = i + offset;
+  const x = left + Math.floor(k / 7) * (S + G);
+  if (d.getUTCDate() === 1) monthX.push([d.getUTCMonth(), x]);
+  cells.push({ x, y: top + (k % 7) * (S + G), iso, n: byDay.get(iso) ?? 0, future: iso > last });
+}
+const W = cells.at(-1)!.x + S;
+const H = top + 7 * (S + G);
+const fill = (n: number) => ['#FFFFFF', '#FFE9A3', '#FFD54F', '#FFC20E', '#E0A800', '#B88A00'][Math.min(n, 5)];
+---
+<div class="cal-scroll">
+  <svg viewBox={`0 0 ${W} ${H}`} class="cal" role="img" aria-label={`Entries per day in ${year}, through ${fmtDate(last, true)}`}>
+    {monthX.map(([m, x]) => <text x={x} y={11} class="ml">{MONTHS[m]}</text>)}
+    {['Mon', 'Wed', 'Fri'].map((d, i) => <text x={0} y={top + (1 + i * 2) * (S + G) + 10} class="dl">{d}</text>)}
+    {cells.map((c) => (
+      <rect x={c.x} y={c.y} width={S} height={S} rx="3"
+        fill={c.future ? 'none' : fill(c.n)}
+        stroke={c.future ? '#C9C3B5' : c.n ? 'none' : '#D8D2C4'} stroke-width="1"
+        stroke-dasharray={c.future ? '2 2' : undefined}>
+        <title>{fmtDate(c.iso, true)}: {c.future ? 'not yet' : c.n === 1 ? '1 entry' : `${c.n} entries`}</title>
+      </rect>
+    ))}
+  </svg>
+</div>
+<div class="cal-key" aria-hidden="true">
+  <span>Fewer</span>
+  {[0, 1, 2, 3, 4, 5].map((n) => <i style={`background:${fill(n)}`} class:list={{ zero: !n }} />)}
+  <span>5+ a day</span>
+</div>
+<style>
+  .cal-scroll { overflow-x: auto; }
+  .cal { width: 100%; min-width: 720px; height: auto; display: block; }
+  .ml, .dl { font-size: 10px; fill: var(--muted); font-family: var(--font); }
+  .cal-key { display: flex; align-items: center; gap: 4px; margin-top: 10px; font-size: 12px; color: var(--muted); }
+  .cal-key i { width: 13px; height: 13px; border-radius: 3px; display: inline-block; }
+  .cal-key i.zero { box-shadow: inset 0 0 0 1px #D8D2C4; }
+  .cal-key span:first-child { margin-right: 4px; }
+  .cal-key span:last-child { margin-left: 4px; }
+</style>

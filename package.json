@@ -9,7 +9,8 @@
     "bylines": "node scripts/export-bylines.mjs",
     "aoty": "node scripts/export-aoty.mjs",
     "aoty:links": "node scripts/aoty-links.mjs",
-    "aoty:no1": "node scripts/aoty-no1-covers.mjs"
+    "aoty:no1": "node scripts/aoty-no1-covers.mjs",
+    "diary": "node scripts/export-diary.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",

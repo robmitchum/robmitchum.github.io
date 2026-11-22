@@ -1,10 +1,273 @@
 ---
+// Listening Diary: the year in numbers, charts, and the full searchable log.
+// Data: src/data/diary/<year>.json, refreshed nightly by the deploy workflow (npm run diary).
+// Where and how Rob listens (Location, Format) are left out on purpose.
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SectionIcon from '../../../components/SectionIcon.astro';
+import MonthBars from '../../../components/diary/MonthBars.astro';
+import Calendar from '../../../components/diary/Calendar.astro';
+import { diaryYears, loadDiary, stats, sheetUrl, fmtDate, num, typeGroup } from '../../../lib/diary';
+import introRaw from '../../../data/diary/intro.md?raw';
+
+const year = diaryYears[0];
+const d = loadDiary(year);
+const s = stats(d);
+const intro = introRaw.trim().split(/\n\s*\n/).map((p) => p.replace(/\s*\n\s*/g, ' '));
+const placeholder = intro.length === 1 && intro[0].startsWith('[');
+const pct = (n: number) => `${Math.round((n / s.total) * 100)}%`;
+
+const decMax = Math.max(...s.decadeList.map(([, n]) => n));
+const artMax = s.topArtists[0][1];
+const log = [...d.entries].map((e, i) => ({ ...e, i })).reverse();
+const typeLabel: Record<string, string> = { 'Live Show': 'Live', 'DJ Mix': 'DJ mix' };
 ---
-<BaseLayout title="Listening Diary" section="var(--projects)">
-  <div class="wrap">
-    <h1 class="page-title">Listening Diary</h1>
-    <p class="stub"><strong>Phase 5.</strong> Static snapshot of the Listening Diary (the old version needed a local server, which GitHub Pages can't run).</p>
+<BaseLayout title={`Listening Diary ${year}`} section="var(--projects)"
+  description={`Everything Rob Mitchum listened to in ${year}, one album at a time: ${num(s.total)} entries so far.`}>
+  <div class="wrap diary">
+    <section class="hero">
+      <div class="hero-title">
+        <SectionIcon name="data" size={96} />
+        <h1>Listening Diary <span class="yr">{year}</span></h1>
+      </div>
+      {intro.map((p) => <p class:list={['lede', { ph: placeholder }]}>{p}</p>)}
+      <p class="updated"><span class="pod pod--dark-text">Updated through {fmtDate(s.last, true)}</span></p>
+    </section>
+
+    <section class="band" aria-labelledby="n-h">
+      <div class="label" id="n-h">The year in numbers</div>
+      <div>
+        <ul class="nums">
+          <li><b>{num(s.total)}</b><span>entries logged</span></li>
+          <li><b>{num(s.artists)}</b><span>different artists</span></li>
+          <li><b>{pct(s.fresh)}</b><span>released in {year}</span></li>
+          <li><b>{s.avgYear}</b><span>average release year</span></li>
+          <li><b>{s.live}</b><span>live shows</span></li>
+          <li><b>{s.streak}</b><span>days in a row, longest streak</span></li>
+        </ul>
+        <p class="aside">Oldest thing on the list: <em>{s.oldest.album}</em>, {s.oldest.artist} ({s.oldest.year}).</p>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="c-h">
+      <div class="label" id="c-h">Every day</div>
+      <div class="chart">
+        <h2 class="chart-h">Entries a day</h2>
+        <p class="chart-note">{s.activeDays} of {Math.round((Date.parse(s.last) - Date.UTC(year, 0, 1)) / 864e5) + 1} days so far had at least one entry. Hover a square for the count.</p>
+        <Calendar year={year} byDay={s.byDay} last={s.last} />
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="m-h">
+      <div class="label" id="m-h">By month</div>
+      <div class="chart">
+        <h2 class="chart-h">Entries per month</h2>
+        <p class="chart-note key">
+          <span><i style="background:#E0A800"></i>Released in {year}</span>
+          <span><i style="background:#FFD54F"></i>Older</span>
+        </p>
+        <div class="hscroll"><MonthBars byMonth={s.byMonth} lastMonth={s.lastMonth} year={year} /></div>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="w-h">
+      <div class="label" id="w-h">Old and new</div>
+      <div class="two">
+        <div class="chart">
+          <h2 class="chart-h">By decade of release</h2>
+          <ol class="hbars">
+            {s.decadeList.map(([dec, n]) => (
+              <li><span class="hl">{dec}s</span><span class="track"><span class:list={['fill', { now: dec === Math.floor(year / 10) * 10 }]} style={`width:${(n / decMax) * 100}%`} /></span><span class="hn">{n}</span></li>
+            ))}
+          </ol>
+        </div>
+        <div class="chart">
+          <h2 class="chart-h">Most-logged artists</h2>
+          <ol class="hbars artists">
+            {s.topArtists.map(([a, n]) => (
+              <li><span class="hl">{a}</span><span class="track"><span class="fill" style={`width:${(n / artMax) * 100}%`} /></span><span class="hn">{n}</span></li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="l-h">
+      <div class="label" id="l-h">The log</div>
+      <div class="log" data-log>
+        <div class="log-bar">
+          <label class="search">
+            <span class="sr">Search the log</span>
+            <input type="search" placeholder="Search artists and albums" data-q />
+          </label>
+          <div class="filters" role="group" aria-label="Show">
+            <button type="button" class="fpod on" data-f="all" aria-pressed="true">All</button>
+            <button type="button" class="fpod" data-f="album" aria-pressed="false">Albums</button>
+            <button type="button" class="fpod" data-f="live" aria-pressed="false">Live shows</button>
+            <button type="button" class="fpod" data-f="other" aria-pressed="false">Playlists &amp; radio</button>
+          </div>
+          <span class="count" data-count aria-live="polite">{num(log.length)} entries</span>
+        </div>
+        <div class="log-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col"><button type="button" data-sort="i" aria-label="Sort by date">Date <span class="ar">↓</span></button></th>
+                <th scope="col"><button type="button" data-sort="artist">Artist <span class="ar"></span></button></th>
+                <th scope="col"><button type="button" data-sort="album">Album <span class="ar"></span></button></th>
+                <th scope="col" class="num"><button type="button" data-sort="year">Released <span class="ar"></span></button></th>
+              </tr>
+            </thead>
+            <tbody data-rows>
+              {log.map((e) => (
+                <tr data-i={e.i} data-g={typeGroup(e.type)} data-artist={e.artist.toLowerCase()} data-album={e.album.toLowerCase()} data-year={e.year ?? 0}>
+                  <td class="dt">{fmtDate(e.date)}</td>
+                  <td>{e.artist}</td>
+                  <td><span class="al">{e.album}</span>{e.type !== 'Album' && <span class="tpod">{typeLabel[e.type] ?? e.type}</span>}</td>
+                  <td class="num">{e.year ?? '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p class="empty" data-empty hidden>Nothing in the log matches that.</p>
+        </div>
+        <p class="src"><a class="btn" href={sheetUrl(year)} target="_blank" rel="noopener">The spreadsheet <span aria-hidden="true">↗</span></a></p>
+      </div>
+    </section>
   </div>
 </BaseLayout>
-<style>.page-title { font-size: clamp(40px, 7vw, 76px); margin: 72px 0 40px; }</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-log]')!;
+  const tbody = root.querySelector<HTMLElement>('[data-rows]')!;
+  const rows = [...tbody.querySelectorAll<HTMLTableRowElement>('tr')];
+  const q = root.querySelector<HTMLInputElement>('[data-q]')!;
+  const count = root.querySelector<HTMLElement>('[data-count]')!;
+  const empty = root.querySelector<HTMLElement>('[data-empty]')!;
+  let group = 'all';
+  let sort = { key: 'i', dir: -1 };
+
+  function apply() {
+    const terms = q.value.toLowerCase().trim().split(/\s+/).filter(Boolean);
+    let shown = 0;
+    for (const r of rows) {
+      const hay = `${r.dataset.artist} ${r.dataset.album} ${r.dataset.year}`;
+      const ok = (group === 'all' || r.dataset.g === group) && terms.every((t) => hay.includes(t));
+      r.hidden = !ok;
+      if (ok) shown++;
+    }
+    count.textContent = `${shown.toLocaleString('en-US')} ${shown === 1 ? 'entry' : 'entries'}`;
+    empty.hidden = shown > 0;
+  }
+
+  function order() {
+    const { key, dir } = sort;
+    const val = (r: HTMLTableRowElement) => (key === 'i' || key === 'year' ? Number(r.dataset[key]) : r.dataset[key]!);
+    rows.sort((a, b) => {
+      const x = val(a), y = val(b);
+      const c = typeof x === 'number' ? x - (y as number) : (x as string).localeCompare(y as string);
+      return (c || Number(a.dataset.i) - Number(b.dataset.i)) * dir;
+    });
+    tbody.append(...rows);
+    root.querySelectorAll<HTMLButtonElement>('[data-sort]').forEach((b) => {
+      const on = b.dataset.sort === key;
+      b.querySelector('.ar')!.textContent = on ? (dir < 0 ? '↓' : '↑') : '';
+      b.closest('th')!.setAttribute('aria-sort', on ? (dir < 0 ? 'descending' : 'ascending') : 'none');
+    });
+  }
+
+  q.addEventListener('input', apply);
+  root.querySelectorAll<HTMLButtonElement>('[data-f]').forEach((b) =>
+    b.addEventListener('click', () => {
+      group = b.dataset.f!;
+      root.querySelectorAll<HTMLButtonElement>('[data-f]').forEach((o) => {
+        o.classList.toggle('on', o === b);
+        o.setAttribute('aria-pressed', String(o === b));
+      });
+      apply();
+    }),
+  );
+  root.querySelectorAll<HTMLButtonElement>('[data-sort]').forEach((b) =>
+    b.addEventListener('click', () => {
+      const key = b.dataset.sort!;
+      // Date and year start newest first; names start A→Z.
+      sort = sort.key === key ? { key, dir: -sort.dir } : { key, dir: key === 'i' || key === 'year' ? -1 : 1 };
+      order();
+    }),
+  );
+</script>
+
+<style>
+  .diary { font-family: var(--font); padding-bottom: 40px; }
+  .hero { padding: 64px 0 40px; display: flex; flex-direction: column; gap: 24px; }
+  .hero-title { display: flex; align-items: flex-end; gap: 28px; flex-wrap: wrap; }
+  .hero h1 { margin: 0; font-size: clamp(48px, 9vw, 96px); line-height: 0.95; letter-spacing: -0.025em; }
+  .hero h1 .yr { color: var(--projects-dark); }
+  .lede { margin: 0; font-size: 20px; line-height: 1.5; max-width: 72ch; text-wrap: balance; }
+  .ph { color: var(--muted); font-style: italic; }
+  .updated { margin: 0; }
+  .updated .pod { font-size: 13px; padding: 6px 14px; }
+
+  .band { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 24px; padding: 40px 0 56px; border-top: 4px solid var(--ink); }
+  .band .label { font-size: 13px; line-height: 1.3; padding-top: 8px; font-weight: 800; }
+  @media (max-width: 760px) { .band { grid-template-columns: 1fr; gap: 12px; } }
+
+  .nums { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); gap: 14px; }
+  .nums li { background: #fff; border: 2px solid var(--ink); border-radius: 28px; padding: 20px 24px; display: flex; flex-direction: column; gap: 6px; }
+  .nums b { font-size: clamp(34px, 3.4vw, 44px); font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
+  .nums li:first-child { background: var(--projects); }
+  .nums span { font-size: 14px; color: var(--muted); }
+  .nums li:first-child span { color: var(--ink); }
+  .aside { margin: 18px 0 0; font-size: 15px; color: var(--muted); }
+  .aside em { color: var(--ink); font-style: normal; font-weight: 800; }
+
+  .chart { min-width: 0; }
+  .hscroll { overflow-x: auto; }
+  .chart-h { margin: 0 0 8px; font-size: 28px; }
+  .chart-note { margin: 0 0 20px; font-size: 14px; color: var(--muted); }
+  .key { display: flex; gap: 20px; }
+  .key span { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); }
+  .key i { width: 14px; height: 14px; border-radius: 3px; }
+
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); gap: 48px; }
+  .hbars { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .hbars li { display: grid; grid-template-columns: 64px minmax(0, 1fr) 36px; align-items: center; gap: 12px; font-size: 15px; }
+  .hbars.artists li { grid-template-columns: minmax(120px, 190px) minmax(0, 1fr) 36px; }
+  .hl { font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .track { height: 18px; }
+  .fill { display: block; height: 100%; min-width: 4px; background: var(--projects-light); border-radius: 0 999px 999px 0; }
+  .fill.now, .artists li:first-child .fill { background: var(--projects-dark); }
+  .hn { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+
+  .log-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-bottom: 16px; }
+  .search input { font: inherit; font-size: 16px; padding: 10px 18px; border: 2px solid var(--ink); border-radius: 999px; background: #fff; color: var(--ink); width: min(320px, 100%); }
+  .search input:focus { outline: 3px solid var(--projects); outline-offset: 1px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; }
+  .fpod { font: inherit; font-weight: 800; font-size: 13px; padding: 7px 14px; border-radius: 999px; border: 2px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; }
+  .fpod:hover { background: #fff; }
+  .fpod.on { background: var(--projects); }
+  .count { font-size: 14px; color: var(--muted); margin-left: auto; }
+
+  .log-scroll { max-height: 640px; overflow: auto; background: #fff; border: 2px solid var(--ink); border-radius: 28px; padding: 0 24px 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  thead th { position: sticky; top: 0; background: #fff; text-align: left; padding: 18px 12px 10px 0; border-bottom: 2px solid var(--ink); z-index: 1; }
+  th button { white-space: nowrap; font: inherit; font-weight: 800; font-size: 13px; background: none; border: 0; padding: 0; color: var(--ink); cursor: pointer; }
+  th button:hover { color: var(--projects-dark); }
+  .ar { color: var(--projects-dark); display: inline-block; min-width: 1ch; }
+  td { padding: 9px 12px 9px 0; border-bottom: 1px solid #E4DFD3; vertical-align: top; }
+  tbody tr:last-child td { border-bottom: 0; }
+  .num { text-align: right; padding-right: 0; font-variant-numeric: tabular-nums; }
+  th.num { padding-right: 0; }
+  .dt { white-space: nowrap; color: var(--muted); font-variant-numeric: tabular-nums; width: 76px; }
+  .al { font-weight: 800; }
+  .tpod { display: inline-block; margin-left: 8px; font-size: 11px; font-weight: 800; padding: 2px 9px; border-radius: 999px; background: var(--projects-light); vertical-align: 1px; white-space: nowrap; }
+  .empty { padding: 24px 0; color: var(--muted); margin: 0; }
+  .src { margin: 20px 0 0; }
+  .btn { display: inline-flex; gap: 6px; align-items: center; font-weight: 800; font-size: 15px; padding: 10px 20px; border: 2px solid var(--ink); border-radius: 999px; }
+  .btn:hover { background: var(--ink); color: #fff; }
+  @media (max-width: 600px) {
+    .log-scroll { padding: 0 14px 8px; border-radius: 20px; }
+    table { font-size: 14px; }
+    .count { margin-left: 0; }
+  }
+</style>
