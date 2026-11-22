@@ -109,7 +109,7 @@ const cover = (y: (typeof years)[number]) => y.no1Cover ?? (hasChart(y.year) ? l
               </span>
               {y.extras?.map((x) => <a class="yr-extra" href={x.url}>{x.label} <span aria-hidden="true">↗</span></a>)}
               <span class="yr-links">
-                {hasChart(y.year) && <a class="pill" href={`/projects/aoty/${y.year}/`}>The chart</a>}
+                {hasChart(y.year) && <a class="pill" href={`/projects/aoty/${y.year}/`}>Chart</a>}
                 <a class="pill" href={sheetUrl(y)} target="_blank" rel="noopener">Spreadsheet <span aria-hidden="true">↗</span></a>
               </span>
             </article>
