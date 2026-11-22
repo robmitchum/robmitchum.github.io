@@ -1,0 +1,55 @@
+---
+// Every album that made any list, in Consensus order.
+import AotyLayout from '../../../../layouts/AotyLayout.astro';
+import ChartHead from '../../../../components/aoty/ChartHead.astro';
+import ChartRow from '../../../../components/aoty/ChartRow.astro';
+import { MISS, years, hasChart, loadYear, sheetUrl } from '../../../../lib/aoty';
+
+export function getStaticPaths() {
+  return years.filter((y) => hasChart(y.year)).map((y) => ({ params: { year: String(y.year) } }));
+}
+const year = loadYear(Number(Astro.params.year));
+const { meta } = year;
+const showPrev = year.prevLabel !== null;
+---
+<AotyLayout title={`Every album: ${meta.year}`} description={`All ${year.albums.length} albums on ${year.pubs.length} year-end lists for ${meta.year}, in Consensus order.`}>
+  <div class="aoty-page">
+    <header class="mast">
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <span class="kick" style="font-size:13px">The Consensus 200 · {meta.year}</span>
+        <h1 class="anton">Every album</h1>
+      </div>
+      <div class="mast-side">
+        <span class="for">All {year.albums.length}</span>
+        <span>Every album on any of the {year.pubs.length} lists</span>
+        <a class="pill pill--on-green" href={`/projects/aoty/${meta.year}/`} style="margin-top:8px">Back to the chart</a>
+      </div>
+    </header>
+    <div class="bar-under"></div>
+    <div class="legend">
+      <label style="display:flex;align-items:center;gap:8px;font-weight:800">Find
+        <input type="search" data-find placeholder="Artist or title" style="font:inherit;font-weight:400;padding:6px 10px;min-height:40px;border:1px solid var(--ink);background:#fff;min-width:220px" />
+      </label>
+      <span style="font-style:italic">Score: average position across all {year.pubs.length} lists, {MISS} for each list missed. Lower is better.</span>
+    </div>
+    <div class="chart" role="table" aria-label={`Every album, ${meta.year}`} data-list>
+      <ChartHead showPrev={showPrev} />
+      {year.albums.map((a) => <ChartRow album={a} year={year} showPrev={showPrev} />)}
+    </div>
+    <p data-none hidden style="font-size:14px">No album matches.</p>
+    <div class="more"><span></span><span class="btns"><a class="btn" href={sheetUrl(meta)}>The spreadsheet <span aria-hidden="true" style="margin-left:5px">↗</span></a></span></div>
+  </div>
+</AotyLayout>
+<script>
+  import { wireToggles } from '../../../../components/aoty/toggles';
+  wireToggles();
+  const input = document.querySelector<HTMLInputElement>('[data-find]')!;
+  const rows = [...document.querySelectorAll<HTMLElement>('[data-list] [data-pos]')];
+  const text = rows.map((r) => (r.querySelector('.open-btn')?.textContent ?? '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, ''));
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '');
+    let any = false;
+    rows.forEach((r, i) => { const hit = !q || text[i].includes(q); r.hidden = !hit; any ||= hit; });
+    document.querySelector<HTMLElement>('[data-none]')!.hidden = any;
+  });
+</script>

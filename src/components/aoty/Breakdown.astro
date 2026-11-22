@@ -1,0 +1,19 @@
+---
+// Every list an album made, as pills (rank in a dark badge; top 10s tinted).
+import type { Album, Year } from '../../lib/aoty';
+interface Props { album: Album; year: Year; id: string }
+const { album, year, id } = Astro.props;
+const n = year.pubs.length;
+const sorted = [...album.placements].sort((a, b) => a.rank - b.rank || a.pub - b.pub);
+---
+<div class="breakdown" id={id} hidden>
+  <span class="kick">On {album.lists} of {n} lists{album.lists < n && ` · missed by ${n - album.lists}`}</span>
+  <span class="chips">
+    {sorted.map((p) => {
+      const pub = year.pubs[p.pub];
+      return pub.url
+        ? <a class:list={['chip', { hi: p.rank <= 10 }]} href={pub.url}>{pub.name}<b>{p.rank}</b></a>
+        : <span class:list={['chip', { hi: p.rank <= 10 }]}>{pub.name}<b>{p.rank}</b></span>;
+    })}
+  </span>
+</div>

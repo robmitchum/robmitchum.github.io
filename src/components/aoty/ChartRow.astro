@@ -1,0 +1,36 @@
+---
+// One row of the Consensus chart (Billboard "Grid" style).
+import { CHART_SIZE, fmt1, type Album, type Year } from '../../lib/aoty';
+import BuyListen from './BuyListen.astro';
+import Breakdown from './Breakdown.astro';
+interface Props { album: Album; year: Year; showPrev: boolean }
+const { album: a, year, showPrev } = Astro.props;
+const charted = a.prev !== null && a.prev <= CHART_SIZE;
+const up = showPrev && charted && a.prev! - a.pos >= 3;
+const last = !showPrev ? '' : charted ? String(a.prev) : '—';
+const lastLabel = !showPrev ? '' : charted ? `Last update: ${a.prev}` : a.prev === null ? 'Not on any list at the last update' : `Last update: outside the ${CHART_SIZE} (No. ${a.prev})`;
+const meta = [`${a.lists} list${a.lists === 1 ? '' : 's'}`, a.top10s && `${a.top10s} top 10${a.top10s === 1 ? '' : 's'}`, a.no1s && `${a.no1s} No. 1${a.no1s === 1 ? '' : 's'}`].filter(Boolean).join(' · ');
+---
+<div class:list={['grp', { ten: a.pos % 10 === 0, one: a.pos === 1, up }]} role="rowgroup" data-pos={a.pos}>
+  <div class="row" role="row">
+    <span class="n" role="cell"><span class="b" aria-hidden="true">{up ? '●' : ''}</span>{a.pos}{up && <span class="skip">, up {a.prev! - a.pos} places</span>}</span>
+    <span class="c" role="cell" title={lastLabel}><span aria-hidden="true">{last}</span><span class="skip">{lastLabel}</span></span>
+    <span class="c li" role="cell">{a.lists}</span>
+    <span class="ttl" role="cell">
+      <button type="button" class="open-btn" aria-expanded="false" aria-controls={`b-${a.slug}`}>
+        <span class="t nc">{a.title}</span><span class="a nc">{a.artist}</span>
+      </button>
+      <span class="meta">{meta}</span>
+      <span class="pills">
+        {year.gainer === a && <span class="tag">GREATEST GAINER</span>}
+        {a.prev === null && showPrev && <span class="tag">NEW</span>}
+        {a.sleeper > 0 && a.sleeper <= 10 && <span class="tag" title={`No. ${a.sleeper} in Sleepers`}>SLEEPER</span>}
+        <BuyListen album={a} />
+      </span>
+    </span>
+    <span class="c tt" role="cell">{a.top10s}</span>
+    <span class="c o" role="cell">{a.no1s}</span>
+    <span class="c sc tnum" role="cell">{fmt1(a.score)}</span>
+  </div>
+  <Breakdown album={a} year={year} id={`b-${a.slug}`} />
+</div>
