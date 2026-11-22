@@ -143,6 +143,10 @@ function ensureColumns_(sheet) {
   if (!cover) { cover = buy + 1; sheet.insertColumnAfter(buy); sheet.getRange(1, cover).setValue('COVER'); }
   var check = findColumn_(sheet, 'LINK CHECK');
   if (!check) { check = cover + 1; sheet.insertColumnAfter(cover); sheet.getRange(1, check).setValue('LINK CHECK'); }
+  // Clip long links and notes instead of wrapping them, so rows stay one line tall.
+  [listen, buy, cover, check].forEach(function (c) {
+    sheet.getRange(1, c, sheet.getMaxRows(), 1).setWrapStrategy(SpreadsheetApp.WrapStrategy.CLIP);
+  });
   return { listen: listen, buy: buy, cover: cover, check: check };
 }
 
