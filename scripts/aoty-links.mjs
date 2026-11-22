@@ -169,7 +169,7 @@ async function saveCover(entry, url, file) {
 }
 
 // Retry on rate limits and server errors; give up (and save) after a few tries.
-async function getJson(url, { pause = 0, init = {}, name = 'request', tries = 4, backoff = 30000 } = {}) {
+async function getJson(url, { pause = 0, init = {}, name = 'request', tries = 4, backoff = 30000, quiet = false } = {}) {
   for (let attempt = 0; attempt < tries; attempt++) {
     if (pause) await sleep(pause);
     let res;
@@ -177,7 +177,7 @@ async function getJson(url, { pause = 0, init = {}, name = 'request', tries = 4,
     catch { await sleep(5000); continue; }
     if (res.status === 403 || res.status === 429 || res.status === 503 || res.status >= 500) {
       const wait = backoff * (attempt + 1);
-      console.warn(`       ${name} is busy or rate-limiting (HTTP ${res.status}); waiting ${wait / 1000}s…`);
+      if (!quiet || attempt > 0) console.warn(`       ${name} is busy or rate-limiting (HTTP ${res.status}); waiting ${wait / 1000}s…`);
       await sleep(wait);
       continue;
     }
@@ -238,23 +238,23 @@ async function itunesLookup(id) {
 }
 
 // ---------------------------------------------------------------------------
-// Buy: Bandcamp links recorded in MusicBrainz (1 request a second, as MusicBrainz asks)
+// Buy: Bandcamp links recorded in MusicBrainz (one request every 2 seconds; it turns away faster ones)
 
 async function findBandcamp(artist, title) {
   const selfTitled = /^(s\/t|self[- ]titled)$/i.test(title.trim());
   const want = wanted(artist, selfTitled ? artist : title);
   const esc = (s) => s.replace(/(["\\])/g, '\\$1');
   const query = `releasegroup:"${esc(selfTitled ? artist : title)}" AND artist:"${esc(artist)}"`;
-  const json = await getJson(`https://musicbrainz.org/ws/2/release-group/?${new URLSearchParams({ query, fmt: 'json', limit: '5' })}`, { pause: 1100, name: 'MusicBrainz', tries: 5, backoff: 3000 });
+  const json = await getJson(`https://musicbrainz.org/ws/2/release-group/?${new URLSearchParams({ query, fmt: 'json', limit: '5' })}`, { pause: 2000, name: 'MusicBrainz', tries: 5, backoff: 3000, quiet: true });
   const groups = json?.['release-groups'] ?? [];
   const best = pickBest(want, groups.map((g) => ({ r: g, a: credit(g['artist-credit']), t: g.title })));
   if (!best || best.s < 1.5) return { url: null, why: groups.length ? 'no matching MusicBrainz entry' : 'not in MusicBrainz' };
   // Bandcamp links usually sit on a release, sometimes on the release group.
-  const rg = await getJson(`https://musicbrainz.org/ws/2/release-group/${best.r.id}?${new URLSearchParams({ inc: 'url-rels+releases', fmt: 'json' })}`, { pause: 1100, name: 'MusicBrainz', tries: 5, backoff: 3000 });
+  const rg = await getJson(`https://musicbrainz.org/ws/2/release-group/${best.r.id}?${new URLSearchParams({ inc: 'url-rels+releases', fmt: 'json' })}`, { pause: 2000, name: 'MusicBrainz', tries: 5, backoff: 3000, quiet: true });
   let url = bandcampIn(rg?.relations);
   for (const rel of (rg?.releases ?? []).slice(0, 4)) {
     if (url) break;
-    const r = await getJson(`https://musicbrainz.org/ws/2/release/${rel.id}?${new URLSearchParams({ inc: 'url-rels', fmt: 'json' })}`, { pause: 1100, name: 'MusicBrainz', tries: 5, backoff: 3000 });
+    const r = await getJson(`https://musicbrainz.org/ws/2/release/${rel.id}?${new URLSearchParams({ inc: 'url-rels', fmt: 'json' })}`, { pause: 2000, name: 'MusicBrainz', tries: 5, backoff: 3000, quiet: true });
     url = bandcampIn(r?.relations);
   }
   return url ? { url } : { url: null, why: 'MusicBrainz lists no Bandcamp page' };
