@@ -7,7 +7,7 @@ const { byMonth, lastMonth, year, mini = false } = Astro.props;
 const months = byMonth.slice(0, lastMonth + 1);
 const max = Math.max(...months.map((m) => m.total));
 const top = Math.ceil(max / 20) * 20;
-const W = 720, H = mini ? 120 : 280, padL = mini ? 0 : 36, padB = mini ? 0 : 28, padT = mini ? 4 : 12;
+const W = 720, H = mini ? 250 : 280, padL = mini ? 0 : 36, padB = mini ? 0 : 28, padT = mini ? 4 : 12;
 const slot = (W - padL) / 12;
 const bw = slot * (mini ? 0.72 : 0.66);
 const y = (v: number) => H - padB - (v / top) * (H - padB - padT);

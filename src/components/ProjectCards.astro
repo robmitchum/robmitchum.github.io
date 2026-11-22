@@ -47,7 +47,7 @@ const ds = stats(loadDiary(dYear));
   .pcard:hover { color: var(--ink); border-color: var(--projects-dark); }
   .card-top { display: flex; justify-content: space-between; align-items: center; }
   .card-title { font-size: 32px; font-weight: 800; line-height: 1.05; }
-  .viz { margin-top: auto; border-radius: 20px; background: var(--paper); padding: 18px 20px; display: flex; flex-direction: column; }
+  .viz { margin-top: auto; flex: 1 0 auto; border-radius: 20px; background: var(--paper); padding: 18px 20px; display: flex; flex-direction: column; }
   .aoty-viz { gap: 0; }
   .av-mast { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 4px solid #00703A; padding-bottom: 4px; margin-bottom: 4px; }
   .av-name, .av-yr { font-family: Anton, Impact, sans-serif; text-transform: uppercase; color: #00703A; }
@@ -59,7 +59,7 @@ const ds = stats(loadDiary(dYear));
   .av-n { font-weight: 800; color: #00703A; font-variant-numeric: tabular-nums; }
   .av-t { font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .av-a { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .diary-viz { gap: 8px; }
+  .diary-viz { gap: 8px; justify-content: flex-end; }
   .dv-cap { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
   .dv-cap span:nth-child(2) { font-weight: 800; color: var(--ink); }
 </style>
