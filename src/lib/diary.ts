@@ -50,7 +50,14 @@ export function stats(d: DiaryYear) {
     const a = ARTIST_GROUPS[x.artist] ?? x.artist;
     artists.set(a, (artists.get(a) ?? 0) + 1);
   }
-  const topArtists = [...artists].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, TOP_ARTISTS);
+  const ranked = [...artists].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  // Up to TOP_ARTISTS rows, but never split a tie at the cutoff: drop the whole tied group.
+  let cut = Math.min(TOP_ARTISTS, ranked.length);
+  if (cut < ranked.length && ranked[cut][1] === ranked[cut - 1][1]) {
+    const tied = ranked[cut][1];
+    while (cut > 0 && ranked[cut - 1][1] === tied) cut--;
+  }
+  const topArtists = ranked.slice(0, cut);
 
   // Most-logged albums. Grateful Dead "Dave's Picks" releases are left out: they're
   // research for the 36FTVQ podcast (the page says so under the chart).
@@ -108,7 +115,8 @@ export const ARTIST_GROUPS: Record<string, string> = {
   'Neil Young': 'Neil Young (incl. Crazy Horse)',
   'Neil Young & Crazy Horse': 'Neil Young (incl. Crazy Horse)',
 };
-// Enough rows that the artists chart runs about as tall as the two-line albums chart beside it.
+// Most rows in the artists chart (about the height of the albums chart). A tie at the cutoff is
+// dropped whole, so the list can be shorter (11 as of Nov 2026).
 export const TOP_ARTISTS = 14;
 
 // Display names for the Format column.
