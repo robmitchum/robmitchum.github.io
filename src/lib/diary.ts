@@ -45,8 +45,12 @@ export function stats(d: DiaryYear) {
   const decadeList = [...decades].sort((a, b) => a[0] - b[0]);
 
   const artists = new Map<string, number>();
-  for (const x of e) if (x.artist !== 'Various Artists') artists.set(x.artist, (artists.get(x.artist) ?? 0) + 1);
-  const topArtists = [...artists].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 10);
+  for (const x of e) {
+    if (x.artist === 'Various Artists') continue;
+    const a = ARTIST_GROUPS[x.artist] ?? x.artist;
+    artists.set(a, (artists.get(a) ?? 0) + 1);
+  }
+  const topArtists = [...artists].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, TOP_ARTISTS);
 
   // Most-logged albums. Grateful Dead "Dave's Picks" releases are left out: they're
   // research for the 36FTVQ podcast (the page says so under the chart).
@@ -98,6 +102,14 @@ export function stats(d: DiaryYear) {
     formatList,
   };
 }
+
+// Artist names counted together in the most-logged artists chart: name in the sheet → name shown.
+export const ARTIST_GROUPS: Record<string, string> = {
+  'Neil Young': 'Neil Young (incl. Crazy Horse)',
+  'Neil Young & Crazy Horse': 'Neil Young (incl. Crazy Horse)',
+};
+// Enough rows that the artists chart runs about as tall as the two-line albums chart beside it.
+export const TOP_ARTISTS = 14;
 
 // Display names for the Format column.
 export const FORMAT_NAMES: Record<string, string> = {
