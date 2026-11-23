@@ -1,4 +1,5 @@
 ---
+import ProjectCards from '../components/ProjectCards.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { phishcritPosts, blogPosts, fmtDate } from '../lib/content';
 import { allBylines, sectionInfo, fmtIso } from '../lib/bylines';
@@ -58,26 +59,7 @@ const bylines = allBylines().slice(0, 3);
 
   <section class="wrap" style="--section: var(--projects)">
     <h2 class="section-head">Projects</h2>
-    <div class="cards">
-      <a class="card" href="/projects/aoty/">
-        <span class="card-top">
-          <svg width="56" height="56" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-width="9"><path d="M14 56V34" stroke="#E0A800" /><path d="M23 56V20" stroke="#FFD54F" /><path d="M32 56V28" stroke="#E0A800" /><path d="M41 56V10" stroke="#FFD54F" /><path d="M50 56V24" stroke="#E0A800" /></g></svg>
-          <span class="pod pod--dark-text">Data</span>
-        </span>
-        <span class="card-title">Albums of the Year</span>
-        <span>Year-end album data, 2013–2025.</span>
-        <span class="viz-slot">Data viz preview, designed in Phase 5</span>
-      </a>
-      <a class="card" href="/projects/listening-diary/">
-        <span class="card-top">
-          <svg width="56" height="56" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-width="9"><path d="M14 56V34" stroke="#E0A800" /><path d="M23 56V20" stroke="#FFD54F" /><path d="M32 56V28" stroke="#E0A800" /><path d="M41 56V10" stroke="#FFD54F" /><path d="M50 56V24" stroke="#E0A800" /></g></svg>
-          <span class="pod pod--dark-text">Diary</span>
-        </span>
-        <span class="card-title">Listening Diary 2026</span>
-        <span>A daily album pick, logged all year.</span>
-        <span class="viz-slot">Data viz preview, designed in Phase 5</span>
-      </a>
-    </div>
+    <ProjectCards />
   </section>
 </BaseLayout>
 
@@ -101,10 +83,4 @@ const bylines = allBylines().slice(0, 3);
   .pod-news { background: var(--news); }
   .pod-podcasts { background: var(--podcasts); color: var(--ink); }
   .more { display: inline-block; margin-top: 16px; font-weight: 800; color: var(--bylines-text); }
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr)); gap: 32px; }
-  .card { display: flex; flex-direction: column; gap: 20px; background: #fff; border-radius: 28px; padding: 32px; border: 2px solid var(--ink); }
-  .card:hover { color: var(--ink); border-color: var(--projects-dark); }
-  .card-top { display: flex; justify-content: space-between; align-items: center; }
-  .card-title { font-size: 32px; font-weight: 800; line-height: 1.05; }
-  .viz-slot { display: flex; align-items: center; justify-content: center; height: 120px; border-radius: 20px; border: 2px dashed var(--about); font-size: 13px; color: var(--muted); }
 </style>
