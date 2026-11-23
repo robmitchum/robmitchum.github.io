@@ -1,0 +1,50 @@
+---
+// Chart pages: the Consensus chart's own look, under a thin robmitchum.com strip with the
+// Projects-yellow monogram track (notes/phase-5-aoty.md).
+import '../styles/main.css';
+import '../styles/aoty.css';
+import Monogram from '../components/Monogram.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props { title: string; description?: string }
+const { title, description = 'The Consensus 200: year-end album lists from dozens of publications, compiled into one chart.' } = Astro.props;
+const fullTitle = `${title} · Rob Mitchum`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Rob Mitchum" />
+    <meta property="og:image" content="https://robmitchum.com/og-default.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Rob Mitchum: Music writing, science writing, and side projects" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+  </head>
+  <body class="aoty" style="--section:var(--projects)">
+    <a class="skip" href="#main">Skip to content</a>
+    <div class="strip">
+      <a href="/" class="home"><Monogram width={38} track="var(--projects)" /><span>robmitchum.com</span></a>
+      <span class="crumbs"><a href="/projects/">Projects</a> / <a href="/projects/aoty/"><strong>Albums of the Year</strong></a></span>
+    </div>
+    <main id="main"><slot /></main>
+    <SiteFooter />
+  </body>
+</html>
+<style>
+  .strip { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 10px var(--gutter);
+    border-bottom: 2px solid var(--ink); font-family: var(--font); font-size: 14px; }
+  .home { display: flex; align-items: center; gap: 10px; font-weight: 800; }
+  .crumbs strong { font-weight: 800; }
+</style>

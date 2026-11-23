@@ -1,0 +1,49 @@
+---
+// "Lanes" icons: parallel stripes and track bends in two shades of the section color.
+// Music = record grooves, Science = double helix, News = nested open rings,
+// Bylines = page-corner bends, Podcasts = sound waves around a source,
+// Data (Albums of the Year, Listening Diary) = touching vertical bars.
+interface Props { name: 'music' | 'science' | 'news' | 'podcasts' | 'bylines' | 'data'; size?: number }
+const { name, size = 40 } = Astro.props;
+const C: Record<string, [string, string]> = {
+  music: ['#6B3FA0', '#B39DDB'],
+  science: ['#00A651', '#8FD19E'],
+  news: ['#E5007E', '#F59AC8'],
+  podcasts: ['#00A3AD', '#8ED6DA'],
+  bylines: ['#0072BC', '#8CC4E8'],
+  data: ['#FFC20E', '#F2D27A'],
+};
+const [a, b] = C[name];
+---
+<svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true" class="section-icon">
+  <g fill="none" stroke-linecap="round" stroke-width="7">
+    {name === 'music' && (<>
+      <circle cx="32" cy="32" r="25" stroke={a} />
+      <circle cx="32" cy="32" r="17" stroke={b} />
+      <circle cx="32" cy="32" r="9" stroke={a} />
+    </>)}
+    {name === 'science' && (<>
+      <path d="M20 4C20 18 44 18 44 32S20 46 20 60" stroke={a} />
+      <path d="M44 4C44 18 20 18 20 32S44 46 44 60" stroke={b} />
+    </>)}
+    {name === 'news' && (<>
+      <path d="M52 14A26 26 0 1 0 52 50" stroke={a} />
+      <path d="M46 20A18 18 0 1 0 46 44" stroke={b} />
+      <path d="M40 26A9 9 0 1 0 40 38" stroke={a} />
+    </>)}
+    {name === 'podcasts' && (<>
+      <path d="M32 21V43" stroke={a} />
+      <path d="M22.1 22.1A14 14 0 0 0 22.1 41.9M41.9 22.1A14 14 0 0 1 41.9 41.9" stroke={b} />
+      <path d="M14.3 14.3A25 25 0 0 0 14.3 49.7M49.7 14.3A25 25 0 0 1 49.7 49.7" stroke={a} />
+    </>)}
+    {name === 'bylines' && (<>
+      <path d="M10 58V24A16 16 0 0 1 26 8H56" stroke={a} />
+      <path d="M17 58V24A9 9 0 0 1 26 15H56" stroke={b} />
+      <path d="M24 58V24A2 2 0 0 1 26 22H56" stroke={a} />
+    </>)}
+    {name === 'data' && (<>
+      <path d="M10 58V30M24 58V22M38 58V26M52 58V36" stroke={a} />
+      <path d="M17 58V14M31 58V8M45 58V18" stroke={b} />
+    </>)}
+  </g>
+</svg>

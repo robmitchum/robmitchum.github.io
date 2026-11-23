@@ -1,0 +1,41 @@
+---
+import Monogram from './Monogram.astro';
+const nav = [
+  { href: '/bylines/', label: 'Bylines', color: 'var(--bylines)' },
+  // Blog returns to the nav in Phase 7 (pages parked in src/pages/_blog/).
+  // PhishCrit links to Substack until Phase 6 (pages parked in src/pages/_phishcrit/).
+  { href: 'https://phishcrit.substack.com/', label: 'PhishCrit', color: 'var(--phishcrit)' },
+  { href: '/projects/', label: 'Projects', color: 'var(--projects)' },
+  { href: '/about/', label: 'About', color: 'var(--about)' },
+];
+const path = Astro.url.pathname;
+---
+<header class="wrap site-header">
+  <a href="/" class="brand">
+    <Monogram />
+    <span class="brand-text">
+      <span class="name">Rob Mitchum</span>
+      <span>Writer and editor</span>
+      <span>Oak Park, Illinois</span>
+    </span>
+  </a>
+  <nav aria-label="Main">
+    {nav.map((item) => (
+      <a href={item.href} aria-current={path.startsWith(item.href) ? 'page' : undefined}>
+        <span class="lane" style={`background:${item.color}`}></span>{item.label}
+      </a>
+    ))}
+  </nav>
+</header>
+
+<style>
+  .site-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 24px; padding-top: 32px; }
+  .brand { display: flex; gap: 14px; align-items: flex-start; }
+  .brand:hover { color: var(--ink); }
+  .brand-text { display: flex; flex-direction: column; font-size: 14px; line-height: 1.25; }
+  .name { font-weight: 800; }
+  nav { display: flex; flex-wrap: wrap; gap: 8px 28px; }
+  nav a { display: flex; flex-direction: column; gap: 8px; font-size: 16px; font-weight: 800; padding-bottom: 6px; }
+  .lane { display: block; width: 100%; height: 6px; border-radius: 3px; }
+  nav a[aria-current='page'] .lane { height: 10px; border-radius: 5px; }
+</style>

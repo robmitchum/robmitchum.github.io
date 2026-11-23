@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCards from '../../components/ProjectCards.astro';
+---
+<BaseLayout title="Projects" section="var(--projects)" description="Data projects by Rob Mitchum: Albums of the Year and the Listening Diary.">
+  <div class="wrap">
+    <h1 class="page-title">Projects</h1>
+    <ProjectCards />
+  </div>
+</BaseLayout>
+<style>.page-title { font-size: clamp(40px, 7vw, 76px); margin: 72px 0 40px; } .wrap { padding-bottom: 72px; }</style>

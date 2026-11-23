@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { blogPosts, fmtDate } from '../../lib/content';
+const posts = await blogPosts();
+---
+<BaseLayout title="Blog" section="var(--blog)">
+  <div class="wrap">
+    <h1 class="page-title">Blog</h1>
+    {posts.length ? (
+      <ul class="list">{posts.map((p) => (
+        <li><a href={`/blog/${p.id}/`}><span class="date">{fmtDate(p.data.published)}</span><span class="t">{p.data.title}</span></a></li>
+      ))}</ul>
+    ) : <p class="stub"><strong>Phase 7.</strong> The non-Phish blog channel (name still to pick). Feed: /blog/rss.xml</p>}
+  </div>
+</BaseLayout>
+<style>
+  .page-title { font-size: clamp(40px, 7vw, 76px); margin: 72px 0 40px; }
+  .list { list-style: none; padding: 0; }
+  .list a { display: grid; grid-template-columns: 116px 1fr; gap: 20px; padding: 18px 0; border-top: 2px solid var(--ink); }
+  .t { font-size: 24px; font-weight: 800; }
+  .date { font-size: 13px; }
+</style>

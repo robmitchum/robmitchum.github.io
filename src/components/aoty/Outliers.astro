@@ -1,0 +1,41 @@
+---
+import type { Year } from '../../lib/aoty';
+interface Props { year: Year }
+const { year } = Astro.props;
+---
+<section aria-labelledby="outliers-h">
+  <div class="side-head"><span class="kick">The publications, most to least unique</span><h2 class="anton" id="outliers-h">Outliers</h2></div>
+  <div class="bar-under"></div>
+  <p class="side-note">Ranked by the average Consensus position of the albums on each list: the higher the number, the further it strays from the pack. Solo picks are albums no other list included. Click a publication for its top 10.</p>
+  <div class="mini outliers" role="table" aria-label={`Outliers, ${year.meta.year}`}>
+    <div class="hd" role="row">
+      <span role="columnheader" style="text-align:center">No.</span>
+      <span role="columnheader">Publication</span>
+      <span role="columnheader" style="text-align:right">Avg. spot</span>
+      <span role="columnheader" style="text-align:right">Solo</span>
+    </div>
+    {year.outliers.map((p) => (
+      <div class:list={['grp', { five: p.outlier % 5 === 0 }]} role="rowgroup">
+        <div class="row" role="row">
+          <span class="n" role="cell">{p.outlier}</span>
+          <span role="cell" style="min-width:0">
+            <button type="button" class="open-btn" aria-expanded="false" aria-controls={`pub-${p.abbr}`}><span class="t nc">{p.name}</span></button>
+          </span>
+          <span class="r tnum" role="cell" style="font-weight:600">{Math.round(p.avgPos)}</span>
+          <span class="r tnum" role="cell">{p.solo}</span>
+        </div>
+        <div class="breakdown" id={`pub-${p.abbr}`} hidden>
+          <span class="kick" style="font-size:11px">{p.name}’s top 10 · Consensus spot</span>
+          {p.top.map((x) => (
+            <span class="top10">
+              <span class="rk">{x.rank}</span>
+              <span><span class="nc" style="font-weight:700">{x.album.title}</span> <span class="nc">{x.album.artist}</span></span>
+              <span class:list={['cs', { in: x.album.pos <= 50 }]}>No. {x.album.pos}</span>
+            </span>
+          ))}
+          {p.url && <a class="pill" href={p.url} style="align-self:flex-start;margin-top:4px">Read the full list <span aria-hidden="true">↗</span></a>}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>

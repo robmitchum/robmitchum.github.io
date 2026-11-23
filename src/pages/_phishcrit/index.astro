@@ -1,0 +1,70 @@
+---
+import PhishCritLayout from '../../layouts/PhishCritLayout.astro';
+import { phishcritPosts, showDate, slugify } from '../../lib/content';
+const posts = await phishcritPosts();
+const newestFirst = [...posts].sort((a, b) => +b.data.published - +a.data.published);
+const featured = newestFirst[0];
+const recent = newestFirst.slice(1, 6);
+---
+<PhishCritLayout>
+  <div class="front">
+    <div class="main-col">
+      {featured ? (
+        <a class="panel panel--yellow featured" href={`/phishcrit/${featured.id}/`}>
+          <span class="pc-kicker">Featured{featured.data.showDate && ` · ${showDate(featured.data.showDate)}`}{featured.data.venue && ` · ${featured.data.venue}`}</span>
+          <span class="pc-display pc-title f-title">{featured.data.title}</span>
+          {featured.data.summary && <span>{featured.data.summary}</span>}
+        </a>
+      ) : (
+        <div class="panel panel--yellow"><p class="pc-kicker">Featured essay</p><p>The newest post lands here once the archive moves over in Phase 6.</p></div>
+      )}
+      <section aria-labelledby="recent-h">
+        <h2 id="recent-h" class="pc-section-head">Recent essays</h2>
+        {recent.length ? recent.map((p) => (
+          <a class="row" href={`/phishcrit/${p.id}/`}>
+            <span class="pc-kicker">{p.data.showDate && showDate(p.data.showDate)}<br />{p.data.city}</span>
+            <span class="row-body">
+              <span class="pc-display pc-title row-title">{p.data.title}</span>
+              {p.data.summary && <span>{p.data.summary}</span>}
+              {p.data.tour && <span class="tour-pill">{p.data.tour}</span>}
+            </span>
+          </a>
+        )) : <p class="pc-stub">Five most recent essays (Phase 6).</p>}
+      </section>
+    </div>
+    <aside class="side-col">
+      <section id="subscribe" class="panel panel--purple">
+        <h2 class="pc-display side-head">Subscribe</h2>
+        <p>Free, by email. Signup form arrives with the newsletter service in Phase 6.</p>
+        <a class="pill pill--yellow" href="https://phishcrit.substack.com/">Subscribe on Substack for now</a>
+      </section>
+      <section class="panel panel--salmon">
+        <h2 class="pc-display side-head">Most read</h2>
+        <p>Top five, blending Substack history with new page views (Phase 6).</p>
+      </section>
+      <section class="panel panel--teal">
+        <h2 class="pc-display side-head">On this date</h2>
+        <p>Essays for shows played on today's date (Phase 6).</p>
+      </section>
+    </aside>
+  </div>
+  <section id="archive" class="panel panel--mint archive">
+    <h2 class="pc-section-head">Archive</h2>
+    <p>Browse by date and tour. <a href="/phishcrit/archive/">Open the full archive</a>.</p>
+  </section>
+  <section id="about" class="about"><h2 class="pc-section-head">About PhishCrit</h2><p class="pc-stub">Rob writes this blurb.</p></section>
+</PhishCritLayout>
+<style>
+  .front { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+  .main-col { flex: 999 1 620px; min-width: 0; display: flex; flex-direction: column; gap: 48px; }
+  .side-col { flex: 1 1 300px; display: flex; flex-direction: column; gap: 24px; }
+  .featured { display: flex; flex-direction: column; gap: 14px; text-decoration: none; }
+  .f-title { font-size: clamp(40px, 5vw, 64px); }
+  .row { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 18px; padding: 20px 0; border-top: 2px solid var(--pc-ink); text-decoration: none; }
+  .row-body { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+  .row-title { font-size: 26px; }
+  .side-head { font-size: 30px; margin: 0 0 8px; }
+  .side-col p { font-size: 17px; }
+  .archive { margin-top: 56px; }
+  .about { margin-top: 56px; }
+</style>

@@ -1,0 +1,64 @@
+---
+import '../styles/phishcrit.css';
+import Monogram from '../components/Monogram.astro';
+
+interface Props { title?: string; description?: string }
+const { title, description = 'Essays on Phish, show by show.' } = Astro.props;
+const fullTitle = title ? `${title} · PhishCrit` : 'PhishCrit';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+  </head>
+  <body>
+    <div class="strip">
+      <div class="pc-wrap strip-row">
+        <a href="/" class="home"><Monogram width={35} letters="#FFFFFF" track="#E2231A" label="robmitchum.com" /><span>robmitchum.com</span></a>
+        <span class="strip-links">
+          <a href="/phishcrit/archive/">Archive</a>
+          <a href="/phishcrit/#about">About PhishCrit</a>
+          <a href="/phishcrit/#subscribe" class="sub">Subscribe</a>
+        </span>
+      </div>
+    </div>
+    <header class="pc-wrap masthead">
+      <div class="mast-row">
+        <span class="mast-rule"></span>
+        <a href="/phishcrit/" class="mast-name">PhishCrit</a>
+        <span class="mast-rule"></span>
+      </div>
+      <div class="mast-info">
+        <span>Since 2019</span><span>Essays on Phish, show by show</span><span>The PhishCrit Newsletter</span>
+      </div>
+    </header>
+    <main id="main" class="pc-wrap pc-main"><slot /></main>
+    <footer class="pc-wrap pc-footer">
+      <a href="/">robmitchum.com</a> · <a href="/phishcrit/archive/">Archive</a>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .strip { background: var(--pc-purple); color: #fff; font-family: 'Schibsted Grotesk', sans-serif; font-size: 13px; }
+  .strip-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding-top: 10px; padding-bottom: 10px; }
+  .home { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .strip-links { display: flex; gap: 20px; flex-wrap: wrap; }
+  .sub { font-weight: 800; }
+  .masthead { padding-top: 36px; }
+  .mast-row { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: end; gap: 16px; }
+  .mast-rule { height: 2px; background: var(--pc-purple); margin-bottom: 26px; }
+  .mast-name { font-family: var(--pc-black); font-size: clamp(60px, 9vw, 116px); line-height: 0.9; color: var(--pc-purple); text-decoration: none; }
+  .mast-info { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 10px; font-weight: 700; font-style: italic; font-size: 16px; color: var(--pc-purple); }
+  .pc-main { padding-top: 40px; padding-bottom: 80px; }
+  .pc-footer { padding-bottom: 40px; font-family: 'Schibsted Grotesk', sans-serif; font-size: 14px; }
+</style>

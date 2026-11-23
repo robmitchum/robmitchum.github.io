@@ -1,0 +1,13 @@
+---
+interface Props { showPrev: boolean }
+const { showPrev } = Astro.props;
+---
+<div class="hd" role="row">
+  <span class="v" role="columnheader">This year</span>
+  <span class="v" role="columnheader">{showPrev ? 'Last update' : ''}</span>
+  <span class="v li" role="columnheader">Lists</span>
+  <span role="columnheader" style="font-size:12px">Title · Artist</span>
+  <span class="v tt" role="columnheader">Top 10s</span>
+  <span class="v o" role="columnheader">No. 1s</span>
+  <span class="v" role="columnheader">Score</span>
+</div>

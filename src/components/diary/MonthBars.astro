@@ -1,0 +1,41 @@
+---
+// Entries per month, stacked: this year's releases (dark yellow) under older albums (light).
+// `mini` drops the labels for the Projects card preview.
+import { MONTHS } from '../../lib/diary';
+interface Props { byMonth: { total: number; fresh: number }[]; lastMonth: number; year: number; mini?: boolean }
+const { byMonth, lastMonth, year, mini = false } = Astro.props;
+const months = byMonth.slice(0, lastMonth + 1);
+const max = Math.max(...months.map((m) => m.total));
+const top = Math.ceil(max / 20) * 20;
+const W = 720, H = mini ? 250 : 280, padL = mini ? 0 : 36, padB = mini ? 0 : 28, padT = mini ? 4 : 12;
+const slot = (W - padL) / 12;
+const bw = slot * (mini ? 0.72 : 0.66);
+const y = (v: number) => H - padB - (v / top) * (H - padB - padT);
+const ticks = [0, top / 2, top];
+---
+<svg viewBox={`0 0 ${W} ${H}`} class:list={['monthbars', { mini }]} role="img"
+  aria-label={`Entries per month in ${year}: ${months.map((m, i) => `${MONTHS[i]} ${m.total}`).join(', ')}`}>
+  {!mini && ticks.map((t) => (
+    <g>
+      <line x1={padL} x2={W} y1={y(t)} y2={y(t)} stroke="#1B1B19" stroke-width={t === 0 ? 2 : 1} opacity={t === 0 ? 1 : 0.15} />
+      <text x={padL - 8} y={y(t) + 4} text-anchor="end" class="tick">{t}</text>
+    </g>
+  ))}
+  {months.map((m, i) => {
+    const x = padL + i * slot + (slot - bw) / 2;
+    return (
+      <g>
+        <rect x={x} y={y(m.total)} width={bw} height={y(m.fresh) - y(m.total)} fill="#FFD54F" rx={mini ? 3 : 4} />
+        <rect x={x} y={y(m.fresh)} width={bw} height={H - padB - y(m.fresh)} fill="#E0A800" />
+        {!mini && <text x={x + bw / 2} y={y(m.total) - 6} text-anchor="middle" class="val">{m.total}</text>}
+        {!mini && <text x={x + bw / 2} y={H - 8} text-anchor="middle" class="tick">{MONTHS[i]}</text>}
+      </g>
+    );
+  })}
+</svg>
+<style>
+  .monthbars { width: 100%; height: auto; display: block; overflow: visible; }
+  @media (max-width: 600px) { .monthbars:not(.mini) { min-width: 560px; } }
+  .tick { font-size: 13px; fill: var(--muted); font-family: var(--font); }
+  .val { font-size: 13px; font-weight: 800; fill: var(--ink); font-family: var(--font); }
+</style>

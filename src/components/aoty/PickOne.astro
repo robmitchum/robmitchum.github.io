@@ -1,0 +1,127 @@
+---
+// "Pick One": a random album from the whole year, filtered by two dropdowns.
+// The album data rides along as JSON; scripts/aoty-pick.ts does the picking.
+import { CHART_SIZE, buyStore, buyUrl, listenUrl, type Year } from '../../lib/aoty';
+interface Props { year: Year }
+const { year } = Astro.props;
+const filters = [
+  ['any', 'Anything'],
+  ['top50', 'The Consensus top 50'],
+  ['chart', `The Consensus ${CHART_SIZE}`],
+  ['deep', `Deep cuts (outside the ${CHART_SIZE})`],
+  ['three', 'On 3 or more lists'],
+  ['top10', "Made somebody's top 10"],
+  ['no1', "Somebody's No. 1"],
+  ['sleeper', 'Sleepers'],
+  ['solo', 'Solo picks (one list only)'],
+];
+const data = {
+  n: year.pubs.length,
+  chart: CHART_SIZE,
+  pubs: year.pubs.map((p) => p.name),
+  albums: year.albums.map((a) => ({
+    a: a.artist, t: a.title, pos: a.pos, li: a.lists, tt: a.top10s, o: a.no1s,
+    b: [a.best.rank, a.best.pub], p: a.placements.map((x) => x.pub), sl: a.sleeper,
+    buy: buyUrl(a), store: buyStore(buyUrl(a)), listen: listenUrl(a), cover: a.links.cover ?? null,
+  })),
+};
+---
+<section class="pick" aria-labelledby="pick-h" data-pick>
+  <div class="pick-head"><h2 class="anton" id="pick-h">Pick One</h2><span>From all {year.albums.length}</span></div>
+  <div class="pick-body">
+    <label>Pick from
+      <select data-filter>
+        {filters.map(([id, label]) => <option value={id} selected={id === 'top10'}>{label}</option>)}
+      </select>
+    </label>
+    <label>On whose list
+      <select data-pub>
+        <option value="all">Any publication</option>
+        {[...year.pubs].sort((a, b) => a.name.localeCompare(b.name)).map((p) => <option value={p.idx}>{p.name}</option>)}
+      </select>
+    </label>
+    <div class="pick-result" data-result>
+      <div class="pick-cover" data-cover>
+        <svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="25" fill="none" stroke-width="6" stroke="#00703A"></circle><circle cx="32" cy="32" r="16" fill="none" stroke-width="6" stroke="#7CC49A"></circle><circle cx="32" cy="32" r="7" fill="none" stroke-width="6" stroke="#00703A"></circle></svg>
+      </div>
+      <div class="pick-info" aria-live="polite">
+        <span class="t nc" data-t></span>
+        <span class="a nc" data-a></span>
+        <span class="why" data-why></span>
+        <span class="pills" style="display:flex;flex-wrap:wrap;gap:6px;padding-top:2px">
+          <a class="pill" data-buy href="#" hidden>Buy <span aria-hidden="true">↗</span></a>
+          <a class="pill" data-listen href="#">Listen <span aria-hidden="true">↗</span></a>
+        </span>
+      </div>
+    </div>
+    <p data-none hidden style="margin:0;font-size:13px">Nothing matches both choices. Try a wider filter.</p>
+    <noscript><p style="margin:0;font-size:13px">The picker needs JavaScript. The full list is below.</p></noscript>
+    <div class="pick-foot">
+      <span class="count" data-count></span>
+      <button type="button" data-another>Another one</button>
+    </div>
+  </div>
+  <script type="application/json" data-pick-json set:html={JSON.stringify(data).replace(/</g, '\\u003c')}></script>
+</section>
+
+<script>
+  type A = { a: string; t: string; pos: number; li: number; tt: number; o: number; b: [number, number]; p: number[]; sl: number;
+    buy: string | null; store: string; listen: string; cover: string | null };
+  for (const root of document.querySelectorAll<HTMLElement>('[data-pick]')) {
+    const d = JSON.parse(root.querySelector('[data-pick-json]')!.textContent!) as { n: number; chart: number; pubs: string[]; albums: A[] };
+    const $ = <T extends Element>(s: string) => root.querySelector<T>(s)!;
+    const filter = $<HTMLSelectElement>('[data-filter]');
+    const pub = $<HTMLSelectElement>('[data-pub]');
+    const tests: Record<string, (a: A) => boolean> = {
+      any: () => true,
+      top50: (a) => a.pos <= 50,
+      chart: (a) => a.pos <= d.chart,
+      deep: (a) => a.pos > d.chart,
+      three: (a) => a.li >= 3,
+      top10: (a) => a.tt > 0,
+      no1: (a) => a.o > 0,
+      sleeper: (a) => a.sl > 0,
+      solo: (a) => a.li === 1,
+    };
+    let last = -1;
+    function draw(reroll: boolean) {
+      const test = tests[filter.value] ?? tests.any;
+      const p = pub.value === 'all' ? -1 : Number(pub.value);
+      const pool = d.albums.filter((a) => test(a) && (p < 0 || a.p.includes(p)));
+      $('[data-count]').textContent = `${pool.length} album${pool.length === 1 ? '' : 's'} match`;
+      $<HTMLElement>('[data-result]').hidden = !pool.length;
+      $<HTMLElement>('[data-none]').hidden = !!pool.length;
+      $<HTMLButtonElement>('[data-another]').disabled = pool.length < 2;
+      if (!pool.length) return;
+      let i = Math.floor(Math.random() * pool.length);
+      if (reroll && pool.length > 1 && pool[i].pos === last) i = (i + 1) % pool.length;
+      const a = pool[i];
+      last = a.pos;
+      $('[data-t]').textContent = a.t;
+      $('[data-a]').textContent = a.a;
+      const bits = [a.li === 1 ? 'On 1 list' : `On ${a.li} of ${d.n} lists`,
+        a.pos <= d.chart ? `No. ${a.pos} in the Consensus ${d.chart}` : `Outside the ${d.chart} (No. ${a.pos})`,
+        a.li === 1 ? `No. ${a.b[0]} at ${d.pubs[a.b[1]]}` : `Best: No. ${a.b[0]} at ${d.pubs[a.b[1]]}`];
+      $('[data-why]').textContent = bits.join('\n'); // one stat per line (white-space: pre-line)
+      const buy = $<HTMLAnchorElement>('[data-buy]');
+      buy.hidden = !a.buy;
+      if (a.buy) { buy.href = a.buy; buy.setAttribute('aria-label', `Buy ${a.t} by ${a.a} at ${a.store}`); }
+      const listen = $<HTMLAnchorElement>('[data-listen]');
+      listen.href = a.listen;
+      listen.setAttribute('aria-label', `Listen to ${a.t} by ${a.a}`);
+      const cover = $<HTMLElement>('[data-cover]');
+      const svg = cover.querySelector('svg');
+      cover.querySelector('img')?.remove();
+      if (a.cover) {
+        const img = document.createElement('img');
+        img.src = a.cover; img.alt = `Cover of ${a.t}`; img.width = 112; img.height = 112;
+        cover.append(img);
+        if (svg) svg.style.display = 'none';
+      } else if (svg) svg.style.display = '';
+    }
+    filter.addEventListener('change', () => draw(false));
+    pub.addEventListener('change', () => draw(false));
+    $('[data-another]').addEventListener('click', () => draw(true));
+    draw(false);
+  }
+</script>

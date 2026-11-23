@@ -1,0 +1,52 @@
+# Builds the Astro site. Pull requests get a build check only.
+# Pushes to master deploy to GitHub Pages, which requires
+# Settings → Pages → Source set to "GitHub Actions".
+# A nightly run (schedule) rebuilds master with fresh Listening Diary data from the
+# Google Sheet; if the download fails, the build keeps the data saved in the repo.
+name: Build and deploy
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 9 * * *' # 3:17 a.m. Central (standard time), daily
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Refresh Listening Diary data
+        run: npm run diary -- --download --soft
+      - run: npm run build
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

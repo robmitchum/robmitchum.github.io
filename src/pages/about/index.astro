@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+// Rob writes this page in src/data/about/about.md.
+import * as about from '../../data/about/about.md';
+const hasText = about.rawContent().replace(/<!--[\s\S]*?-->/g, '').trim().length > 0;
+---
+<BaseLayout title="About" section="var(--about)" description="About Rob Mitchum, a writer and editor in Oak Park, Illinois.">
+  <div class="wrap">
+    <h1 class="page-title">About</h1>
+    {hasText
+      ? <div class="about-text"><about.Content /></div>
+      : <p class="stub"><strong>To come.</strong> Bio and contact. Rob writes this page.</p>}
+  </div>
+</BaseLayout>
+<style>
+  .page-title { font-size: clamp(40px, 7vw, 76px); margin: 72px 0 40px; }
+  .about-text { max-width: 68ch; font-size: 20px; line-height: 1.5; padding-bottom: 72px; }
+  .about-text :global(h2) { font-size: 28px; margin: 48px 0 12px; }
+  .about-text :global(p) { margin: 0 0 1em; }
+  .about-text :global(a) { text-decoration: underline; color: var(--bylines-text); }
+</style>
