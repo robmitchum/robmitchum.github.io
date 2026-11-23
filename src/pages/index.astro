@@ -7,7 +7,8 @@ import { allBylines, sectionInfo, fmtIso } from '../lib/bylines';
 const pc = (await phishcritPosts()).map((p) => ({ date: p.data.published, kind: 'PhishCrit', cls: 'pc', title: p.data.title, dek: p.data.summary ?? p.data.subtitle, href: `/phishcrit/${p.id}/` }));
 const bl = (await blogPosts()).map((p) => ({ date: p.data.published, kind: 'Blog', cls: 'blog', title: p.data.title, dek: p.data.summary, href: `/blog/${p.id}/` }));
 const latest = [...pc, ...bl].sort((a, b) => +b.date - +a.date).slice(0, 3);
-const bylines = allBylines().slice(0, 3);
+// The blogs column shows only once PhishCrit (Phase 6) or the blog (Phase 7) has posts on this site.
+const bylines = allBylines().slice(0, latest.length ? 3 : 5);
 ---
 <BaseLayout section="var(--phishcrit)">
   <section class="wrap hero">
@@ -29,18 +30,18 @@ const bylines = allBylines().slice(0, 3);
   <section class="wrap latest">
     <h2 class="big">Latest</h2>
     <div class="cols">
-      <div>
+      {latest.length > 0 && <div>
         <h3 class="col-head">
           <svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-width="7"><path d="M10 18H54" stroke="#F58220" /><path d="M10 25H46" stroke="#FBC08A" /><path d="M10 39H54" stroke="#F58220" /><path d="M10 46H38" stroke="#FBC08A" /></g></svg>
           From the blogs
         </h3>
-        {latest.length ? latest.map((p) => (
+        {latest.map((p) => (
           <a class="entry" href={p.href}>
             <span class="meta"><span>{fmtDate(p.date)}</span><span class={`pod pod-${p.cls}`}>{p.kind}</span></span>
             <span class="body"><span class="title">{p.title}</span>{p.dek && <span>{p.dek}</span>}</span>
           </a>
-        )) : <p class="stub">Posts appear here once PhishCrit (Phase 6) and the blog (Phase 7) have content.</p>}
-      </div>
+        ))}
+      </div>}
       <div>
         <h3 class="col-head">
           <svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-width="7"><path d="M10 58V24A16 16 0 0 1 26 8H56" stroke="#0072BC" /><path d="M17 58V24A9 9 0 0 1 26 15H56" stroke="#8CC4E8" /><path d="M24 58V24A2 2 0 0 1 26 22H56" stroke="#0072BC" /></g></svg>

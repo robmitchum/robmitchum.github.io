@@ -2,8 +2,9 @@
 import Monogram from './Monogram.astro';
 const nav = [
   { href: '/bylines/', label: 'Bylines', color: 'var(--bylines)' },
-  { href: '/blog/', label: 'Blog', color: 'var(--blog)' },
-  { href: '/phishcrit/', label: 'PhishCrit', color: 'var(--phishcrit)' },
+  // Blog returns to the nav in Phase 7 (pages parked in src/pages/_blog/).
+  // PhishCrit links to Substack until Phase 6 (pages parked in src/pages/_phishcrit/).
+  { href: 'https://phishcrit.substack.com/', label: 'PhishCrit', color: 'var(--phishcrit)' },
   { href: '/projects/', label: 'Projects', color: 'var(--projects)' },
   { href: '/about/', label: 'About', color: 'var(--about)' },
 ];
