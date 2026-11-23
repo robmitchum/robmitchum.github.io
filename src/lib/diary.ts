@@ -1,7 +1,7 @@
 // Listening Diary data and stats. Source: src/data/diary/<year>.json (npm run diary).
 import years from '../data/diary/years.json';
 
-export interface Entry { date: string; artist: string; album: string; year: number | null; type: string }
+export interface Entry { date: string; artist: string; album: string; year: number | null; type: string; format: string | null }
 export interface DiaryYear { year: number; fetched: string; entries: Entry[] }
 
 const files = import.meta.glob<{ default: DiaryYear }>('../data/diary/2*.json', { eager: true });
@@ -48,6 +48,24 @@ export function stats(d: DiaryYear) {
   for (const x of e) if (x.artist !== 'Various Artists') artists.set(x.artist, (artists.get(x.artist) ?? 0) + 1);
   const topArtists = [...artists].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 10);
 
+  // Most-logged albums: same artist + title, ignoring case and a trailing "(…)" (so
+  // discs and remasters of one release count together). Ties: most recently played first.
+  const albums = new Map<string, { artist: string; album: string; n: number; last: string }>();
+  for (const x of e) {
+    const title = x.album.replace(/\s*\([^)]*\)\s*$/, '');
+    const key = `${x.artist.toLowerCase()}|${title.toLowerCase()}`;
+    const a = albums.get(key) ?? { artist: x.artist, album: title, n: 0, last: '' };
+    a.n++;
+    a.last = x.date;
+    albums.set(key, a);
+  }
+  const topAlbums = [...albums.values()].filter((a) => a.n > 1)
+    .sort((a, b) => b.n - a.n || b.last.localeCompare(a.last)).slice(0, 10);
+
+  const formats = new Map<string, number>();
+  for (const x of e) if (x.format) formats.set(x.format, (formats.get(x.format) ?? 0) + 1);
+  const formatList = [...formats].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+
   // Longest run of consecutive days with at least one entry.
   const days = [...byDay.keys()].sort();
   let streak = 0, run = 0, prev = 0;
@@ -57,7 +75,6 @@ export function stats(d: DiaryYear) {
     streak = Math.max(streak, run);
     prev = t;
   }
-  const oldest = withYear.reduce((a, b) => (b.year! < a.year! ? b : a));
 
   return {
     last,
@@ -68,12 +85,21 @@ export function stats(d: DiaryYear) {
     artists: new Set(e.map((x) => x.artist)).size,
     fresh: e.filter(isNew).length,
     avgYear: Math.round(withYear.reduce((s, x) => s + x.year!, 0) / withYear.length),
-    oldest,
     activeDays: byDay.size,
     streak,
     byMonth,
     byDay,
     decadeList,
     topArtists,
+    topAlbums,
+    formatList,
   };
 }
+
+// Display names for the Format column.
+export const FORMAT_NAMES: Record<string, string> = {
+  Apple: 'Apple Music',
+  LMA: 'Live Music Archive',
+  LivePhish: 'LivePhish',
+  'Digital File': 'Digital file',
+};

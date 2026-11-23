@@ -9,8 +9,8 @@
 //   add --soft                              on a failed download, keep the saved file and
 //                                           exit 0 (the nightly build uses this)
 //
-// Columns are read by header name: Date, Artist, Album, Release Year, Type. Format and
-// Location are left out on purpose: the public page doesn't show where or how Rob listens.
+// Columns are read by header name: Date, Artist, Album, Release Year, Type, Format.
+// Location is left out on purpose: the public page doesn't show where Rob listens.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -55,7 +55,7 @@ const col = (name) => {
   if (i < 0) fail(`No "${name}" column in the Log tab header.`, true);
   return i;
 };
-const [cDate, cArtist, cAlbum, cYear, cType] = ['date', 'artist', 'album', 'release year', 'type'].map(col);
+const [cDate, cArtist, cAlbum, cYear, cType, cFormat] = ['date', 'artist', 'album', 'release year', 'type', 'format'].map(col);
 
 const entries = [];
 const skipped = [];
@@ -71,6 +71,7 @@ rows.slice(1).forEach((r, i) => {
     album: cell(cAlbum),
     year: Number.isInteger(ry) && ry > 1000 ? ry : null,
     type: cell(cType) || 'Album',
+    format: cell(cFormat) || null,
   });
 });
 if (!entries.length) fail('No entries found.');
