@@ -31,16 +31,16 @@ const { items, heading = 'Selected work' } = Astro.props;
 
 <style>
   .featured { margin: 0 0 64px; }
-  .fh { margin: 0 0 20px; font-size: 14px; letter-spacing: 0; }
+  .fh { margin: 0 0 20px; font-size: var(--fs-small); letter-spacing: 0; }
   .cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px; }
   .cards li { display: flex; }
   .card { flex: 1; display: flex; flex-direction: column; gap: 14px; background: #fff; border: 2px solid var(--ink); border-radius: 28px; padding: 28px; }
   a.card:hover { color: var(--ink); border-color: var(--section); }
   a.card:hover .title { color: var(--section-text); }
   .lane { display: block; width: 64px; height: 8px; border-radius: 4px; background: var(--section); }
-  .meta { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; }
+  .meta { display: flex; justify-content: space-between; gap: 12px; font-size: var(--fs-small); }
   .outlet { font-weight: 800; }
-  .title { font-size: 24px; font-weight: 800; line-height: 1.15; flex: 1; }
+  .title { font-size: var(--fs-head); font-weight: 800; line-height: 1.15; flex: 1; }
   .pods { display: flex; flex-wrap: wrap; gap: 6px; }
   .pod { color: var(--pod-text); }
   .pod--outline { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); font-weight: 400; }

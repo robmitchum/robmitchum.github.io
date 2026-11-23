@@ -2,34 +2,15 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BylinesHeader from '../../components/BylinesHeader.astro';
 import BylineRow from '../../components/BylineRow.astro';
-import SectionIcon from '../../components/SectionIcon.astro';
-import { SECTIONS, bylines, allBylines, countBy, yearSpan, ownShows, pageIntro } from '../../lib/bylines';
+import { allBylines, pageIntro } from '../../lib/bylines';
 const recent = allBylines().slice(0, 10);
-const cards = SECTIONS.map((s) => {
-  const items = bylines[s.id];
-  const top = s.id === 'podcasts'
-    ? ownShows().map((h) => h.show)
-    : countBy(items, (b) => b.outlet).slice(0, 3).map(([o]) => o);
-  return { ...s, n: items.length, span: yearSpan(items), top };
-});
 ---
 <BaseLayout title="Bylines" section="var(--bylines)" description="Rob Mitchum's published writing and podcast work: music, science, news and podcasts.">
   <div class="wrap">
-    <BylinesHeader title="Bylines" meta="Writing and podcasts" color="var(--bylines-text)">
+    <BylinesHeader title="Bylines" color="var(--bylines-text)">
       <p slot="intro" class:list={['intro', { placeholder: !pageIntro('bylines') }]}>{pageIntro('bylines') ?? '[A line introducing your published writing and podcast work.]'}</p>
     </BylinesHeader>
 
-    <ul class="sections">
-      {cards.map((c) => (
-        <li>
-          <a class="card" href={`/bylines/${c.id}/`} style={`--section:${c.color};--section-text:${c.text}`}>
-            <span class="top"><SectionIcon name={c.id} size={56} /><span class="count">{c.n.toLocaleString('en-US')}</span></span>
-            <span class="name">{c.label}</span>
-            <span class="facts"><span>{c.span}</span><span>{c.top.join(' · ')}</span></span>
-          </a>
-        </li>
-      ))}
-    </ul>
 
     <section class="recent" style="--section: var(--bylines)">
       <h2 class="section-head">Recent</h2>
@@ -41,16 +22,7 @@ const cards = SECTIONS.map((s) => {
 
 <style>
   .placeholder { color: var(--muted); }
-  .sections { list-style: none; padding: 0; margin: 0 0 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 24px; }
-  .sections li { display: flex; }
-  .card { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 28px; border-radius: 28px; border: 2px solid var(--ink); background: #fff; border-top: 12px solid var(--section); }
-  .card:hover { color: var(--ink); }
-  .card:hover .name { color: var(--section-text); }
-  .top { display: flex; justify-content: space-between; align-items: flex-start; }
-  .count { font-size: 40px; font-weight: 800; line-height: 1; }
-  .name { font-size: 32px; font-weight: 800; line-height: 1; }
-  .facts { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
-  .facts span:first-child { font-weight: 800; }
+  .recent { margin-top: 24px; }
   .rows { padding: 0; margin: 0; }
   .end-rule { border-top: 2px solid var(--ink); }
 </style>

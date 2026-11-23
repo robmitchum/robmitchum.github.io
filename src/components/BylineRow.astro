@@ -30,12 +30,12 @@ const title = mode === 'episode' ? episodeTitle(b) : b.title;
   .byline { list-style: none; }
   .row { display: grid; grid-template-columns: 140px minmax(0, 1fr) auto; gap: 8px 24px; align-items: center; padding: 20px 0; border-top: 2px solid var(--ink); }
   a.row:hover .t { color: var(--section-text); }
-  .meta { display: flex; flex-direction: column; font-size: 13px; line-height: 1.3; }
+  .meta { display: flex; flex-direction: column; font-size: var(--fs-small); line-height: 1.3; }
   .outlet { font-weight: 800; }
   .main { display: flex; align-items: center; gap: 16px; min-width: 0; }
   .main :global(.section-icon) { flex: 0 0 auto; }
-  .t { font-size: 22px; font-weight: 800; line-height: 1.2; overflow-wrap: anywhere; }
-  .offline { display: inline-block; margin-left: 10px; font-size: 12px; font-weight: 400; color: var(--muted); vertical-align: 3px; }
+  .t { font-size: var(--fs-head); font-weight: 800; line-height: 1.2; overflow-wrap: anywhere; }
+  .offline { display: inline-block; margin-left: 10px; font-size: var(--fs-small); font-weight: 400; color: var(--muted); vertical-align: 3px; }
   .pods { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
   .pod { color: var(--pod-text); white-space: nowrap; }
   .pod--outline { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); font-weight: 400; }
@@ -43,6 +43,6 @@ const title = mode === 'episode' ? episodeTitle(b) : b.title;
     .row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
     .meta { flex-direction: row; gap: 10px; }
     .pods { justify-content: flex-start; }
-    .t { font-size: 19px; }
+    .t { font-size: var(--fs-body); }
   }
 </style>
