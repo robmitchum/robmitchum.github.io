@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://robmitchum.com/sitemap-index.xml
