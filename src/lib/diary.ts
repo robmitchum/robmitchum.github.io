@@ -48,10 +48,13 @@ export function stats(d: DiaryYear) {
   for (const x of e) if (x.artist !== 'Various Artists') artists.set(x.artist, (artists.get(x.artist) ?? 0) + 1);
   const topArtists = [...artists].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 10);
 
-  // Most-logged albums: same artist + title, ignoring case and a trailing "(…)" (so
+  // Most-logged albums. Grateful Dead "Dave's Picks" releases are left out: they're
+  // research for the 36FTVQ podcast (the page says so under the chart).
+  // Same artist + title, ignoring case and a trailing "(…)" (so
   // discs and remasters of one release count together). Ties: most recently played first.
   const albums = new Map<string, { artist: string; album: string; n: number; last: string }>();
   for (const x of e) {
+    if (isDavesPicks(x)) continue;
     const title = x.album.replace(/\s*\([^)]*\)\s*$/, '');
     const key = `${x.artist.toLowerCase()}|${title.toLowerCase()}`;
     const a = albums.get(key) ?? { artist: x.artist, album: title, n: 0, last: '' };
@@ -64,7 +67,7 @@ export function stats(d: DiaryYear) {
 
   const formats = new Map<string, number>();
   for (const x of e) if (x.format) formats.set(x.format, (formats.get(x.format) ?? 0) + 1);
-  const formatList = [...formats].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  const formatList = [...formats].filter(([, n]) => n > 1).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 
   // Longest run of consecutive days with at least one entry.
   const days = [...byDay.keys()].sort();
@@ -103,3 +106,5 @@ export const FORMAT_NAMES: Record<string, string> = {
   LivePhish: 'LivePhish',
   'Digital File': 'Digital file',
 };
+
+export const isDavesPicks = (x: Entry) => /^dave'?s picks/i.test(x.album.replace(/’/g, "'"));

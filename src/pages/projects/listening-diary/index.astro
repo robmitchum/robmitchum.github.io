@@ -65,6 +65,7 @@ const typeLabel: Record<string, string> = { 'Live Show': 'Live', 'DJ Mix': 'DJ m
               <li><span class="hl"><span class="ht">{a.album}</span><span class="ha">{a.artist}</span></span><span class="track"><span class="fill" style={`width:${(a.n / albMax) * 100}%`} /></span><span class="hn">{a.n}</span></li>
             ))}
           </ol>
+          <p class="footnote">Dave's Picks releases aren't counted here. Those are research for <a href="/bylines/podcasts/#36ftvq">36FTVQ</a>, the Grateful Dead podcast I co-host.</p>
         </div>
       </div>
     </section>
@@ -285,6 +286,8 @@ const typeLabel: Record<string, string> = { 'Live Show': 'Live', 'DJ Mix': 'DJ m
   .dt { white-space: nowrap; color: var(--muted); font-variant-numeric: tabular-nums; width: 76px; }
   .al { font-weight: 800; }
   .tpod { display: inline-block; margin-left: 8px; font-size: 11px; font-weight: 800; padding: 2px 9px; border-radius: 999px; background: var(--projects-light); vertical-align: 1px; white-space: nowrap; }
+  .footnote { margin: 16px 0 0; font-size: 13px; color: var(--muted); }
+  .footnote a { color: var(--ink); font-weight: 800; text-decoration: underline; text-decoration-color: var(--projects-dark); text-underline-offset: 3px; }
   .empty { padding: 24px 0; color: var(--muted); margin: 0; }
   .src { margin: 20px 0 0; }
   .btn { display: inline-flex; gap: 6px; align-items: center; font-weight: 800; font-size: 15px; padding: 10px 20px; border: 2px solid var(--ink); border-radius: 999px; }
