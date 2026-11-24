@@ -2,7 +2,6 @@
 import ProjectCards from '../components/ProjectCards.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroBand from '../components/HeroBand.astro';
-const heroVariant = (import.meta.env.HERO_VARIANT ?? 'a') as 'a' | 'b' | 'c';
 import { phishcritPosts, blogPosts, fmtDate } from '../lib/content';
 import { allBylines, sectionInfo, fmtIso } from '../lib/bylines';
 
@@ -14,7 +13,7 @@ const bylines = allBylines().slice(0, latest.length ? 3 : 5);
 ---
 <BaseLayout section="var(--phishcrit)">
   <section class="wrap hero">
-    <HeroBand variant={heroVariant} />
+    <HeroBand />
     <h1><span>Music writing,</span> <span>science writing,</span> <span>and side projects</span></h1>
   </section>
 
