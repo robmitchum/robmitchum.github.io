@@ -7,15 +7,22 @@ const hasText = about.rawContent().replace(/<!--[\s\S]*?-->/g, '').trim().length
 <BaseLayout title="About" section="var(--about)" description="About Rob Mitchum, a writer and editor in Oak Park, Illinois.">
   <div class="wrap">
     <h1 class="page-title">About</h1>
-    {hasText
-      ? <div class="about-text"><about.Content /></div>
-      : <p class="stub"><strong>To come.</strong> Bio and contact. Rob writes this page.</p>}
+    <div class="about-grid">
+      {hasText
+        ? <div class="about-text"><about.Content /></div>
+        : <p class="stub"><strong>To come.</strong> Bio and contact. Rob writes this page.</p>}
+      {/* Photo: drop a file at public/images/rob.jpg and swap the placeholder for <img src="/images/rob.jpg" alt="Rob Mitchum" /> */}
+      <figure class="photo"><span>Photo of Rob</span></figure>
+    </div>
   </div>
 </BaseLayout>
 <style>
-  .page-title { font-size: clamp(40px, 7vw, 76px); margin: 72px 0 40px; }
-  .about-text { max-width: 68ch; font-size: 20px; line-height: 1.5; padding-bottom: 72px; }
-  .about-text :global(h2) { font-size: 28px; margin: 48px 0 12px; }
+  .about-grid { display: grid; grid-template-columns: minmax(0, 68ch) 300px; gap: 56px; align-items: start; }
+  .photo { margin: 0; aspect-ratio: 4 / 5; border-radius: 28px; border: 2px dashed var(--about); display: grid; place-items: center; color: var(--muted); font-size: var(--fs-small); font-weight: 800; overflow: hidden; }
+  .photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  @media (max-width: 900px) { .about-grid { grid-template-columns: 1fr; } .photo { order: -1; max-width: 240px; } }
+  .about-text { max-width: 68ch; font-size: var(--fs-body); line-height: 1.5; padding-bottom: 72px; }
+  .about-text :global(h2) { font-size: var(--fs-head); margin: 48px 0 12px; }
   .about-text :global(p) { margin: 0 0 1em; }
   .about-text :global(a) { text-decoration: underline; color: var(--bylines-text); }
 </style>

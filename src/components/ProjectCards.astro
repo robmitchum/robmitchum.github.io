@@ -46,20 +46,20 @@ const ds = stats(loadDiary(dYear));
   .pcard { display: flex; flex-direction: column; gap: 20px; background: #fff; border-radius: 28px; padding: 32px; border: 2px solid var(--ink); }
   .pcard:hover { color: var(--ink); border-color: var(--projects-dark); }
   .card-top { display: flex; justify-content: space-between; align-items: center; }
-  .card-title { font-size: 32px; font-weight: 800; line-height: 1.05; }
+  .card-title { font-size: var(--fs-head); font-weight: 800; line-height: 1.05; }
   .viz { margin-top: auto; flex: 1 0 auto; border-radius: 20px; background: var(--paper); padding: 18px 20px; display: flex; flex-direction: column; }
   .aoty-viz { gap: 0; }
   .av-mast { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 4px solid #00703A; padding-bottom: 4px; margin-bottom: 4px; }
   .av-name, .av-yr { font-family: Anton, Impact, sans-serif; text-transform: uppercase; color: #00703A; }
   .av-name { font-size: 22px; letter-spacing: 0.01em; }
   .av-yr { font-size: 16px; }
-  .av-row { display: grid; grid-template-columns: 28px minmax(0, auto) minmax(0, 1fr); gap: 10px; align-items: baseline; padding: 5px 0; border-bottom: 1px solid #D8D2C4; font-size: 14px; }
+  .av-row { display: grid; grid-template-columns: 28px minmax(0, auto) minmax(0, 1fr); gap: 10px; align-items: baseline; padding: 5px 0; border-bottom: 1px solid #D8D2C4; font-size: var(--fs-small); }
   .av-row:last-child { border-bottom: 0; }
   .av-row:nth-child(2) { background: #E1F1E6; margin: 0 -8px; padding: 5px 8px; }
   .av-n { font-weight: 800; color: #00703A; font-variant-numeric: tabular-nums; }
   .av-t { font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .av-a { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .diary-viz { gap: 8px; justify-content: flex-end; }
-  .dv-cap { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+  .dv-cap { display: flex; justify-content: space-between; font-size: var(--fs-small); color: var(--muted); }
   .dv-cap span:nth-child(2) { font-weight: 800; color: var(--ink); }
 </style>

@@ -1,6 +1,7 @@
 ---
 import ProjectCards from '../components/ProjectCards.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroBand from '../components/HeroBand.astro';
 import { phishcritPosts, blogPosts, fmtDate } from '../lib/content';
 import { allBylines, sectionInfo, fmtIso } from '../lib/bylines';
 
@@ -12,29 +13,16 @@ const bylines = allBylines().slice(0, latest.length ? 3 : 5);
 ---
 <BaseLayout section="var(--phishcrit)">
   <section class="wrap hero">
+    <HeroBand />
     <h1><span>Music writing,</span> <span>science writing,</span> <span>and side projects</span></h1>
-    <svg viewBox="0 0 560 460" aria-hidden="true" class="lanes">
-      <g fill="none" stroke-width="30" stroke-linecap="round">
-        <path d="M40 520V310A210 210 0 0 1 250 100H520" stroke="#E5007E" />
-        <path d="M70 520V310A180 180 0 0 1 250 130H470" stroke="#E2231A" />
-        <path d="M100 520V310A150 150 0 0 1 250 160H500" stroke="#F58220" />
-        <path d="M130 520V310A120 120 0 0 1 250 190H430" stroke="#FFC20E" />
-        <path d="M160 520V310A90 90 0 0 1 250 220H470" stroke="#00A651" />
-        <path d="M190 520V310A60 60 0 0 1 250 250H390" stroke="#0072BC" />
-        <path d="M220 520V310A30 30 0 0 1 250 280H430" stroke="#6B3FA0" />
-      </g>
-    </svg>
   </section>
-  <hr class="rule" />
 
   <section class="wrap latest">
-    <h2 class="big">Latest</h2>
     <div class="cols">
       {latest.length > 0 && <div>
-        <h3 class="col-head">
-          <svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-width="7"><path d="M10 18H54" stroke="#F58220" /><path d="M10 25H46" stroke="#FBC08A" /><path d="M10 39H54" stroke="#F58220" /><path d="M10 46H38" stroke="#FBC08A" /></g></svg>
+        <h2 class="section-head" style="--section: var(--blog)">
           From the blogs
-        </h3>
+        </h2>
         {latest.map((p) => (
           <a class="entry" href={p.href}>
             <span class="meta"><span>{fmtDate(p.date)}</span><span class={`pod pod-${p.cls}`}>{p.kind}</span></span>
@@ -43,10 +31,9 @@ const bylines = allBylines().slice(0, latest.length ? 3 : 5);
         ))}
       </div>}
       <div>
-        <h3 class="col-head">
-          <svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-width="7"><path d="M10 58V24A16 16 0 0 1 26 8H56" stroke="#0072BC" /><path d="M17 58V24A9 9 0 0 1 26 15H56" stroke="#8CC4E8" /><path d="M24 58V24A2 2 0 0 1 26 22H56" stroke="#0072BC" /></g></svg>
+        <h2 class="section-head" style="--section: var(--bylines)">
           Recent bylines
-        </h3>
+        </h2>
         {bylines.map((b) => (
           <a class="entry" href={b.url ?? `/bylines/${b.section}/`}>
             <span class="meta"><span>{fmtIso(b.date)}</span><span class={`pod pod-${b.section}`}>{sectionInfo(b.section).label}</span></span>
@@ -65,18 +52,15 @@ const bylines = allBylines().slice(0, latest.length ? 3 : 5);
 </BaseLayout>
 
 <style>
-  .hero { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-end; padding-top: 72px; padding-bottom: 56px; }
-  .hero h1 { flex: 999 1 620px; min-width: 0; margin: 0; font-size: clamp(34px, 7vw, 76px); line-height: 0.98; letter-spacing: -0.02em; }
-  .hero h1 span { white-space: nowrap; }
-  .lanes { flex: 1 1 360px; max-width: 460px; height: auto; margin-left: auto; }
-  .latest { padding-top: 56px; padding-bottom: 64px; }
-  .big { margin: 0 0 40px; font-size: 48px; }
+  .hero { padding-top: 56px; padding-bottom: 48px; }
+  .hero h1 { margin: 40px 0 0; font-size: var(--fs-title); line-height: 1.05; letter-spacing: -0.02em; max-width: 24ch; }
+  .latest { padding-top: 8px; padding-bottom: 64px; }
+  .latest .section-head { margin-bottom: 8px; }
   .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr)); gap: 48px; }
-  .col-head { margin: 0 0 12px; font-size: 14px; display: flex; align-items: center; gap: 10px; letter-spacing: 0; }
   .entry { display: grid; grid-template-columns: 116px minmax(0, 1fr); gap: 20px; padding: 18px 0; border-top: 2px solid var(--ink); }
-  .meta { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; font-size: 13px; }
+  .meta { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; font-size: var(--fs-small); }
   .body { display: flex; flex-direction: column; gap: 6px; }
-  .title { font-size: 24px; font-weight: 800; line-height: 1.15; }
+  .title { font-size: var(--fs-head); font-weight: 800; line-height: 1.15; }
   .pod-pc { background: var(--phishcrit); }
   .pod-blog { background: var(--blog); color: var(--ink); }
   .pod-music { background: var(--music); }

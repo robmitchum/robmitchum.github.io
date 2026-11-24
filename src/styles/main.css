@@ -22,6 +22,12 @@
   /* Set per page by the layout: the monogram track and section accents */
   --section: var(--phishcrit);
 
+  /* Type scale (2026-11-23 simplification): three sizes plus a small label size */
+  --fs-title: clamp(36px, 5vw, 48px);  /* page titles and section heads */
+  --fs-head: 24px;                      /* item titles, card titles, sub-heads */
+  --fs-body: 17px;                      /* body text, intros, nav */
+  --fs-small: 13px;                     /* dates, outlets, labels, footer */
+
   --font: 'Schibsted Grotesk', system-ui, sans-serif;
   --wrap: 1240px;
   --gutter: clamp(20px, 4vw, 40px);
@@ -29,7 +35,7 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font); line-height: 1.45; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font); line-height: 1.45; font-size: var(--fs-body); }
 a { color: inherit; text-decoration: none; }
 a:hover { color: var(--bylines-text); }
 a:focus-visible, button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
@@ -39,14 +45,15 @@ img, svg { max-width: 100%; }
 .rule { height: 4px; background: var(--ink); border: 0; margin: 0; }
 
 h1, h2, h3 { font-weight: 800; letter-spacing: -0.015em; line-height: 1; }
-.section-head { margin: 0 0 40px; padding-top: 48px; border-top: 8px solid var(--section); font-size: 48px; }
+.section-head { margin: 0 0 40px; padding-top: 48px; border-top: 8px solid var(--section); font-size: var(--fs-title); }
 
 /* Pods: pill tags and buttons */
-.pod { display: inline-block; font-weight: 800; font-size: 12px; padding: 4px 12px; border-radius: 999px; background: var(--section); color: #fff; }
+.pod { display: inline-block; font-weight: 800; font-size: var(--fs-small); padding: 4px 12px; border-radius: 999px; background: var(--section); color: #fff; }
 .pod--dark-text { color: var(--ink); }
 
 /* Placeholder blocks for sections built in later phases */
-.stub { border: 2px dashed var(--about); border-radius: 28px; padding: 40px; color: var(--muted); font-size: 16px; max-width: 720px; }
+.stub { border: 2px dashed var(--about); border-radius: 28px; padding: 40px; color: var(--muted); font-size: var(--fs-body); max-width: 720px; }
+.page-title { font-size: var(--fs-title); margin: 72px 0 40px; }
 .stub strong { color: var(--ink); }
 
 .skip { position: absolute; left: -9999px; }
