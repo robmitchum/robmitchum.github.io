@@ -1,0 +1,38 @@
+---
+// Homepage graphic: parallel lanes that run in from the left and peel off one
+// by one into hooks (after the Montréal '76 split-and-curl idea; no nested arcs).
+// variant a = five section colors, b = three lanes (music, science, projects),
+// c = ink lanes with one red lane.
+interface Props { variant?: 'a' | 'b' | 'c' }
+const { variant = 'a' } = Astro.props;
+const W = 1160, w = 20, pitch = 26, r = 22, tail = 26;
+const sets = {
+  a: ['var(--bylines)', 'var(--projects)', 'var(--phishcrit)', 'var(--science)', 'var(--music)'],
+  b: ['var(--music)', 'var(--projects)', 'var(--science)'],
+  c: ['var(--ink)', 'var(--ink)', 'var(--phishcrit)', 'var(--ink)', 'var(--ink)'],
+};
+const colors = sets[variant];
+const n = colors.length, mid = (n - 1) / 2;
+const top = 2 * r + w;                       // room for the upward hooks
+const H = top + (n - 1) * pitch + 2 * r + w; // and the downward ones
+// Peel order: outermost lanes first, top then bottom, moving right.
+const start = 120, step = variant === 'b' ? 260 : 150;
+const lanes = colors.map((c, i) => {
+  const y = top + i * pitch;
+  if (i === mid) return { c, d: `M -10 ${y} H ${W + 10}` };
+  const k = Math.abs(i - mid);               // distance from the middle
+  const order = (mid - k) * 2 + (i < mid ? 0 : 1);
+  const x = start + order * step;
+  return i < mid
+    ? { c, d: `M -10 ${y} H ${x} A ${r} ${r} 0 0 0 ${x} ${y - 2 * r} H ${x - tail}` }
+    : { c, d: `M -10 ${y} H ${x} A ${r} ${r} 0 0 1 ${x} ${y + 2 * r} H ${x - tail}` };
+});
+---
+<svg class="hero-band" viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
+  <g fill="none" stroke-width={w} stroke-linecap="butt">
+    {lanes.map((l) => <path d={l.d} stroke={l.c} />)}
+  </g>
+</svg>
+<style>
+  .hero-band { display: block; width: 100%; height: auto; }
+</style>
