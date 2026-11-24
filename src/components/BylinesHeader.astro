@@ -2,8 +2,8 @@
 // Bylines page header (simplified 2026-11-23 after Andrew's review): title at the
 // left edge, one line of intro, and section pods that link to each section.
 import { SECTIONS, type SectionId, bylines } from '../lib/bylines';
-interface Props { current?: SectionId; title: string; meta?: string; color: string; intro?: string }
-const { current, title, meta, color, intro } = Astro.props;
+interface Props { current?: SectionId; title: string; meta?: string; color: string; intro?: string; pills?: boolean }
+const { current, title, meta, color, intro, pills: showPills = true } = Astro.props;
 const pills = [{ id: undefined, label: 'All', href: '/bylines/', dot: 'var(--bylines)', n: Object.values(bylines).flat().length },
   ...SECTIONS.map((s) => ({ id: s.id, label: s.label, href: `/bylines/${s.id}/`, dot: s.color, n: bylines[s.id].length }))];
 ---
@@ -14,13 +14,13 @@ const pills = [{ id: undefined, label: 'All', href: '/bylines/', dot: 'var(--byl
       {current && meta && <p class="sub">{meta}</p>}
     </div>
     {intro ? <p class="intro">{intro}</p> : <slot name="intro" />}
-    <nav class="pills" aria-label="Bylines sections">
+    {showPills && <nav class="pills" aria-label="Bylines sections">
       {pills.map((p) => (
         <a href={p.href} aria-current={p.id === current ? 'page' : undefined}>
           <span class="dot" style={`background:${p.dot}`}></span>{p.label}<span class="n">{p.n.toLocaleString('en-US')}</span>
         </a>
       ))}
-    </nav>
+    </nav>}
   </div>
 </section>
 
