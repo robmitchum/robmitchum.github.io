@@ -15,7 +15,7 @@ const cards = SECTIONS.map((s) => {
 ---
 <BaseLayout title="Bylines" section="var(--bylines)" description="Rob Mitchum's published writing and podcast work: music, science, news and podcasts.">
   <div class="wrap">
-    <BylinesHeader title="Bylines" meta="Writing and podcasts" color="var(--bylines-text)">
+    <BylinesHeader title="Bylines" color="var(--bylines-text)" pills={false}>
       <p slot="intro" class:list={['intro', { placeholder: !pageIntro('bylines') }]}>{pageIntro('bylines') ?? '[A line introducing your published writing and podcast work.]'}</p>
     </BylinesHeader>
 
@@ -41,15 +41,15 @@ const cards = SECTIONS.map((s) => {
 
 <style>
   .placeholder { color: var(--muted); }
-  .sections { list-style: none; padding: 0; margin: 0 0 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 24px; }
+  .sections { list-style: none; padding: 0; margin: 8px 0 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 24px; }
   .sections li { display: flex; }
   .card { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 28px; border-radius: 28px; border: 2px solid var(--ink); background: #fff; border-top: 12px solid var(--section); }
   .card:hover { color: var(--ink); }
   .card:hover .name { color: var(--section-text); }
   .top { display: flex; justify-content: space-between; align-items: flex-start; }
-  .count { font-size: 40px; font-weight: 800; line-height: 1; }
-  .name { font-size: 32px; font-weight: 800; line-height: 1; }
-  .facts { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+  .count { font-size: var(--fs-title); font-weight: 800; line-height: 1; }
+  .name { font-size: var(--fs-head); font-weight: 800; line-height: 1; }
+  .facts { display: flex; flex-direction: column; gap: 4px; font-size: var(--fs-small); }
   .facts span:first-child { font-weight: 800; }
   .rows { padding: 0; margin: 0; }
   .end-rule { border-top: 2px solid var(--ink); }

@@ -92,20 +92,20 @@ const featured = episodes.filter((b) => b.featured);
 <style>
   .intro-block { display: flex; flex-direction: column; gap: 18px; }
   .placeholder { color: var(--muted); }
-  .jump { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 15px; font-weight: 800; }
+  .jump { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: var(--fs-body); font-weight: 800; }
   .jump a { color: var(--section-text); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
   .show { margin: 0 0 56px; scroll-margin-top: 24px; }
   .show-head { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 24px; padding-top: 32px; border-top: 8px solid var(--section); margin-bottom: 24px; }
-  .show-meta { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; font-size: 13px; }
+  .show-meta { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; font-size: var(--fs-small); }
   .pod { color: var(--pod-text); }
   .show-body { display: flex; flex-direction: column; gap: 12px; }
-  .show-body h2 { margin: 0; font-size: 48px; }
-  .sub { margin: 0; font-size: 18px; font-weight: 800; color: var(--section-text); }
-  .show-intro { margin: 0; font-size: 18px; line-height: 1.5; max-width: 60ch; }
-  .visit { align-self: flex-start; font-weight: 800; font-size: 15px; padding: 10px 20px; border-radius: 999px; background: var(--section); color: var(--pod-text); }
+  .show-body h2 { margin: 0; font-size: var(--fs-title); }
+  .sub { margin: 0; font-size: var(--fs-body); font-weight: 800; color: var(--section-text); }
+  .show-intro { margin: 0; font-size: var(--fs-body); line-height: 1.5; max-width: 60ch; }
+  .visit { align-self: flex-start; font-weight: 800; font-size: var(--fs-body); padding: 10px 20px; border-radius: 999px; background: var(--section); color: var(--pod-text); }
   .visit:hover { background: var(--ink); color: #fff; }
   details { margin-left: 164px; }
-  summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 12px; font-weight: 800; font-size: 15px; padding: 10px 20px; min-height: 44px; border-radius: 999px; border: 2px solid var(--ink); margin-bottom: 16px; }
+  summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 12px; font-weight: 800; font-size: var(--fs-body); padding: 10px 20px; min-height: 44px; border-radius: 999px; border: 2px solid var(--ink); margin-bottom: 16px; }
   summary::-webkit-details-marker { display: none; }
   summary:hover { background: #fff; }
   .chev { width: 10px; height: 10px; border-right: 2.5px solid var(--ink); border-bottom: 2.5px solid var(--ink); transform: rotate(45deg) translateY(-3px); transition: transform 0.15s; }
@@ -117,11 +117,11 @@ const featured = episodes.filter((b) => b.featured);
   .guest { margin-top: 80px; }
   .gcount { font-weight: 400; font-size: 0.5em; vertical-align: 0.4em; }
   .gshow { margin-bottom: 32px; }
-  .gshow h3 { margin: 0 0 12px; font-size: 24px; }
+  .gshow h3 { margin: 0 0 12px; font-size: var(--fs-head); }
   @media (max-width: 720px) {
     .show-head { grid-template-columns: 1fr; gap: 12px; }
     .show-meta { flex-direction: row; flex-wrap: wrap; align-items: center; }
-    .show-body h2 { font-size: 36px; }
+    .show-body h2 { font-size: var(--fs-title); }
     details { margin-left: 0; }
   }
 </style>
