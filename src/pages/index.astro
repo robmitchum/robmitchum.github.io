@@ -31,10 +31,7 @@ const bylines = allBylines().slice(0, latest.length ? 3 : 5);
           </a>
         ))}
       </div>}
-      <div>
-        <h2 class="section-head" style="--section: var(--bylines)">
-          Recent bylines
-        </h2>
+      <div aria-label="Recent bylines">
         {bylines.map((b) => (
           <a class="entry" href={b.url ?? `/bylines/${b.section}/`}>
             <span class="meta"><span>{fmtIso(b.date)}</span><span class={`pod pod-${b.section}`}>{sectionInfo(b.section).label}</span></span>
