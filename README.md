@@ -39,3 +39,15 @@ npm run aoty -- 2025 --download        # pull the sheet (shared "anyone with the
 npm run aoty -- 2025 path/to/file.csv  # or from a CSV you downloaded
 npm run aoty:links -- 2025             # download covers (or, for a sheet without link columns, look links up)
 ```
+
+## Homepage "Lately" boxes
+
+Three boxes on `/`, three items each with cover art: what I'm listening to, reading and watching (`src/components/NowBoxes.astro`, data via `src/lib/now.ts`).
+
+- **Listening:** the last 3 entries in the Listening Diary (`src/data/diary/<year>.json`, `npm run diary`).
+- **Reading:** books with Status "Reading" in the Reading Diary's Log tab (`npm run reading -- --download` → `src/data/now/reading.json`). The download needs the sheet shared "anyone with the link can view".
+- **Watching:** the 3 latest entries from the Letterboxd diary RSS feed, with posters (`npm run watching -- --download` → `src/data/now/watching.json`).
+
+- **Covers:** `npm run covers` looks up album art (Apple Music, then Deezer) and book covers (Open Library) for what's showing and keeps the image links in `src/data/now/covers.json`. To fix a wrong or missing cover, edit its entry there: `{ "url": "<image link>", "manual": true }`, or `null` for a plain tile.
+
+The nightly build refreshes all of it; if a download fails, it keeps the saved file.

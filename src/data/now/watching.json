@@ -1,0 +1,86 @@
+{
+  "fetched": "2026-11-27T17:04:36.074Z",
+  "profile": "https://letterboxd.com/robmitchum/diary/",
+  "films": [
+    {
+      "title": "Backrooms",
+      "year": 2026,
+      "watched": "2026-11-20",
+      "rewatch": false,
+      "liked": false,
+      "rating": null,
+      "url": "https://letterboxd.com/robmitchum/film/backrooms-2026/",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/9/7/6/4/1/9/976419-backrooms-2026-0-600-0-900-crop.jpg?v=f7a99e3fc8"
+    },
+    {
+      "title": "GoodFellas",
+      "year": 1990,
+      "watched": "2026-11-13",
+      "rewatch": true,
+      "liked": true,
+      "rating": null,
+      "url": "https://letterboxd.com/robmitchum/film/goodfellas/",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/3/8/3/51383-goodfellas-0-600-0-900-crop.jpg?v=172dbb3464"
+    },
+    {
+      "title": "Barbarian",
+      "year": 2022,
+      "watched": "2026-10-29",
+      "rewatch": true,
+      "liked": true,
+      "rating": null,
+      "url": "https://letterboxd.com/robmitchum/film/barbarian-2022/1/",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/8/1/9/6/4/8/819648-barbarian-0-600-0-900-crop.jpg?v=75b067327a"
+    },
+    {
+      "title": "Halloween",
+      "year": 1978,
+      "watched": "2026-10-25",
+      "rewatch": true,
+      "liked": false,
+      "rating": null,
+      "url": "https://letterboxd.com/robmitchum/film/halloween-1978/1/",
+      "poster": null
+    },
+    {
+      "title": "The Color of Money",
+      "year": 1986,
+      "watched": "2026-10-19",
+      "rewatch": true,
+      "liked": false,
+      "rating": null,
+      "url": "https://letterboxd.com/robmitchum/film/the-color-of-money/",
+      "poster": null
+    },
+    {
+      "title": "You Can See Everything",
+      "year": 2026,
+      "watched": "2026-10-18",
+      "rewatch": false,
+      "liked": true,
+      "rating": null,
+      "url": "https://letterboxd.com/robmitchum/film/you-can-see-everything/",
+      "poster": null
+    },
+    {
+      "title": "The Hustler",
+      "year": 1961,
+      "watched": "2026-10-05",
+      "rewatch": true,
+      "liked": true,
+      "rating": null,
+      "url": "https://letterboxd.com/robmitchum/film/the-hustler/1/",
+      "poster": null
+    },
+    {
+      "title": "New York, New York",
+      "year": 1977,
+      "watched": "2026-09-27",
+      "rewatch": false,
+      "liked": false,
+      "rating": null,
+      "url": "https://letterboxd.com/robmitchum/film/new-york-new-york/",
+      "poster": null
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "fetched": "2026-11-27T16:55:47.441Z",
+  "books": [
+    {
+      "title": "The End of Everything",
+      "author": "M. John Harrison",
+      "started": "2026-11-27",
+      "isbn": null
+    },
+    {
+      "title": "Duke: A Life of Duke Ellington",
+      "author": "Terry Teachout",
+      "started": "2026-11-15",
+      "isbn": "9781592407491"
+    },
+    {
+      "title": "A Fabulous Debt",
+      "author": "Robin Wigglesworth",
+      "started": "2026-11-12",
+      "isbn": "9780593719183"
+    }
+  ]
+}

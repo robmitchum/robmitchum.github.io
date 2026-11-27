@@ -1,0 +1,97 @@
+---
+// Homepage "Lately": three boxes for what Rob is listening to, reading and watching,
+// three items each with cover art. Plain pods, no icons (decisions log, 2026-11-14).
+// An item with no cover gets a plain tile. Data: src/lib/now.ts.
+import { recentListening, currentBooks, recentFilms, letterboxdDiary } from '../lib/now';
+
+const listening = recentListening();
+const books = currentBooks();
+const films = recentFilms();
+const tileLabel = (type: string) => (type === 'Album' ? '' : type === 'Live Show' ? 'Live' : type);
+---
+<div class="now">
+  <article class="box">
+    <span class="pod">Listening</span>
+    <h3>What I'm listening to</h3>
+    <ol>
+      {listening.map((e) => (
+        <li>
+          {e.cover
+            ? <span class="art sq tile"><img src={e.cover} alt="" loading="lazy" width="72" height="72" onerror="this.remove()" /></span>
+            : <span class="art sq tile" aria-hidden="true">{tileLabel(e.type)}</span>}
+          <span class="what">
+            <span class="t">{e.album}</span>
+            <span class="s">{e.artist}{e.type !== 'Album' && <> · {e.type.charAt(0) + e.type.slice(1).toLowerCase()}</>}</span>
+          </span>
+        </li>
+      ))}
+    </ol>
+    <a class="more" href="/projects/listening-diary/">Listening Diary →</a>
+  </article>
+
+  <article class="box">
+    <span class="pod">Reading</span>
+    <h3>What I'm reading</h3>
+    {books.length ? (
+      <ol>
+        {books.map((b) => (
+          <li>
+            {b.cover
+              ? <span class="art tall tile"><img src={b.cover} alt="" loading="lazy" width="60" height="90" onerror="this.remove()" /></span>
+              : <span class="art tall tile" aria-hidden="true"></span>}
+            <span class="what">
+              <span class="t">{b.title}</span>
+              <span class="s">{b.author}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <p class="empty">Between books right now.</p>
+    )}
+  </article>
+
+  <article class="box">
+    <span class="pod">Watching</span>
+    <h3>What I'm watching</h3>
+    <ol>
+      {films.map((f) => (
+        <li>
+          {f.poster
+            ? <span class="art tall tile"><img src={f.poster} alt="" loading="lazy" width="60" height="90" onerror="this.remove()" /></span>
+            : <span class="art tall tile" aria-hidden="true"></span>}
+          <a class="what" href={f.url ?? letterboxdDiary}>
+            <span class="t">{f.title}{f.year && <span class="yr"> ({f.year})</span>}</span>
+            {(f.rewatch || f.liked) && (
+              <span class="s">{[f.rewatch && 'Rewatch', f.liked && 'Liked'].filter(Boolean).join(' · ')}</span>
+            )}
+          </a>
+        </li>
+      ))}
+    </ol>
+    <a class="more" href={letterboxdDiary}>Letterboxd diary →</a>
+  </article>
+</div>
+
+<style>
+  .now { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 32px; }
+  .box { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; background: #fff; border: 2px solid var(--ink); border-radius: 28px; padding: 28px 28px 24px; }
+  h3 { margin: 0 0 4px; font-size: var(--fs-head); }
+  ol { list-style: none; margin: 0; padding: 0; width: 100%; }
+  li { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 16px; align-items: center; padding: 14px 0; border-top: 1px solid #D8D2C4; }
+  li:first-child { border-top: 2px solid var(--ink); }
+  .art { display: block; border-radius: 8px; object-fit: cover; background: var(--paper); }
+  .sq { width: 72px; height: 72px; }
+  .tall { width: 60px; height: 90px; justify-self: center; }
+  .art img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block; }
+  .art:has(img) { padding: 0; }
+  .tile { display: flex; align-items: flex-end; padding: 6px 8px; background: var(--music-light); color: var(--ink); font-size: 11px; font-weight: 800; }
+  .what { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .t { font-weight: 800; line-height: 1.2; }
+  .yr { font-weight: 400; color: var(--muted); }
+  .s { font-size: var(--fs-small); color: var(--muted); }
+  a.what:hover .t { color: var(--section); }
+  .empty { margin: 0; color: var(--muted); }
+  .more { margin-top: auto; padding-top: 6px; font-weight: 800; font-size: var(--fs-small); }
+  .more:hover { color: var(--section); }
+</style>
