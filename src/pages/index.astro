@@ -46,8 +46,8 @@ const bylines = allBylines().slice(0, latest.length ? 3 : 5);
     </div>
   </section>
 
-  <section class="wrap" style="--section: var(--projects)">
-    <h2 class="section-head">Projects</h2>
+  <section class="wrap" style="--section: var(--projects)" aria-label="Projects">
+    <hr class="divider" />
     <ProjectCards />
   </section>
 
@@ -61,6 +61,7 @@ const bylines = allBylines().slice(0, latest.length ? 3 : 5);
   .hero h1 { margin: 40px 0 0; font-size: var(--fs-title); line-height: 1.05; letter-spacing: -0.02em; max-width: 24ch; }
   .latest { padding-top: 8px; padding-bottom: 64px; }
   .latest .section-head { margin-bottom: 8px; }
+  .divider { height: 8px; margin: 0 0 48px; border: 0; background: var(--music); }
   .lately { padding-top: 32px; padding-bottom: 72px; }
   .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr)); gap: 48px; }
   .entry { display: grid; grid-template-columns: 116px minmax(0, 1fr); gap: 20px; padding: 18px 0; border-top: 2px solid var(--ink); }
