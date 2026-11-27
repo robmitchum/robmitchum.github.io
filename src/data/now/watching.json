@@ -1,0 +1,78 @@
+{
+  "fetched": "2026-11-27T16:55:47.489Z",
+  "profile": "https://letterboxd.com/robmitchum/diary/",
+  "films": [
+    {
+      "title": "Backrooms",
+      "year": 2026,
+      "watched": "2026-11-20",
+      "rewatch": false,
+      "liked": false,
+      "rating": null,
+      "url": "https://letterboxd.com/robmitchum/film/backrooms-2026/"
+    },
+    {
+      "title": "GoodFellas",
+      "year": 1990,
+      "watched": "2026-11-13",
+      "rewatch": true,
+      "liked": true,
+      "rating": null,
+      "url": "https://letterboxd.com/robmitchum/film/goodfellas/"
+    },
+    {
+      "title": "Barbarian",
+      "year": 2022,
+      "watched": "2026-10-29",
+      "rewatch": true,
+      "liked": true,
+      "rating": null,
+      "url": "https://letterboxd.com/robmitchum/film/barbarian-2022/1/"
+    },
+    {
+      "title": "Halloween",
+      "year": 1978,
+      "watched": "2026-10-25",
+      "rewatch": true,
+      "liked": false,
+      "rating": null,
+      "url": "https://letterboxd.com/robmitchum/film/halloween-1978/1/"
+    },
+    {
+      "title": "The Color of Money",
+      "year": 1986,
+      "watched": "2026-10-19",
+      "rewatch": true,
+      "liked": false,
+      "rating": null,
+      "url": "https://letterboxd.com/robmitchum/film/the-color-of-money/"
+    },
+    {
+      "title": "You Can See Everything",
+      "year": 2026,
+      "watched": "2026-10-18",
+      "rewatch": false,
+      "liked": true,
+      "rating": null,
+      "url": "https://letterboxd.com/robmitchum/film/you-can-see-everything/"
+    },
+    {
+      "title": "The Hustler",
+      "year": 1961,
+      "watched": "2026-10-05",
+      "rewatch": true,
+      "liked": true,
+      "rating": null,
+      "url": "https://letterboxd.com/robmitchum/film/the-hustler/1/"
+    },
+    {
+      "title": "New York, New York",
+      "year": 1977,
+      "watched": "2026-09-27",
+      "rewatch": false,
+      "liked": false,
+      "rating": null,
+      "url": "https://letterboxd.com/robmitchum/film/new-york-new-york/"
+    }
+  ]
+}

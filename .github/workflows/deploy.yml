@@ -1,8 +1,9 @@
 # Builds the Astro site. Pull requests get a build check only.
 # Pushes to master deploy to GitHub Pages, which requires
 # Settings → Pages → Source set to "GitHub Actions".
-# A nightly run (schedule) rebuilds master with fresh Listening Diary data from the
-# Google Sheet; if the download fails, the build keeps the data saved in the repo.
+# A nightly run (schedule) rebuilds master with fresh Listening Diary and Reading Diary
+# data from the Google Sheets and the latest Letterboxd diary; if a download fails, the
+# build keeps the data saved in the repo.
 name: Build and deploy
 
 on:
@@ -34,6 +35,10 @@ jobs:
       - run: npm ci
       - name: Refresh Listening Diary data
         run: npm run diary -- --download --soft
+      - name: Refresh Reading Diary data
+        run: npm run reading -- --download --soft
+      - name: Refresh Letterboxd data
+        run: npm run watching -- --download --soft
       - run: npm run build
       - if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3

@@ -1,0 +1,86 @@
+---
+// Homepage "Lately": three boxes for what Rob is listening to, reading and watching.
+// Plain pods, no icons (decisions log, 2026-11-14). Data: src/lib/now.ts.
+import { recentListening, currentBooks, recentFilms, letterboxdDiary } from '../lib/now';
+import { fmtDate } from '../lib/diary';
+
+const listening = recentListening();
+const books = currentBooks();
+const films = recentFilms();
+---
+<div class="now">
+  <article class="box">
+    <span class="pod">Listening</span>
+    <h3>What I'm listening to</h3>
+    <ol>
+      {listening.map((e) => (
+        <li>
+          <span class="when">{fmtDate(e.date)}</span>
+          <span class="what">
+            <span class="t">{e.album}</span>
+            <span class="s">{e.artist}{e.type !== 'Album' && <> · {e.type.charAt(0) + e.type.slice(1).toLowerCase()}</>}</span>
+          </span>
+        </li>
+      ))}
+    </ol>
+    <a class="more" href="/projects/listening-diary/">The whole Listening Diary →</a>
+  </article>
+
+  <article class="box">
+    <span class="pod">Reading</span>
+    <h3>What I'm reading</h3>
+    {books.length ? (
+      <ol>
+        {books.map((b) => (
+          <li>
+            <span class="when">{b.started && <><span class="lbl">Started</span>{fmtDate(b.started)}</>}</span>
+            <span class="what">
+              <span class="t">{b.title}</span>
+              <span class="s">{b.author}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <p class="empty">Between books right now.</p>
+    )}
+  </article>
+
+  <article class="box">
+    <span class="pod">Watching</span>
+    <h3>What I'm watching</h3>
+    <ol>
+      {films.map((f) => (
+        <li>
+          <span class="when">{fmtDate(f.watched)}</span>
+          <a class="what" href={f.url ?? letterboxdDiary}>
+            <span class="t">{f.title}{f.year && <span class="yr"> ({f.year})</span>}</span>
+            {(f.rewatch || f.liked) && (
+              <span class="s">{[f.rewatch && 'Rewatch', f.liked && 'Liked'].filter(Boolean).join(' · ')}</span>
+            )}
+          </a>
+        </li>
+      ))}
+    </ol>
+    <a class="more" href={letterboxdDiary}>My Letterboxd diary →</a>
+  </article>
+</div>
+
+<style>
+  .now { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 32px; }
+  .box { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; background: #fff; border: 2px solid var(--ink); border-radius: 28px; padding: 28px 28px 24px; }
+  h3 { margin: 0 0 4px; font-size: var(--fs-head); }
+  ol { list-style: none; margin: 0; padding: 0; width: 100%; }
+  li { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 14px; padding: 11px 0; border-top: 1px solid #D8D2C4; }
+  li:first-child { border-top: 2px solid var(--ink); }
+  .when { font-size: var(--fs-small); color: var(--muted); padding-top: 2px; font-variant-numeric: tabular-nums; }
+  .lbl { display: block; }
+  .what { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .t { font-weight: 800; line-height: 1.2; }
+  .yr { font-weight: 400; color: var(--muted); }
+  .s { font-size: var(--fs-small); color: var(--muted); }
+  a.what:hover .t { color: var(--section); }
+  .empty { margin: 0; color: var(--muted); }
+  .more { margin-top: auto; padding-top: 6px; font-weight: 800; font-size: var(--fs-small); }
+  .more:hover { color: var(--section); }
+</style>
