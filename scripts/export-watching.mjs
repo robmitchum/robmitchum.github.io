@@ -5,7 +5,8 @@
 //   npm run watching -- path/to/feed.xml  use a saved copy of the feed
 //   add --soft                            on a failed download, keep the saved file and exit 0
 //
-// Keeps diary entries only (items with a watched date), newest first, up to KEEP.
+// Keeps diary entries only (items with a watched date), newest first, up to KEEP,
+// with each film's poster image from the feed.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -48,6 +49,7 @@ const films = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)]
     liked: tag(b, 'letterboxd:memberLike') === 'Yes',
     rating: Number(tag(b, 'letterboxd:memberRating')) || null,
     url: tag(b, 'link'),
+    poster: (b.match(/<img src="(https:\/\/a\.ltrbxd\.com\/[^"]+)"/) ?? [])[1]?.replace(/&amp;/g, '&') ?? null,
   }))
   .filter((f) => f.title && /^\d{4}-\d{2}-\d{2}$/.test(f.watched ?? ''))
   .sort((a, b) => b.watched.localeCompare(a.watched))

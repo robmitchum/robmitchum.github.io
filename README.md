@@ -42,10 +42,12 @@ npm run aoty:links -- 2025             # download covers (or, for a sheet withou
 
 ## Homepage "Lately" boxes
 
-Three boxes on `/`: what I'm listening to, reading and watching (`src/components/NowBoxes.astro`, data via `src/lib/now.ts`).
+Three boxes on `/`, three items each with cover art: what I'm listening to, reading and watching (`src/components/NowBoxes.astro`, data via `src/lib/now.ts`).
 
-- **Listening:** the last 5 entries in the Listening Diary (`src/data/diary/<year>.json`, `npm run diary`).
+- **Listening:** the last 3 entries in the Listening Diary (`src/data/diary/<year>.json`, `npm run diary`).
 - **Reading:** books with Status "Reading" in the Reading Diary's Log tab (`npm run reading -- --download` → `src/data/now/reading.json`). The download needs the sheet shared "anyone with the link can view".
-- **Watching:** the 5 latest entries from the Letterboxd diary RSS feed (`npm run watching -- --download` → `src/data/now/watching.json`).
+- **Watching:** the 3 latest entries from the Letterboxd diary RSS feed, with posters (`npm run watching -- --download` → `src/data/now/watching.json`).
 
-The nightly build refreshes all three; if a download fails, it keeps the saved file.
+- **Covers:** `npm run covers` looks up album art (Apple Music, then Deezer) and book covers (Open Library) for what's showing and keeps the image links in `src/data/now/covers.json`. To fix a wrong or missing cover, edit its entry there: `{ "url": "<image link>", "manual": true }`, or `null` for a plain tile.
+
+The nightly build refreshes all of it; if a download fails, it keeps the saved file.

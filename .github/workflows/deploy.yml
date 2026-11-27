@@ -39,6 +39,8 @@ jobs:
         run: npm run reading -- --download --soft
       - name: Refresh Letterboxd data
         run: npm run watching -- --download --soft
+      - name: Find covers for the homepage Lately boxes
+        run: npm run covers -- --soft
       - run: npm run build
       - if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
